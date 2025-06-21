@@ -210,10 +210,10 @@
                     <p class="text-gray-400 text-sm">Heavily modified the map Town. Much more stuff compared to the original base game.</p>
                 </a>
                 <!-- Project 3 -->
-                <a href="https://github.com/yourprofile/project3" target="_blank" rel="noopener noreferrer"
+                <a href="https://github.com/Astroolean/Twitch-Tools" target="_blank" rel="noopener noreferrer"
                    class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 ease-in-out project-animate project-item">
-                    <h3 class="text-2xl font-bold mb-2">Coming soon...</h3>
-                    <p class="text-gray-400 text-sm">Coming soon...</p>
+                    <h3 class="text-2xl font-bold mb-2">Twitch Tools</h3>
+                    <p class="text-gray-400 text-sm">Automatically mutes Twitch ads and provides options to hide the player, bypass ads, fullscreen the stream, and auto-claim bonus points.</p>
                 </a>
                 <!-- Project 4 -->
                 <a href="https://github.com/yourprofile/project4" target="_blank" rel="noopener noreferrer"
