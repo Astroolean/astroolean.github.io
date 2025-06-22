@@ -112,18 +112,6 @@ Look for comments like `// EDITABLE: mainSphere Geometry` or `// EDITABLE: mainS
 
 ---
 
-## 🤝 Contributing
-
-Feel free to fork this repository, customize it to your liking, and use it as your own personal portfolio! If you have suggestions for improvements or find any issues, please open an issue or submit a pull request.
-
----
-
-## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
-
----
-
 If you have any questions or just want to connect, feel free to reach out!
 
 ---
