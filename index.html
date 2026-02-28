@@ -1,603 +1,1468 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astroolean's Digital Canvas - 3D Experience</title>
-    <!-- Tailwind CSS CDN (for overlay UI and loading screen) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter for a modern look (for overlay text) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Base styles for the page, ensuring full screen and no scrollbars */
-        body {
-            margin: 0;
-            overflow: hidden; /* Crucial to prevent scrollbars for the 3D canvas */
-            height: 100vh; /* Make body take full viewport height */
-            width: 100vw; /* Make body take full viewport width */
-            display: flex;
-            flex-direction: column;
-            font-family: 'Inter', sans-serif; /* Apply Inter to HTML elements */
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Custom Bots v5.0.0 — BO2 Zombies AI</title>
+  <meta name="description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 10,964 lines of zombie-killing intelligence. One file. Drop it in. Play." />
+  <meta name="theme-color" content="#070b14" />
+  <meta property="og:title" content="Custom Bots v5.0.0 — BO2 Zombies AI" />
+  <meta property="og:description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 5-tier rank system, 6 maps, 6 Easter Eggs. One file install." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #070b14;
+      --bg-soft: #0d1424;
+      --panel: rgba(13, 20, 36, 0.82);
+      --panel-strong: rgba(17, 27, 48, 0.96);
+      --line: rgba(133, 176, 255, 0.14);
+      --line-strong: rgba(133, 176, 255, 0.28);
+      --text: #e8eefc;
+      --muted: #9eb0d4;
+      --accent: #74b7ff;
+      --accent-2: #83ffe1;
+      --gold: #ffd36f;
+      --danger: #ff6e7a;
+      --shadow: 0 24px 80px rgba(0,0,0,0.45);
+      --shadow-sm: 0 4px 24px rgba(0,0,0,0.3);
+      --radius: 24px;
+      --max: 1480px;
+      --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-        /* Styles for the Three.js canvas */
-        canvas {
-            display: block; /* Remove extra space below canvas */
-            width: 100%;
-            height: 100%;
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
-        /* Loading Screen styles */
-        #loading-screen {
-            position: fixed; /* Fixed position to cover the entire screen */
-            inset: 0; /* Top, right, bottom, left to 0 */
-            background-color: #0d1117; /* Dark background matching the scene */
-            color: #e2e8f0; /* Light text */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem; /* Large text */
-            z-index: 9999; /* On top of everything */
-            transition: opacity 1s ease-out; /* Smooth fade out */
-            opacity: 1; /* Start visible */
-        }
-        #loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none; /* Allow clicks through once hidden */
-        }
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #5a67d8; /* Blue spinner */
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-top: 1rem;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+    body {
+      color: var(--text);
+      font-family: var(--sans);
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-        /* Styles for the HTML overlay content on top of the 3D canvas */
-        #overlay-content {
-            position: absolute; /* Positioned relative to the viewport */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10; /* Above the canvas, below the loading screen */
-            pointer-events: none; /* Allow mouse events to pass through to the canvas */
-            color: #e2e8f0; /* Light text color */
-        }
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 600px 500px at 8% 12%, rgba(116,183,255,0.12), transparent),
+        radial-gradient(ellipse 500px 400px at 92% 8%, rgba(131,255,225,0.08), transparent),
+        radial-gradient(ellipse 700px 500px at 50% 105%, rgba(255,211,111,0.06), transparent);
+    }
 
-        /* Container for the actual text content within the overlay */
-        .content-container {
-            pointer-events: auto; /* Re-enable pointer events for interactive elements like links */
-            background: rgba(17, 24, 39, 0.7); /* Semi-transparent dark background */
-            backdrop-filter: blur(8px); /* Subtle blur effect */
-            -webkit-backdrop-filter: blur(8px); /* Safari compatibility */
-            border-radius: 2rem; /* Large rounded corners */
-            padding: 2.5rem; /* Ample padding */
-            max-width: 90%; /* Max width for responsiveness */
-            width: 48rem; /* Fixed width for larger screens */
-            text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1); /* Deep shadow */
-            
-            /* UPDATED: Blue border for the content container */
-            border: 2px solid #3b82f6; /* A distinct blue color (Tailwind's blue-500) */
+    .site-shell {
+      position: relative;
+      z-index: 1;
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 24px 0 80px;
+    }
 
-            overflow-y: auto; /* Allow scrolling for project section if needed */
-            max-height: 90vh; /* Limit height for content container on smaller screens */
+    a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: #bfe0ff; }
 
-            /* Animation for the content container */
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInSlideUp 1.5s ease-out forwards;
-            animation-delay: 1.2s; /* Delayed to appear after loading screen fades */
-        }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 48px 40px 44px;
+      border-radius: 32px;
+      background:
+        linear-gradient(135deg, rgba(14, 24, 43, 0.96), rgba(10, 15, 28, 0.95)),
+        linear-gradient(135deg, rgba(116,183,255,0.08), rgba(131,255,225,0.06));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
 
-        /* Specific animations for content within the container (staggered) */
-        @keyframes fadeInSlideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .hero::before {
+      content: "";
+      position: absolute;
+      right: -8%;
+      bottom: -40%;
+      width: 480px;
+      height: 480px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(116,183,255,0.14), transparent 65%);
+      pointer-events: none;
+      filter: blur(12px);
+    }
 
-        .avatar-animate {
-            opacity: 0;
-            transform: scale(0.5);
-            animation: fadeInScale 1s ease-out forwards;
-            animation-delay: 1.5s;
-        }
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: -5%;
+      top: -30%;
+      width: 360px;
+      height: 360px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(131,255,225,0.08), transparent 65%);
+      pointer-events: none;
+      filter: blur(16px);
+    }
 
-        .header-animate {
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: fadeInDown 1s ease-out forwards;
-            animation-delay: 1.8s;
-        }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 32px;
+      align-items: end;
+      position: relative;
+      z-index: 1;
+    }
 
-        .tagline-animate {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s ease-out forwards;
-            animation-delay: 2.1s;
-        }
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
 
-        /* Pop-in animation for projects */
-        @keyframes popIn {
-            0% { opacity: 0; transform: translateY(-50px) scale(0.8); }
-            60% { opacity: 1; transform: translateY(10px) scale(1.05); } /* Slightly overshoot for bounce */
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
 
-        .project-animate {
-            animation: popIn 0.8s ease-out forwards; /* Apply the popIn animation */
-            opacity: 0; /* Ensure it starts hidden */
-            /* Animation delays are applied directly to nth-child below */
-        }
-        /* Staggered animation delays for project items (adjusted for new animation timing) */
-        .project-item:nth-child(1) { animation-delay: 2.4s; }
-        .project-item:nth-child(2) { animation-delay: 2.5s; }
-        .project-item:nth-child(3) { animation-delay: 2.6s; }
-        .project-item:nth-child(4) { animation-delay: 2.7s; }
-        .project-item:nth-child(5) { animation-delay: 2.8s; }
-        .project-item:nth-child(6) { animation-delay: 2.9s; }
+    .eyebrow .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 8px var(--accent-2);
+    }
 
+    .hero h1 {
+      font-size: clamp(2.6rem, 5.5vw, 5.2rem);
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      font-weight: 900;
+      max-width: 12ch;
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-        @keyframes fadeIn { /* Kept for other elements if needed, but not directly used by projects now */
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes fadeInScale { /* Kept for other elements if needed */
-            from { opacity: 0; transform: scale(0.5); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        /* Apply aqua color to all project titles */
-        .project-item h3 {
-            color: #4ee6eb; /* A distinct aqua color (Tailwind's cyan-400) */
-        }
-        /* UPDATED: Blue border for project items */
-        .project-item {
-            border: 1px solid #3b82f6; /* A distinct blue color (Tailwind's blue-500) */
-        }
-    </style>
+    .hero-copy {
+      max-width: 620px;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.4vw, 1.12rem);
+      line-height: 1.75;
+      margin: 18px 0 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 0 20px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+      backdrop-filter: blur(8px);
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      color: var(--text);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(116,183,255,0.20), rgba(131,255,225,0.14));
+      border-color: rgba(116,183,255,0.30);
+    }
+
+    .btn.primary:hover {
+      background: linear-gradient(135deg, rgba(116,183,255,0.30), rgba(131,255,225,0.22));
+      border-color: rgba(116,183,255,0.50);
+    }
+
+    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat-card {
+      padding: 20px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--line-strong);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-size: clamp(1.2rem, 2vw, 1.65rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      border-radius: 22px;
+      padding: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-sm);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(133,176,255,0.15) transparent;
+    }
+
+    .sidebar h2 {
+      margin: 0 0 10px 4px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .toc { display: grid; gap: 3px; }
+
+    .toc-link {
+      display: block;
+      padding: 9px 12px;
+      border-radius: 10px;
+      color: var(--muted);
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+      font-size: 0.88rem;
+      line-height: 1.35;
+      font-weight: 500;
+    }
+
+    .toc-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+
+    .toc-link.active {
+      color: var(--text);
+      background: rgba(116,183,255,0.08);
+      border-color: rgba(116,183,255,0.18);
+    }
+
+    .content { min-width: 0; }
+    .article-stack { display: grid; gap: 16px; }
+
+    .content-section {
+      border-radius: 24px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .content-section:hover { border-color: var(--line-strong); }
+    .section-title { margin-bottom: 8px; }
+
+    .content-section h2 {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+      letter-spacing: -0.03em;
+      font-weight: 800;
+    }
+
+    .content-section h3 {
+      margin-top: 28px;
+      margin-bottom: 12px;
+      font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .content-section h4 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      color: #d0ddf8;
+      font-weight: 600;
+    }
+
+    .content-section p,
+    .content-section li {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 0.97rem;
+    }
+
+    .content-section p { margin: 12px 0; }
+    .content-section p:first-of-type { margin-top: 0; }
+
+    .content-section ul, .content-section ol { padding-left: 1.2rem; }
+    .content-section li { margin-bottom: 6px; }
+
+    .content-section hr {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 28px 0;
+    }
+
+    .content-section strong { color: var(--text); font-weight: 600; }
+    .content-section em { color: #c8d6f3; }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(4, 8, 17, 0.5);
+    }
+
+    table { width: 100%; border-collapse: collapse; min-width: 600px; }
+
+    th, td {
+      padding: 13px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(133,176,255,0.08);
+      vertical-align: top;
+      font-size: 0.93rem;
+    }
+
+    th {
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td { color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+    tr:hover td { background: rgba(255,255,255,0.015); }
+
+    code {
+      font-family: var(--mono);
+      background: rgba(116,183,255,0.08);
+      border: 1px solid rgba(133,176,255,0.12);
+      border-radius: 8px;
+      padding: 0.15rem 0.45rem;
+      color: #c4ddff;
+      font-size: 0.88em;
+      font-weight: 500;
+    }
+
+    pre.code-block {
+      margin: 16px 0;
+      padding: 20px;
+      overflow: auto;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(4, 8, 17, 0.7);
+    }
+
+    pre.code-block code {
+      background: transparent;
+      border: 0;
+      padding: 0;
+      display: block;
+      white-space: pre;
+      color: #c4ddff;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    blockquote {
+      margin: 18px 0;
+      padding: 14px 20px;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      background: rgba(116,183,255,0.04);
+      color: #c9d9fb;
+    }
+
+    .callout {
+      margin: 18px 0;
+      padding: 16px 20px;
+      border-radius: 14px;
+      border: 1px solid;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .callout.info {
+      background: rgba(116,183,255,0.06);
+      border-color: rgba(116,183,255,0.2);
+      color: #b8d4ff;
+    }
+
+    .callout.warn {
+      background: rgba(255,211,111,0.06);
+      border-color: rgba(255,211,111,0.2);
+      color: #ffe4a0;
+    }
+
+    .callout strong { color: inherit; font-weight: 700; }
+
+    .footer-wrap {
+      margin-top: 28px;
+      text-align: center;
+      padding: 32px 24px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .footer-wrap strong { color: var(--text); }
+    .footer-wrap em { color: var(--muted); font-style: normal; }
+
+    .footer-wrap .tagline {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .footer-wrap .sub {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .mobile-toc {
+      display: none;
+      margin-bottom: 16px;
+    }
+
+    .mobile-toc select {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--line);
+      color: var(--text);
+      padding: 0 14px;
+      font: inherit;
+      font-size: 0.95rem;
+    }
+
+    .back-top {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(9, 14, 25, 0.92);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: var(--shadow-sm);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .back-top.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .back-top:hover {
+      background: rgba(116,183,255,0.12);
+      border-color: var(--line-strong);
+      color: var(--text);
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1180px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .mobile-toc { display: block; }
+    }
+
+    @media (max-width: 860px) {
+      .hero { padding: 28px 24px; border-radius: 24px; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .content-section { padding: 24px; border-radius: 20px; }
+    }
+
+    @media (max-width: 560px) {
+      .site-shell { width: min(calc(100% - 16px), var(--max)); padding-top: 12px; }
+      .stats { grid-template-columns: 1fr; }
+      .btn { width: 100%; }
+      table { min-width: 520px; }
+      .hero h1 { font-size: 2.4rem; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 bg-gray-900 flex flex-col items-center justify-center text-white text-2xl z-50">
-        <div class="loading-spinner"></div>
-        <p class="mt-4">Sooo fucking high right now...</p>
+<div class="bg-glow"></div>
+
+<div class="site-shell">
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<header class="hero" id="top">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-top">
+        <span class="eyebrow"><span class="dot"></span> Black Ops 2 Zombies</span>
+        <span class="eyebrow">Plutonium T6</span>
+        <span class="eyebrow">v5.0.0 &mdash; 2026</span>
+      </div>
+      <h1>Custom Bots</h1>
+      <p class="hero-copy">
+        Fully autonomous AI teammates for every BO2 Zombies map. They buy weapons, open doors, train hordes, revive you, hit the box, grab perks, collect buildable parts, and help with Easter Eggs &mdash; all on their own. One GSC file. Zero setup. Just play.
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          Read the Docs
+        </a>
+        <a class="btn" href="#installation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Install Guide
+        </a>
+        <a class="btn" href="#rank-system">Rank System</a>
+      </div>
     </div>
-
-    <!-- The Three.js canvas will be injected here by JavaScript -->
-
-    <!-- HTML Overlay for Text and Social Links -->
-    <div id="overlay-content">
-        <div class="content-container">
-            <!-- EDITABLE: Profile Picture/GIF -->
-            <!-- To change your profile picture, update the 'src' attribute below. -->
-            <!-- GIFs are supported! Simply link to your .gif file. -->
-            <img src="https://s14.gifyu.com/images/bHobi.gif" alt="Astroolean's Avatar"
-                 class="rounded-full shadow-xl border-4 border-blue-500 w-40 h-40 object-cover mx-auto mb-1 transform hover:scale-110 transition duration-300 ease-in-out avatar-animate">
-
-            <!-- Summary Text -->
-            <div class="text-center mb-6">
-                <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-                    I got a little high and decided to build a website with AI—just to show how easy it really is. I'm a casual gamer who lives in the world of scripting. Whether it’s modding games or blocking ads on Twitch, if I need something, I’ll build it myself. No paywalls, no BS—just clean, functional tools made for me, by me.
-            </p>
-        </div>
-
-            <!-- Current Projects Section -->
-            <!-- EDITABLE: Project Details -->
-            <!-- You can edit the 'href' for the link, the '<h3>' for the project title, -->
-            <!-- and the '<p>' for the project description for each project item below. -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <!-- Project 1 -->
-                <a href="https://github.com/Astroolean/AstroCore" target="_blank" rel="noopener noreferrer"
-                   class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 ease-in-out project-animate project-item">
-                    <h3 class="text-2xl font-bold mb-2">Astro Core</h3>
-                    <p class="text-gray-400 text-sm">Minecraft server core designed for servers specifically running paper 1.20.4</p>
-                </a>
-                <!-- Project 2 -->
-                <a href="https://github.com/Astroolean/BO2-Zombies-Town-AI-Premade-Pack" target="_blank" rel="noopener noreferrer"
-                   class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 ease-in-out project-animate project-item">
-                    <h3 class="text-2xl font-bold mb-2">COD Zombies</h3>
-                    <p class="text-gray-400 text-sm">Heavily modified the map Town. Much more stuff compared to the original base game.</p>
-                </a>
-                <!-- Project 3 -->
-                <a href="https://github.com/Astroolean/Twitch-Tools" target="_blank" rel="noopener noreferrer"
-                   class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 ease-in-out project-animate project-item">
-                    <h3 class="text-2xl font-bold mb-2">Twitch Tools</h3>
-                    <p class="text-gray-400 text-sm">Automatically mutes Twitch ads, bypass ads, and auto-claim channel points. Updated and working method.</p>
-                </a>
-                <!-- Project 4 -->
-                <a href="https://github.com/Astroolean/DeathWish" target="_blank" rel="noopener noreferrer"
-                   class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 ease-in-out project-animate project-item">
-                    <h3 class="text-2xl font-bold mb-2">Death Wish</h3>
-                    <p class="text-gray-400 text-sm">Mob scaling, bosses, abilities, custom loot, and hardcore revive mechanics.</p>
-                </a>
-                <!-- Project 5 -->
-                <a href="https://github.com/yourprofile/project5" target="_blank" rel="noopener noreferrer"
-                   class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 ease-in-out project-animate project-item">
-                    <h3 class="text-2xl font-bold mb-2">Coming soon...</h3>
-                    <p class="text-gray-400 text-sm">Coming soon...</p>
-                </a>
-                <!-- Project 6 -->
-                <a href="https://github.com/yourprofile/project6" target="_blank" rel="noopener noreferrer"
-                   class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 ease-in-out project-animate project-item">
-                    <h3 class="text-2xl font-bold mb-2">Coming soon...</h3>
-                    <p class="text-gray-400 text-sm">Coming soon...</p>
-                </a>
-            </div>
-
-            
-            </p>
-        </div>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Lines of Code</div>
+        <div class="stat-value">10,964</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Supported Maps</div>
+        <div class="stat-value">All 6 Maps</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Easter Eggs</div>
+        <div class="stat-value">6 / 6</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Default Setup</div>
+        <div class="stat-value">3 Bots &bull; Shotguns</div>
+      </div>
     </div>
+  </div>
+</header>
 
-    <!-- Three.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- OrbitControls for interactive camera movement -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<!-- ═══════════════════ MOBILE NAV ═══════════════════ -->
+<div class="mobile-toc">
+  <select aria-label="Jump to section" id="sectionSelect">
+    <option value="">Jump to a section&hellip;</option>
+    <option value="#overview">Overview</option>
+    <option value="#installation">Installation</option>
+    <option value="#quick-start">Quick Start</option>
+    <option value="#configuration-reference">Configuration Reference</option>
+    <option value="#rank-system">Rank System</option>
+    <option value="#autonomous-decision-engine">Autonomous Decision Engine</option>
+    <option value="#advanced-combat-engine">Advanced Combat Engine</option>
+    <option value="#autonomy-system">Autonomy System</option>
+    <option value="#survivability-system">Survivability System</option>
+    <option value="#early-game-flow">Early Game Flow</option>
+    <option value="#early-round-knife-strategy">Early Round Knife Strategy</option>
+    <option value="#training-ai">Training AI</option>
+    <option value="#economy-system">Economy System</option>
+    <option value="#collectibles">Collectible &amp; Buildable Pickup</option>
+    <option value="#proactive-seeking">Proactive Part Seeking</option>
+    <option value="#last-zombie-save">Last Zombie Save</option>
+    <option value="#bot-personality-system">Bot Personality System</option>
+    <option value="#bot-communication-system">Bot Communication</option>
+    <option value="#round-based-scaling">Round-Based Scaling</option>
+    <option value="#downed-bot-behavior">Downed Bot Behavior</option>
+    <option value="#announcer-system">Announcer System</option>
+    <option value="#hud-system">HUD System</option>
+    <option value="#map-specific-logic">Map-Specific Logic</option>
+    <option value="#map-weapon-preferences">Map Weapon Preferences</option>
+    <option value="#easter-egg-support">Easter Egg Support</option>
+    <option value="#hazard-detection">Hazard Detection</option>
+    <option value="#safety-and-stability">Safety &amp; Stability</option>
+    <option value="#file-architecture">File Architecture</option>
+    <option value="#faq">FAQ</option>
+    <option value="#addon-guide">Addon Development</option>
+    <option value="#credits">Credits</option>
+  </select>
+</div>
 
-    <script>
-        // --- Three.js Setup ---
-        let scene, camera, renderer, controls;
-        let particles, mainSphere, pointLight, ambientLight;
-        const asteroids = []; // Array to hold our asteroid meshes
-        const loadingScreen = document.getElementById('loading-screen');
-        const overlayContent = document.getElementById('overlay-content');
-        let mouseX = 0, mouseY = 0; // Global variables for mouse position
+<!-- ═══════════════════ LAYOUT ═══════════════════ -->
+<div class="layout">
 
-        // Function to initialize the 3D scene
-        function init() {
-            // Scene
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0a0c10); // Very dark blue/black background
+  <!-- Sidebar -->
+  <aside class="sidebar" aria-label="Page navigation">
+    <h2>On This Page</h2>
+    <nav class="toc">
+      <a class="toc-link" href="#overview">Overview</a>
+      <a class="toc-link" href="#installation">Installation</a>
+      <a class="toc-link" href="#quick-start">Quick Start</a>
+      <a class="toc-link" href="#configuration-reference">Configuration</a>
+      <a class="toc-link" href="#rank-system">Rank System</a>
+      <a class="toc-link" href="#autonomous-decision-engine">Decision Engine</a>
+      <a class="toc-link" href="#advanced-combat-engine">Combat Engine</a>
+      <a class="toc-link" href="#autonomy-system">Autonomy</a>
+      <a class="toc-link" href="#survivability-system">Survivability</a>
+      <a class="toc-link" href="#early-game-flow">Early Game Flow</a>
+      <a class="toc-link" href="#early-round-knife-strategy">Knife Strategy</a>
+      <a class="toc-link" href="#training-ai">Training AI</a>
+      <a class="toc-link" href="#economy-system">Economy</a>
+      <a class="toc-link" href="#collectibles">Collectibles</a>
+      <a class="toc-link" href="#proactive-seeking">Part Seeking</a>
+      <a class="toc-link" href="#last-zombie-save">Last Zombie Save</a>
+      <a class="toc-link" href="#bot-personality-system">Personalities</a>
+      <a class="toc-link" href="#bot-communication-system">Communication</a>
+      <a class="toc-link" href="#round-based-scaling">Round Scaling</a>
+      <a class="toc-link" href="#downed-bot-behavior">Downed Behavior</a>
+      <a class="toc-link" href="#announcer-system">Announcer</a>
+      <a class="toc-link" href="#hud-system">HUD System</a>
+      <a class="toc-link" href="#map-specific-logic">Map Logic</a>
+      <a class="toc-link" href="#map-weapon-preferences">Map Weapons</a>
+      <a class="toc-link" href="#easter-egg-support">Easter Eggs</a>
+      <a class="toc-link" href="#hazard-detection">Hazard Detection</a>
+      <a class="toc-link" href="#safety-and-stability">Safety &amp; Stability</a>
+      <a class="toc-link" href="#file-architecture">File Architecture</a>
+      <a class="toc-link" href="#faq">FAQ</a>
+      <a class="toc-link" href="#addon-guide">Addon Guide</a>
+      <a class="toc-link" href="#credits">Credits</a>
+    </nav>
+  </aside>
 
-            // Camera (Perspective Camera for 3D view)
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0, 5); // Initial camera position
+  <!-- Main Content -->
+  <main class="content">
+    <article class="markdown-body">
+      <div class="article-stack">
 
-            // Renderer
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio); // Handle high-DPI screens
-            document.body.appendChild(renderer.domElement); // Add canvas to the body
+<!-- ═══════════════════ OVERVIEW ═══════════════════ -->
+<section class="content-section fade-in" id="overview">
+  <div class="section-title"><h2>Overview</h2></div>
+  <p><strong>Custom Bots</strong> is a single-file GSC mod for <strong>Call of Duty: Black Ops 2 Zombies</strong> on the <strong>Plutonium T6</strong> client. It spawns fully autonomous AI bots that play like real human teammates.</p>
+  <p>These bots don't follow you around like bodyguards. They make their own decisions. They roam the map independently, train zombies into hordes, open doors, buy perks and weapons, pick up buildable parts, revive downed teammates, save the last zombie at the end of every round, knife in early rounds to maximize points, and fight their way through high rounds entirely on their own.</p>
+  <p>Every bot runs an <strong>autonomous decision engine</strong> that evaluates all available actions each tick and picks the smartest one based on current context: ammo, health, points, round number, nearby threats, and personality. No two bots make the same choices. An aggressive bot pushes for weapons while a cautious bot prioritizes perks and safety.</p>
+  <p>The entire system is contained in a single file: <code>custom_bots.gsc</code>. No compilation. No dependencies. No external tools. Drop it in and play.</p>
 
-            // OrbitControls for interactive camera movement
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true; // Smooth camera movement
-            controls.dampingFactor = 0.07; // Slightly increased damping for smoother feel
-            controls.screenSpacePanning = false;
-            controls.minDistance = 2; // Minimum zoom
-            controls.maxDistance = 15; // Maximum zoom
-            controls.autoRotate = true; // Automatically rotate the scene
-            controls.autoRotateSpeed = 0.3; // Slower auto-rotation
+  <h3>At a Glance</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Lines of Code</td><td><strong>10,964</strong></td></tr>
+      <tr><td>Supported Maps</td><td>All 6 BO2 Zombie Maps</td></tr>
+      <tr><td>Easter Egg Coverage</td><td>All 6 Maps</td></tr>
+      <tr><td>Default Config</td><td>3 bots, Shotguns rank</td></tr>
+      <tr><td>Rank Tiers</td><td>5 (Bones &rarr; Shotguns)</td></tr>
+      <tr><td>DVars</td><td>12 configurable settings</td></tr>
+    </tbody>
+  </table></div>
+</section>
 
-            // --- Scene Elements ---
+<!-- ═══════════════════ INSTALLATION ═══════════════════ -->
+<section class="content-section fade-in" id="installation">
+  <div class="section-title"><h2>Installation</h2></div>
 
-            // 1. Abstract Main Sphere (the "Digital Canvas")
-            // EDITABLE: mainSphere Geometry
-            // You can change the shape of the main sphere here.
-            // Options include THREE.SphereGeometry, THREE.BoxGeometry, THREE.TorusGeometry,
-            // THREE.DodecahedronGeometry, THREE.IcosahedronGeometry, THREE.OctahedronGeometry, etc.
-            // Remember to adjust parameters as needed for the chosen geometry.
-            const sphereGeometry = new THREE.TorusKnotGeometry(1.5, 0.5, 100, 16); // radius, tube, radialSegments, tubularSegments
+  <h3>Step 1 &mdash; Locate Your Plutonium T6 Folder</h3>
+  <p>Open your Plutonium launcher and find your T6 installation directory. The default location is:</p>
+  <pre class="code-block"><code>%LOCALAPPDATA%\Plutonium\storage\t6\</code></pre>
 
-            // Custom shader material for a unique glowing, ethereal look
-            const sphereMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                    time: { value: 0.0 },
-                    // EDITABLE: mainSphere Colors
-                    // Adjust these hex values to change the sphere's primary and secondary colors.
-                    color1: { value: new THREE.Color(0x00aaff) }, // A vibrant blue
-                    color2: { value: new THREE.Color(0x4ee6eb) }, // A bright aqua
-                    glowColor: { value: new THREE.Color(0x87ceeb) }, // Sky blue glow
-                    glowIntensity: { value: 0.8 } // Control glow intensity
-                },
-                vertexShader: `
-                    uniform float time;
-                    varying vec3 vNormal;
-                    varying vec3 vPosition;
-                    void main() {
-                        vNormal = normal;
-                        vPosition = position;
-                        // Displace vertices based on sine/cosine waves and noise for a fluid, organic look
-                        // Added more complexity to displacement for a 'breathing' effect
-                        float displacement = sin(position.x * 4.0 + time * 0.8) * 0.1 +
-                                             cos(position.y * 3.0 + time * 0.6) * 0.1 +
-                                             sin(position.z * 5.0 + time * 0.7) * 0.1;
-                        vec3 displacedPosition = position + normal * displacement * 0.5; // Reduced displacement scale
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
-                    }
-                `,
-                fragmentShader: `
-                    uniform float time;
-                    uniform vec3 color1;
-                    uniform vec3 color2;
-                    uniform vec3 glowColor;
-                    uniform float glowIntensity;
-                    varying vec3 vNormal;
-                    varying vec3 vPosition;
+  <h3>Step 2 &mdash; Navigate to the Scripts Folder</h3>
+  <p>Inside the T6 folder, go to (or create if it doesn't exist):</p>
+  <pre class="code-block"><code>storage/t6/scripts/zm/</code></pre>
 
-                    void main() {
-                        // Calculate a mix factor based on normal direction and time for color blending
-                        float mixFactor = (sin(dot(normalize(vNormal), vec3(0.0, 1.0, 0.0)) * 2.0 + time * 0.5) + 1.0) / 2.0;
-                        vec3 finalColor = mix(color1, color2, mixFactor);
+  <h3>Step 3 &mdash; Drop the File</h3>
+  <p>Copy <code>custom_bots.gsc</code> into the <code>zm</code> folder. Your final path should be:</p>
+  <pre class="code-block"><code>storage/t6/scripts/zm/custom_bots.gsc</code></pre>
 
-                        // Add a glow effect based on view direction and normal
-                        vec3 cameraToFragment = normalize(cameraPosition - vPosition);
-                        float glow = dot(vNormal, cameraToFragment);
-                        glow = pow(glow * 2.0, 3.0); // Sharpen the glow
-                        finalColor += glowColor * glow * glowIntensity;
+  <h3>Step 4 &mdash; Launch and Play</h3>
+  <p>Start Plutonium and begin a <strong>Custom Games</strong> Zombies match on any map. The bots spawn automatically at the start of round 1.</p>
 
-                        gl_FragColor = vec4(finalColor, 0.8); // Semi-transparent
-                    }
-                `,
-                transparent: true,
-                blending: THREE.AdditiveBlending, // For glowing effect
-                side: THREE.DoubleSide, // Render both sides
-                depthWrite: false // Crucial for better transparency with additive blending on self-intersecting/displaced geometries
-            });
-            mainSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-            scene.add(mainSphere);
+  <div class="callout warn">
+    <strong>Updating?</strong> If you replace <code>custom_bots.gsc</code> with a newer version, you must fully restart Plutonium (close and reopen the launcher). Restarting only the match causes a "Client/Server game mismatch" error because GSC scripts are loaded at client startup.
+  </div>
+</section>
 
-            // 2. Particle System (subtle "star dust" or "energy")
-            const particleCount = 7000; // Increased particle count for denser field
-            const particleGeometry = new THREE.BufferGeometry();
-            const positions = new Float32Array(particleCount * 3); // x, y, z for each particle
-            const colors = new Float32Array(particleCount * 3); // r, g, b for each particle
-            const sizes = new Float32Array(particleCount); // Size for each particle
+<!-- ═══════════════════ QUICK START ═══════════════════ -->
+<section class="content-section fade-in" id="quick-start">
+  <div class="section-title"><h2>Quick Start</h2></div>
+  <p>No configuration needed. By default, the mod spawns <strong>3 bots</strong> at <strong>Shotguns rank</strong> (the highest skill tier). Just install the file and start playing.</p>
+  <p>Want to customize? Open the in-game console (<code>~</code> tilde key) and type any of the commands in the <a href="#configuration-reference">Configuration Reference</a> below.</p>
+</section>
 
-            for (let i = 0; i < particleCount; i++) {
-                // Random position within a larger sphere (wider distribution)
-                positions[i * 3] = (Math.random() - 0.5) * 60; // x, wider spread
-                positions[i * 3 + 1] = (Math.random() - 0.5) * 60; // y, wider spread
-                positions[i * 3 + 2] = (Math.random() - 0.5) * 60; // z, wider spread
+<!-- ═══════════════════ CONFIGURATION ═══════════════════ -->
+<section class="content-section fade-in" id="configuration-reference">
+  <div class="section-title"><h2>Configuration Reference</h2></div>
+  <p>All settings are controlled via DVars entered in the in-game console. Every setting has a sensible default &mdash; you only need to change these if you want to customize.</p>
 
-                // Random color (subtle variations of blue/purple/cyan)
-                const color = new THREE.Color();
-                color.setHSL(0.55 + Math.random() * 0.2, 0.7 + Math.random() * 0.3, 0.6 + Math.random() * 0.3); // HSL for blue-ish to purple-ish
-                colors[i * 3] = color.r;
-                colors[i * 3 + 1] = color.g;
-                colors[i * 3 + 2] = color.b;
+  <h3>Core Settings</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>DVar</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>bo2_zm_bots_count</code></td><td><code>3</code></td><td>Number of bots to spawn (1&ndash;7)</td></tr>
+      <tr><td><code>bo2_zm_bots_rank</code></td><td><code>"shotguns"</code></td><td>Bot skill rank (see <a href="#rank-system">Rank System</a>)</td></tr>
+    </tbody>
+  </table></div>
 
-                // Random size
-                sizes[i] = Math.random() * 0.2 + 0.08; // Slightly larger particles, more variation
-            }
+  <h3>Feature Toggles</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>DVar</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>bo2_zm_bots_revive</code></td><td><code>1</code></td><td>Bots revive downed teammates</td></tr>
+      <tr><td><code>bo2_zm_bots_perks</code></td><td><code>1</code></td><td>Bots purchase perk machines</td></tr>
+      <tr><td><code>bo2_zm_bots_wallbuys</code></td><td><code>1</code></td><td>Bots purchase wall weapons</td></tr>
+      <tr><td><code>bo2_zm_bots_box</code></td><td><code>1</code></td><td>Bots use the Mystery Box</td></tr>
+      <tr><td><code>bo2_zm_bots_pack</code></td><td><code>1</code></td><td>Bots use Pack-a-Punch</td></tr>
+      <tr><td><code>bo2_zm_bots_doors</code></td><td><code>1</code></td><td>Bots open doors and clear debris</td></tr>
+      <tr><td><code>bo2_zm_bots_powerups</code></td><td><code>1</code></td><td>Bots grab powerup drops</td></tr>
+      <tr><td><code>bo2_zm_bots_ee</code></td><td><code>1</code></td><td>Bots assist with Easter Eggs</td></tr>
+      <tr><td><code>bo2_zm_bots_callouts</code></td><td><code>1</code></td><td>Bots send chat callouts</td></tr>
+    </tbody>
+  </table></div>
 
-            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            particleGeometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3)); // Changed 'color' to 'aColor'
-            particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1)); // Custom attribute for size
+  <h3>Cosmetic Settings</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>DVar</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>bo2_zm_bots_name_prefix</code></td><td><code>"BOT"</code></td><td>Prefix for bot names (e.g., "BOT_Dempsey")</td></tr>
+      <tr><td><code>bo2_zm_bots_clan</code></td><td><code>"ZM"</code></td><td>Clan tag displayed next to bot names</td></tr>
+    </tbody>
+  </table></div>
 
-            // Shader material for particles to control size and glow
-            const particleMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                    pointTexture: { value: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/disc.png') } // A soft circular texture
-                },
-                vertexShader: `
-                    attribute float size;
-                    attribute vec3 aColor; // Changed 'color' to 'aColor'
-                    varying vec3 vColor;
-                    void main() {
-                        vColor = aColor; // Use 'aColor' here
-                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                        gl_PointSize = size * (600.0 / -mvPosition.z); // Scale size based on distance, larger base
-                        gl_Position = projectionMatrix * mvPosition;
-                    }
-                `,
-                fragmentShader: `
-                    uniform sampler2D pointTexture;
-                    varying vec3 vColor;
-                    void main() {
-                        gl_FragColor = vec4(vColor, 1.0);
-                        gl_FragColor = gl_FragColor * texture2D(pointTexture, gl_PointCoord); // Apply texture (soft disc)
-                        if (gl_FragColor.a < 0.01) discard; // Don't render almost invisible pixels
-                    }
-                `,
-                blending: THREE.AdditiveBlending, // For glowing effect
-                depthTest: false, // Particles can render over each other
-                transparent: true,
-                // Removed vertexColors: true as we are explicitly handling the attribute
-            });
+  <h3>Console Examples</h3>
+  <pre class="code-block"><code>set bo2_zm_bots_count 2
+set bo2_zm_bots_rank "skull"
+set bo2_zm_bots_ee 0
+set bo2_zm_bots_callouts 0</code></pre>
+</section>
 
-            particles = new THREE.Points(particleGeometry, particleMaterial);
-            scene.add(particles);
+<!-- ═══════════════════ RANK SYSTEM ═══════════════════ -->
+<section class="content-section fade-in" id="rank-system">
+  <div class="section-title"><h2>Rank System</h2></div>
+  <p>Every bot operates under a <strong>rank profile</strong> that defines its entire behavior. The rank system mirrors the real BO2 Zombies ranking emblems. Each rank plays like a real player of that skill level.</p>
 
-            // 3. Asteroid Field
-            const numAsteroids = 200; // Increased number of asteroids
-            const asteroidGeometries = [
-                new THREE.DodecahedronGeometry(1, 0),
-                new THREE.IcosahedronGeometry(1, 0),
-                new THREE.OctahedronGeometry(1, 0)
-            ];
+  <h3>Rank Overview</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Rank</th><th>Emblem</th><th>Aim Scatter</th><th>Headshot %</th><th>Reaction</th><th>Max HP</th><th>Autonomy</th><th>Can Train</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Bones</strong></td><td>Rank 0</td><td>12 units</td><td>8%</td><td>800ms</td><td>250</td><td>0.15</td><td>No</td></tr>
+      <tr><td><strong>Crossed Bones</strong></td><td>Rank 1</td><td>8 units</td><td>20%</td><td>500ms</td><td>300</td><td>0.30</td><td>No</td></tr>
+      <tr><td><strong>Skull</strong></td><td>Rank 2</td><td>5 units</td><td>45%</td><td>280ms</td><td>400</td><td>0.55</td><td>Yes (R6+)</td></tr>
+      <tr><td><strong>Skull &amp; Knife</strong></td><td>Rank 3</td><td>2 units</td><td>72%</td><td>130ms</td><td>500</td><td>0.75</td><td>Yes (R4+)</td></tr>
+      <tr><td><strong>Shotguns</strong></td><td>Rank 4</td><td>1 unit</td><td>98%</td><td>50ms</td><td>700</td><td>0.95</td><td>Yes (R3+)</td></tr>
+    </tbody>
+  </table></div>
 
-            const asteroidBaseMaterial = new THREE.MeshStandardMaterial({
-                color: 0x4a4a5a, // Dark grey/blue
-                roughness: 0.7,
-                metalness: 0.3
-            });
+  <h3>What Each Rank Plays Like</h3>
+  <p><strong>Bones</strong> is the player who just bought the game yesterday. Panicky, 12-unit scatter, only 8% headshots, 800ms reaction time. Cannot train zombies. Stays glued to the player. Sprays wildly when overwhelmed.</p>
+  <p><strong>Crossed Bones</strong> is below average. Slightly better aim (8-unit scatter), 20% headshots, 500ms reactions. Still can't train. Knows enough to buy weapons and perks but makes poor decisions under pressure.</p>
+  <p><strong>Skull</strong> is competent. 5-unit scatter, 45% headshots, 280ms reactions. Can start training from round 6. Makes decent economy decisions. Handles moderate pressure without panicking.</p>
+  <p><strong>Skull &amp; Knife</strong> is a skilled veteran. 2-unit scatter, 72% headshots, 130ms reactions. Trains from round 4 with tight, efficient kite patterns. Highly autonomous. Rarely goes down.</p>
+  <p><strong>Shotguns</strong> is aimbot-tier. 1-unit scatter, 98% headshots, 50ms snap. Trains from round 3 with perfect skill. Near-full autonomy, 700 HP with rapid regen. <strong>This is the default rank.</strong></p>
 
-            for (let i = 0; i < numAsteroids; i++) {
-                // Randomly pick one of the defined geometries
-                const randomGeometry = asteroidGeometries[Math.floor(Math.random() * asteroidGeometries.length)];
-                const asteroidGeometry = randomGeometry.clone().scale(Math.random() * 0.4 + 0.15, Math.random() * 0.4 + 0.15, Math.random() * 0.4 + 0.15); // Vary scale
+  <h3>Extended Stats</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Stat</th><th>Bones</th><th>Crossed</th><th>Skull</th><th>Skull &amp; Knife</th><th>Shotguns</th></tr></thead>
+    <tbody>
+      <tr><td>Burst Min/Max</td><td>5&ndash;20</td><td>4&ndash;15</td><td>3&ndash;10</td><td>3&ndash;7</td><td>3&ndash;5</td></tr>
+      <tr><td>Burst Pause</td><td>200&ndash;600ms</td><td>150&ndash;450ms</td><td>100&ndash;300ms</td><td>50&ndash;150ms</td><td>30&ndash;80ms</td></tr>
+      <tr><td>Kite Range</td><td>180/450</td><td>200/500</td><td>220/550</td><td>240/580</td><td>250/600</td></tr>
+      <tr><td>Crowd Flee</td><td>5</td><td>6</td><td>5</td><td>4</td><td>7</td></tr>
+      <tr><td>ADS Chance</td><td>30%</td><td>45%</td><td>65%</td><td>85%</td><td>95%</td></tr>
+      <tr><td>Follow Dist</td><td>1200</td><td>1800</td><td>2500</td><td>3500</td><td>5000</td></tr>
+      <tr><td>Hazard Aware</td><td>0.20</td><td>0.35</td><td>0.55</td><td>0.80</td><td>1.00</td></tr>
+      <tr><td>Regen/Tick</td><td>30%</td><td>35%</td><td>40%</td><td>50%</td><td>60%</td></tr>
+      <tr><td>Regen Cooldown</td><td>3.0s</td><td>2.5s</td><td>2.0s</td><td>1.5s</td><td>1.0s</td></tr>
+    </tbody>
+  </table></div>
+</section>
 
-                const asteroidMaterial = asteroidBaseMaterial.clone(); // Clone material for potential future color variations
-                // More varied and subtle blue/grey/purple tones
-                asteroidMaterial.color.setHSL(0.55 + Math.random() * 0.15, 0.2 + Math.random() * 0.1, 0.2 + Math.random() * 0.2);
+<!-- ═══════════════════ DECISION ENGINE ═══════════════════ -->
+<section class="content-section fade-in" id="autonomous-decision-engine">
+  <div class="section-title"><h2>Autonomous Decision Engine</h2></div>
+  <p>The brain of every bot. Instead of a rigid priority chain, each bot evaluates <strong>all</strong> available actions every tick and picks the one with the highest utility score. This makes bots genuinely think for themselves.</p>
 
-                const asteroid = new THREE.Mesh(asteroidGeometry, asteroidMaterial);
+  <h3>How It Works</h3>
+  <p>Every 100ms, <code>bot_evaluate_best_action()</code> calculates a score for every possible action, then the bot executes whichever scored highest. Scoring factors include:</p>
+  <ul>
+    <li><strong>Ammo level</strong> &mdash; 15% ammo scores "refill" much higher than 80% ammo</li>
+    <li><strong>Health</strong> &mdash; 30% health scores "flee" much higher</li>
+    <li><strong>Points</strong> &mdash; 5000+ points boosts PaP score</li>
+    <li><strong>Round number</strong> &mdash; Higher rounds boost box/PaP, reduce wallbuy scores</li>
+    <li><strong>Nearby threats</strong> &mdash; More zombies boost flee and training scores</li>
+    <li><strong>Personality</strong> &mdash; Aggressive bots push weapons, cautious bots push perks</li>
+  </ul>
 
-                // Random position within a larger, non-central volume
-                const distance = 10 + Math.random() * 20; // Distance from center
-                const angle = Math.random() * Math.PI * 2;
-                const yOffset = (Math.random() - 0.5) * 15; // Vertical spread
-                asteroid.position.set(
-                    Math.cos(angle) * distance + (Math.random() - 0.5) * 5, // Add slight random offset
-                    yOffset + (Math.random() - 0.5) * 5,
-                    Math.sin(angle) * distance + (Math.random() - 0.5) * 5
-                );
+  <h3>Scoring Table</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Action</th><th>Score Range</th><th>Key Factors</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Revive</strong></td><td>1000&ndash;1200</td><td>Always highest when teammate is down. Supportive personality +200.</td></tr>
+      <tr><td><strong>Flee</strong></td><td>800&ndash;950</td><td>Crowd count exceeds threshold or health below 35%.</td></tr>
+      <tr><td><strong>Powerup</strong></td><td>650&ndash;700</td><td>Active powerup within 2000 units.</td></tr>
+      <tr><td><strong>Knife</strong></td><td>600&ndash;700</td><td>Early rounds with zombie in melee range.</td></tr>
+      <tr><td><strong>Ammo</strong></td><td>300&ndash;600</td><td>Scales inversely with ammo %. Below 10% = emergency 600. Skipped if Max Ammo on ground.</td></tr>
+      <tr><td><strong>Juggernog</strong></td><td>500&ndash;580</td><td>Highest perk priority. Cautious +80. Requires 2500+ points.</td></tr>
+      <tr><td><strong>Quick Revive</strong></td><td>+200 boost</td><td>Dynamic boost when any teammate is downed.</td></tr>
+      <tr><td><strong>Speed Cola</strong></td><td>350&ndash;490</td><td>+100 when using LMG (benefits most from fast reload).</td></tr>
+      <tr><td><strong>PaP</strong></td><td>250&ndash;550</td><td>Round 20+ with no PaP weapon = 500+. Picks BEST weapon to upgrade.</td></tr>
+      <tr><td><strong>Wallbuy</strong></td><td>150&ndash;550</td><td>Pistol at round 10+ = +200 urgency. Cost-aware scoring.</td></tr>
+      <tr><td><strong>Box</strong></td><td>100&ndash;500</td><td>Smooth ramp from R8+. Launchers scored at -999 (avoided).</td></tr>
+      <tr><td><strong>Door</strong></td><td>100&ndash;400</td><td>+10 per round. Requires 750+ points.</td></tr>
+      <tr><td><strong>Train</strong></td><td>100&ndash;250</td><td>+15 per nearby zombie. Requires training ability.</td></tr>
+      <tr><td><strong>Roam</strong></td><td>50</td><td>Default when no threats and no better option.</td></tr>
+    </tbody>
+  </table></div>
 
-                // Random initial rotation
-                asteroid.rotation.x = Math.random() * Math.PI;
-                asteroid.rotation.y = Math.random() * Math.PI;
-                asteroid.rotation.z = Math.random() * Math.PI;
+  <h3>Why This Matters</h3>
+  <p>In a traditional priority system, a bot with low ammo, no Juggernog, and 3000 points would always buy Jug because "perks > ammo." But a smart player refills ammo first &mdash; you can't survive the walk to the perk machine with 500 rounds. The decision engine handles this correctly. Each bot evaluates its own unique situation every single tick.</p>
+</section>
 
-                // Store rotation speeds for animation
-                asteroid.userData.rotationSpeed = {
-                    x: (Math.random() - 0.5) * 0.003, // Slower rotation
-                    y: (Math.random() - 0.5) * 0.003,
-                    z: (Math.random() - 0.5) * 0.003
-                };
-                // Store drift direction for animation
-                asteroid.userData.driftSpeed = new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.005,
-                    (Math.random() - 0.5) * 0.005,
-                    (Math.random() - 0.5) * 0.005
-                );
+<!-- ═══════════════════ COMBAT ENGINE ═══════════════════ -->
+<section class="content-section fade-in" id="advanced-combat-engine">
+  <div class="section-title"><h2>Advanced Combat Engine</h2></div>
+  <p>The combat engine is the core of the bot AI. It runs every frame and handles target acquisition, aiming, firing, grenades, fleeing, and strafing. Every component is rank-scaled.</p>
 
-                asteroids.push(asteroid);
-                scene.add(asteroid);
-            }
+  <h3>Processing Pipeline</h3>
+  <ol>
+    <li><strong>Knife Mode Check</strong> &mdash; If early-round knife mode is active, all shooting is suppressed.</li>
+    <li><strong>Validate State</strong> &mdash; Confirm the bot is alive, not climbing, not in a menu.</li>
+    <li><strong>Crowd Census</strong> &mdash; Count nearby zombies within detection range.</li>
+    <li><strong>Acquire Target</strong> &mdash; Weighted scoring with triple LOS validation.</li>
+    <li><strong>Validate Target</strong> &mdash; Confirm target is alive, visible, not stale (3-frame clearing).</li>
+    <li><strong>Flee Decision</strong> &mdash; Multi-factor analysis: health, crowd, damage, proximity, training state.</li>
+    <li><strong>Grenade Check</strong> &mdash; Evaluate whether to throw at a dense cluster.</li>
+    <li><strong>Combat Movement</strong> &mdash; Strafe perpendicular while maintaining kite distance.</li>
+    <li><strong>Aim &amp; Fire</strong> &mdash; Full pipeline with triple LOS and zero-fallback shooting.</li>
+  </ol>
 
-            // 4. Lights
-            ambientLight = new THREE.AmbientLight(0x404040, 1.8); // Soft ambient light, brighter
-            scene.add(ambientLight);
+  <h3>Triple Line-of-Sight Verification</h3>
+  <p>Every shot must pass <strong>three</strong> independent LOS checks:</p>
+  <ol>
+    <li><code>botsighttracepassed(ent)</code> &mdash; Engine's built-in bot AI sight check.</li>
+    <li><code>SightTracePassed(eye, centroid)</code> &mdash; Ray trace to the zombie's chest height.</li>
+    <li><code>SightTracePassed(eye, feet+10)</code> &mdash; Ray trace to the zombie's feet.</li>
+  </ol>
+  <p>All three must pass before a single bullet is fired. No fallback. No guessing. If the aim point fails LOS, the bot stops shooting entirely.</p>
 
-            pointLight = new THREE.PointLight(0x00ffff, 2.0, 100); // Cyan light, brighter
-            pointLight.position.set(0, 0, 0); // Initially at center, will move with mouse
-            scene.add(pointLight);
+  <h3>Target Scoring</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Factor</th><th>Weight</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Distance</td><td>-1 per unit</td><td>Closer zombies score higher.</td></tr>
+      <tr><td>Charging</td><td>+200&ndash;+500</td><td>Zombies actively rushing the bot get priority (dot product of velocity).</td></tr>
+      <tr><td>Clustering</td><td>+100&ndash;+600</td><td>Weapon-aware: splash weapons get +600, snipers +100, others +200.</td></tr>
+      <tr><td>Teammate Defense</td><td>+200&ndash;+400</td><td>Zombies near ANY teammate get priority. Full squad protection.</td></tr>
+      <tr><td>Special Enemies</td><td>+600</td><td>Panzer, Brutus, Avogadro, and Mechz are always high-priority.</td></tr>
+      <tr><td>Emergency</td><td>Bypass</td><td>Rank-scaled panic distance completely bypasses target switch delay.</td></tr>
+    </tbody>
+  </table></div>
 
-            // Add a subtle directional light for more definition
-            const directionalLight = new THREE.DirectionalLight(0xffccaa, 0.7); // Warm light for contrast
-            directionalLight.position.set(5, 10, 5);
-            scene.add(directionalLight);
+  <h3>Burst Fire &amp; Ammo Conservation</h3>
+  <ul>
+    <li><strong>Burst Size</strong> &mdash; Bones fires 5&ndash;20 shot bursts (panic spray). Shotguns fires 3&ndash;5 (disciplined).</li>
+    <li><strong>Burst Pause</strong> &mdash; Bones pauses 200&ndash;600ms between bursts. Shotguns pauses 30&ndash;80ms.</li>
+    <li><strong>Ammo Conservation</strong> &mdash; Below 40% ammo, the <code>ammo_conserve</code> stat activates probabilistic shot suppression. Below 30%, bursts cap at 3 shots and pauses increase 50%.</li>
+    <li><strong>Range-Gated Firing</strong> &mdash; Max engagement range: 600 units normal, 400 at 50% ammo, 250 at 25%. Bots won't waste ammo on distant zombies unless surrounded.</li>
+  </ul>
 
-            // Add a second point light with a different color for more dynamic lighting
-            const secondaryPointLight = new THREE.PointLight(0xee00ff, 1.0, 80); // Magenta light
-            secondaryPointLight.position.set(-5, -5, 5);
-            scene.add(secondaryPointLight);
+  <h3>Reaction Time &amp; Jitter</h3>
+  <p>New target acquisition has a rank-scaled delay: Bones at 800ms, Shotguns at 50ms. Each acquisition adds random &plusmn;50ms jitter to prevent robotic consistency. A separate <code>target_switch_delay</code> prevents jittery hopping (Bones: 1200ms, Shotguns: 100ms).</p>
 
+  <h3>Focus Accuracy</h3>
+  <p>Bots improve aim the longer they track the same target. After 1 second: scatter reduced 15%. After 2 seconds: reduced 25%. Resets on target switch.</p>
 
-            // Initial animation of the main sphere and particles
-            gsap.from(mainSphere.scale, { x: 0.1, y: 0.1, z: 0.1, duration: 2, ease: "elastic.out(1, 0.5)" });
-            gsap.from(particles.material, { opacity: 0, duration: 2, delay: 0.5 });
-            gsap.from(camera.position, { z: 20, duration: 2.5, ease: "power2.out" });
+  <h3>Grenade Intelligence</h3>
+  <ul>
+    <li>Bones requires 7+ zombies bunched together. Shotguns throws at 5.</li>
+    <li>Rank-scaled cooldowns: Bones = 20s, Shotguns = 12s.</li>
+    <li>Ammo-gated: won't throw when gun ammo is below 25%.</li>
+    <li>Range band: 300&ndash;800 units only. No grenades in rounds 1&ndash;3 unless 8+ zombies.</li>
+  </ul>
 
-            // Event Listeners
-            window.addEventListener('resize', onWindowResize);
-            document.addEventListener('mousemove', onDocumentMouseMove);
+  <h3>Flee &amp; Strafe</h3>
+  <p>Multi-factor flee considers crowd count, health, damage taken, and proximity. Higher-ranked bots flee <strong>earlier</strong> and more decisively. During combat, bots strafe perpendicular to their target while maintaining kite distance.</p>
+</section>
 
-            // Hide loading screen after everything is initialized
-            loadingScreen.classList.add('hidden');
-            // Ensure overlay content has pointer-events:auto after loading
-            overlayContent.style.pointerEvents = 'auto';
-        }
+<!-- ═══════════════════ AUTONOMY ═══════════════════ -->
+<section class="content-section fade-in" id="autonomy-system">
+  <div class="section-title"><h2>Autonomy System</h2></div>
+  <p>Bots do <strong>not</strong> follow the player like bodyguards. They operate independently based on their <code>autonomy</code> value (0.0 to 1.0).</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Behavior</th><th>Low Autonomy (Bones 0.15)</th><th>High Autonomy (Shotguns 0.95)</th></tr></thead>
+    <tbody>
+      <tr><td>Roaming</td><td>Stays within 1200 units</td><td>Explores up to 5000 units away</td></tr>
+      <tr><td>Follow Trigger</td><td>Teleports back at 3000 units</td><td>Doesn't follow until 8000 units</td></tr>
+      <tr><td>Decisions</td><td>Relies on player proximity</td><td>Fully independent</td></tr>
+      <tr><td>Door Opening</td><td>Rarely opens doors alone</td><td>Opens doors across the map</td></tr>
+      <tr><td>Training</td><td>Never trains</td><td>Trains solo anywhere on the map</td></tr>
+    </tbody>
+  </table></div>
+  <p>Bots with active goals (training, buying, fleeing, collecting parts, etc.) are <strong>never</strong> interrupted by follow logic. A Shotguns bot training a horde across the map will not abandon its train to follow you.</p>
+</section>
 
-        // --- Animation Loop ---
-        function animate() {
-            requestAnimationFrame(animate); // Loop indefinitely
+<!-- ═══════════════════ SURVIVABILITY ═══════════════════ -->
+<section class="content-section fade-in" id="survivability-system">
+  <div class="section-title"><h2>Survivability System</h2></div>
+  <p>Higher-ranked bots are genuinely hard to down.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Rank</th><th>Max HP</th><th>Regen/Tick</th><th>Tick Rate</th><th>Cooldown</th></tr></thead>
+    <tbody>
+      <tr><td>Bones</td><td>250</td><td>30%</td><td>1.5s</td><td>3.0s</td></tr>
+      <tr><td>Crossed Bones</td><td>300</td><td>35%</td><td>1.3s</td><td>2.5s</td></tr>
+      <tr><td>Skull</td><td>400</td><td>40%</td><td>1.0s</td><td>2.0s</td></tr>
+      <tr><td>Skull &amp; Knife</td><td>500</td><td>50%</td><td>0.8s</td><td>1.5s</td></tr>
+      <tr><td>Shotguns</td><td>700</td><td>60%</td><td>0.6s</td><td>1.0s</td></tr>
+    </tbody>
+  </table></div>
+  <p>A Shotguns bot heals to full in roughly 1.5 seconds after taking damage. Combined with smart fleeing and kite distance management, they're nearly unkillable.</p>
+</section>
 
-            // Update OrbitControls
-            controls.update();
+<!-- ═══════════════════ EARLY GAME ═══════════════════ -->
+<section class="content-section fade-in" id="early-game-flow">
+  <div class="section-title"><h2>Early Game Flow</h2></div>
+  <p>Every bot follows a strict sequential startup that mirrors what a real player does in the opening rounds:</p>
+  <ol>
+    <li><strong>Buy Weapon</strong> &mdash; Scores all nearby wallbuys using <code>bot_score_weapon()</code> and picks the best affordable one (prefers M14 over Olympia).</li>
+    <li><strong>Claim a Window</strong> &mdash; Finds an unoccupied barrier (200+ units from any other player/bot) and defends it for points.</li>
+    <li><strong>Buy a Door</strong> &mdash; When it accumulates 750+ points, walks to the nearest door and opens it.</li>
+    <li><strong>Full Autonomy</strong> &mdash; Early game phase ends. The decision engine takes over completely.</li>
+  </ol>
+  <div class="callout info">
+    <strong>Elite Skip:</strong> Rank 3+ bots (Skull &amp; Knife, Shotguns) skip the window phase at round 3+ and go straight to door buying. Elite bots don't waste time camping windows in later rounds.
+  </div>
+</section>
 
-            // Animate main sphere
-            if (mainSphere && mainSphere.material.uniforms) {
-                mainSphere.rotation.y += 0.001;
-                // Add subtle distortion to the sphere's material over time
-                mainSphere.material.uniforms.time.value += 0.01;
-                // Make the glow intensity pulse
-                mainSphere.material.uniforms.glowIntensity.value = 0.8 + Math.sin(performance.now() * 0.001) * 0.2; // Pulse between 0.6 and 1.0
-            }
+<!-- ═══════════════════ KNIFE STRATEGY ═══════════════════ -->
+<section class="content-section fade-in" id="early-round-knife-strategy">
+  <div class="section-title"><h2>Early Round Knife Strategy</h2></div>
+  <p>In early rounds, knifing maximizes points (130 per kill vs 50&ndash;70 for gun kills). The bot calculates exactly how many shots to weaken each zombie before knifing:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Round</th><th>Strategy</th><th>Points/Kill</th></tr></thead>
+    <tbody>
+      <tr><td>Round 1</td><td>Pure knife, no shots needed</td><td>130</td></tr>
+      <tr><td>Round 2</td><td>4 body shots + knife</td><td>170</td></tr>
+      <tr><td>Round 3</td><td>8 body shots + knife</td><td>210</td></tr>
+      <tr><td>Round 4+</td><td>Full gunfire (too strong to knife)</td><td>50&ndash;70</td></tr>
+    </tbody>
+  </table></div>
+  <p>On Origins, bots with the Iron Fist extend knife rounds through round 8 with one-hit kills.</p>
+</section>
 
-            // Animate particles (simple floating or rotation)
-            if (particles) {
-                particles.rotation.x += 0.0001;
-                particles.rotation.y += 0.0003;
-            }
+<!-- ═══════════════════ TRAINING AI ═══════════════════ -->
+<section class="content-section fade-in" id="training-ai">
+  <div class="section-title"><h2>Training AI</h2></div>
+  <p>Training (zombie kiting) is the primary behavior for capable ranks. Bots actively seek training opportunities and run zombies in circles like experienced players.</p>
 
-            // Animate asteroids
-            const sceneRadius = 30; // Define a large radius for asteroid containment
-            asteroids.forEach(asteroid => {
-                asteroid.rotation.x += asteroid.userData.rotationSpeed.x;
-                asteroid.rotation.y += asteroid.userData.rotationSpeed.y;
-                asteroid.rotation.z += asteroid.userData.rotationSpeed.z;
+  <h3>Training Eligibility</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Rank</th><th>Start Round</th><th>Skill</th><th>Zombie Threshold</th></tr></thead>
+    <tbody>
+      <tr><td>Bones / Crossed Bones</td><td>Never</td><td>N/A</td><td>N/A</td></tr>
+      <tr><td>Skull</td><td>Round 6+</td><td>0.50</td><td>5 zombies</td></tr>
+      <tr><td>Skull &amp; Knife</td><td>Round 4+</td><td>0.75</td><td>3 zombies</td></tr>
+      <tr><td>Shotguns</td><td>Round 3+</td><td>1.00</td><td>2 zombies</td></tr>
+    </tbody>
+  </table></div>
 
-                // Subtle drift
-                asteroid.position.add(asteroid.userData.driftSpeed);
+  <h3>How Training Works</h3>
+  <ol>
+    <li><strong>Zone Evaluation</strong> &mdash; Check for 8+ nav nodes within 500 units (open space) and 2+ exit directions.</li>
+    <li><strong>Circuit Building</strong> &mdash; Construct a ring of validated waypoints around the training center.</li>
+    <li><strong>Circuit Running</strong> &mdash; Run the waypoints, drawing zombies into a trailing horde.</li>
+    <li><strong>Danger Detection</strong> &mdash; Dot product analysis detects zombies approaching from the front. Bot reverses if blocked.</li>
+    <li><strong>Emergency Abort</strong> &mdash; Zombie breaches melee range: abort. Shotguns handles 50 units, Skull aborts at 80.</li>
+    <li><strong>Turn-and-Burn</strong> &mdash; Periodically turn and fire into the horde with full aim system. <strong>Magazine-aware</strong>: checks if clip is below 30% first and reloads before turning.</li>
+    <li><strong>Lap Counting</strong> &mdash; Auto-rebuilds circuit after set laps. 200-tick abort counter prevents stale training.</li>
+  </ol>
+</section>
 
-                // Wrap around logic for asteroids to create endless field
-                // If asteroid goes beyond scene radius, reset it to a new random position closer to center
-                if (asteroid.position.length() > sceneRadius) {
-                    const newAngle = Math.random() * Math.PI * 2;
-                    const newDistance = sceneRadius * 0.5 + Math.random() * sceneRadius * 0.2; // Reset closer
-                    const newYOffset = (Math.random() - 0.5) * 15;
+<!-- ═══════════════════ ECONOMY ═══════════════════ -->
+<section class="content-section fade-in" id="economy-system">
+  <div class="section-title"><h2>Economy System</h2></div>
+  <p>Bots manage their economy through the decision engine &mdash; all options evaluated simultaneously.</p>
+  <h3>Perk Priority</h3>
+  <ol>
+    <li>Juggernog (base score 500) &mdash; +100 Speed Cola when using LMG</li>
+    <li>Speed Cola (350) &mdash; Quick Revive gets +200 boost when teammate is downed</li>
+    <li>Double Tap (300) &mdash; Aggressive personality bonus</li>
+    <li>Stamin-Up, Deadshot, Mule Kick (lower priority)</li>
+  </ol>
+  <h3>Weapon Decisions</h3>
+  <ul>
+    <li><strong>Wallbuys</strong> &mdash; 1500-unit scan range. High priority when bot has &lt;2 primaries.</li>
+    <li><strong>Mystery Box</strong> &mdash; Scores from round 10+. Aggressive bots hit it earlier.</li>
+    <li><strong>Pack-a-Punch</strong> &mdash; Unlocks at <code>pap_min_round</code> with 5000+ points. Picks the best weapon to upgrade.</li>
+    <li><strong>Ammo</strong> &mdash; Below 25% triggers scoring. Below 10% = emergency score 600.</li>
+  </ul>
+</section>
 
-                    asteroid.position.set(
-                        Math.cos(newAngle) * newDistance + (Math.random() - 0.5) * 2,
-                        newYOffset + (Math.random() - 0.5) * 2,
-                        Math.sin(newAngle) * newDistance + (Math.random() - 0.5) * 2
-                    );
-                    // Also randomize drift direction upon reset
-                    asteroid.userData.driftSpeed.set(
-                        (Math.random() - 0.5) * 0.005,
-                        (Math.random() - 0.5) * 0.005,
-                        (Math.random() - 0.5) * 0.005
-                    );
-                }
-            });
+<!-- ═══════════════════ COLLECTIBLES ═══════════════════ -->
+<section class="content-section fade-in" id="collectibles">
+  <div class="section-title"><h2>Collectible &amp; Buildable Pickup</h2></div>
+  <p>Bots actively collect parts, shovels, and interactive objects on every map.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Map</th><th>Collectibles</th></tr></thead>
+    <tbody>
+      <tr><td><strong>TranZit</strong></td><td>Turbine parts, Jet Gun parts, Electric Trap parts, Shield parts</td></tr>
+      <tr><td><strong>Die Rise</strong></td><td>Trample Steam parts, Sliquifier parts, Shield parts, Nav Cards</td></tr>
+      <tr><td><strong>Mob of the Dead</strong></td><td>Plane parts, Hell's Retriever, Acid Gat Kit parts, Shield</td></tr>
+      <tr><td><strong>Buried</strong></td><td>Head Chopper parts, Resonator parts, Turbine parts, Chalk weapons</td></tr>
+      <tr><td><strong>Origins</strong></td><td>Shovels, Dig sites, Staff parts (never ice), Shield, Drone parts, Gramophone, Discs, Crystals</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout info">
+    <strong>Ice Staff Reservation:</strong> Bots <strong>never</strong> pick up ice staff parts, crystals, or the weapon. The ice staff is permanently reserved for human players, enforced at every level of the code.
+  </div>
+</section>
 
-            renderer.render(scene, camera); // Render the scene
-        }
+<!-- ═══════════════════ PART SEEKING ═══════════════════ -->
+<section class="content-section fade-in" id="proactive-seeking">
+  <div class="section-title"><h2>Proactive Part Seeking</h2></div>
+  <p>Bots don't just grab parts they stumble across &mdash; they <strong>actively route</strong> to known spawn areas across the entire map. Each map has hardcoded patrol waypoints covering all part zones.</p>
+  <p>After collecting enough parts for a buildable, bots navigate to the correct build table and trigger the craft. On Origins, bots proactively seek unpowered generators across all 6 locations.</p>
+</section>
 
-        // --- Event Handlers ---
+<!-- ═══════════════════ LAST ZOMBIE SAVE ═══════════════════ -->
+<section class="content-section fade-in" id="last-zombie-save">
+  <div class="section-title"><h2>Last Zombie Save &amp; AFK Training</h2></div>
+  <p>At the end of every round, when 1&ndash;2 zombies remain, <strong>every bot</strong> stops shooting. No exceptions. This is hardcoded.</p>
+  <ol>
+    <li>One bot is designated the <strong>anchor</strong> and actively kites the last zombie.</li>
+    <li>All other bots can still buy perks, weapons, and PaP &mdash; but <strong>cannot shoot</strong>.</li>
+    <li>The anchor runs a circular pattern: sprint away if too close, circle sideways in the sweet spot, walk back if too far.</li>
+  </ol>
+  <div class="callout info">
+    <strong>AFK Safe:</strong> The anchor pattern runs indefinitely. You can walk away from the keyboard and come back whenever you want. The zombie will still be alive.
+  </div>
+</section>
 
-        // Handle window resizing to keep the 3D scene responsive
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
+<!-- ═══════════════════ PERSONALITY ═══════════════════ -->
+<section class="content-section fade-in" id="bot-personality-system">
+  <div class="section-title"><h2>Bot Personality System</h2></div>
+  <p>Each bot receives random personality traits on spawn. Even bots sharing the same rank feel different.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Trait</th><th>Stat Effects</th><th>Decision Effects</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Aggressive</strong></td><td>Reduced kite distance, smaller backoff, +5% autonomy</td><td>Boosts weapon, box, PaP, and training scores</td></tr>
+      <tr><td><strong>Supportive</strong></td><td>+15% revive chance, follows closer</td><td>Boosts revive score +200</td></tr>
+      <tr><td><strong>Cautious</strong></td><td>Larger crowd flee count, +15% hazard awareness</td><td>Boosts perk, ammo, and flee scores</td></tr>
+    </tbody>
+  </table></div>
+  <p>The dominant trait is displayed as a tag on spawn. All three influence behavior simultaneously.</p>
+</section>
 
-        // Mouse move handler for light and subtle parallax effect on controls
-        function onDocumentMouseMove(event) {
-            // Normalize mouse coordinates to -1 to +1 range
-            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            mouseY = - (event.clientY / window.innerHeight) * 2 + 1;
+<!-- ═══════════════════ COMMUNICATION ═══════════════════ -->
+<section class="content-section fade-in" id="bot-communication-system">
+  <div class="section-title"><h2>Bot Communication</h2></div>
+  <p>Bots communicate through on-screen HUD feeds and chat messages. Throttled to 1 message per bot per 3 seconds.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Category</th><th>Display</th><th>Examples</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Action</strong></td><td>Right-side HUD (white)</td><td>"Buying Juggernog", "Opening door"</td></tr>
+      <tr><td><strong>Status</strong></td><td>Notification bar (red)</td><td>"LOW AMMO", "RUNNING DRY", "BARELY ALIVE"</td></tr>
+      <tr><td><strong>Combat</strong></td><td>Right-side HUD (orange)</td><td>"COVERING YOU", "WATCHING YOUR SIX"</td></tr>
+      <tr><td><strong>Easter Egg</strong></td><td>Notification bar (cyan)</td><td>"Standing on symbol", "Feeding dog head"</td></tr>
+    </tbody>
+  </table></div>
+  <p>Status callouts use <strong>randomized variants</strong> (4+ per category) so bots sound like different people instead of repeating the same line. Kill milestone callouts trigger at 50, 100, 200, and 500 kills.</p>
+</section>
 
-            // Move the primary point light based on mouse position
-            if (pointLight) {
-                pointLight.position.x = mouseX * 5; // Increased sensitivity
-                pointLight.position.y = mouseY * 5; // Increased sensitivity
-                pointLight.position.z = 2; // Keep it slightly in front
-            }
+<!-- ═══════════════════ ROUND SCALING ═══════════════════ -->
+<section class="content-section fade-in" id="round-based-scaling">
+  <div class="section-title"><h2>Round-Based Scaling</h2></div>
+  <p>Bots improve as rounds increase through a logarithmic curve: fast improvement early, diminishing returns later. Stats scale up to a 0.40 cap around round 16.</p>
+  <p>Affected stats: aim scatter, headshot chance, reaction time, burst pause, revive delay, powerup range, crowd tolerance, and training skill.</p>
+  <div class="callout info">
+    <strong>Elite Scaling:</strong> For rounds 40+, a secondary linear factor kicks in (capped at 0.15). Applied to headshot chance, crowd flee count, and powerup range only. Keeps bots viable in ultra-high rounds (R40&ndash;R70+) without breaking early game balance.
+  </div>
+</section>
 
-            // Adjust controls target based on mouse for a subtle parallax feel
-            // This makes the whole scene slightly shift as if you're looking around
-            controls.target.x = mouseX * 0.8; // Increased sensitivity
-            controls.target.y = mouseY * 0.8; // Increased sensitivity
-            // No controls.update() here, OrbitControls will handle it in animate()
-        }
+<!-- ═══════════════════ DOWNED ═══════════════════ -->
+<section class="content-section fade-in" id="downed-bot-behavior">
+  <div class="section-title"><h2>Downed Bot Behavior</h2></div>
+  <p>Downed bots don't just lie there. They actively fight back with their last stand pistol:</p>
+  <ul>
+    <li>500-unit scan range for nearby zombies</li>
+    <li>Rank 3+ bots land headshots 70% of the time using <code>j_head</code> tag targeting (accurate for crawlers and bosses)</li>
+    <li>Crawl toward the nearest teammate for faster revive</li>
+    <li>Resource locks (box, PaP, debris) are automatically cleared on down</li>
+  </ul>
+</section>
 
-        // --- Initialization on Window Load ---
-        // Load GSAP (GreenSock Animation Platform) for advanced animations
-        // GSAP is loaded dynamically to ensure it's available before init() is called
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js';
-        script.onload = () => {
-            init(); // Initialize Three.js scene
-            animate(); // Start the animation loop
-        };
-        document.head.appendChild(script);
-    </script>
+<!-- ═══════════════════ ANNOUNCER ═══════════════════ -->
+<section class="content-section fade-in" id="announcer-system">
+  <div class="section-title"><h2>Announcer System</h2></div>
+  <p>Round milestones trigger HUD splash events at rounds 5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 100, and 115. Clutch revives (reviving at &lt;25% health) get a special splash. "FULL SQUAD ONLINE" appears when all bots are alive and healthy.</p>
+</section>
+
+<!-- ═══════════════════ HUD ═══════════════════ -->
+<section class="content-section fade-in" id="hud-system">
+  <div class="section-title"><h2>HUD System</h2></div>
+  <p>Bot names display on the right side of the screen with unique colors (Blue, Gold, Green). Welcome banners, notification bars, and event feeds provide live status. All HUD elements fade and destroy cleanly when the game ends.</p>
+</section>
+
+<!-- ═══════════════════ MAP LOGIC ═══════════════════ -->
+<section class="content-section fade-in" id="map-specific-logic">
+  <div class="section-title"><h2>Map-Specific Logic</h2></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Map</th><th>Special Logic</th></tr></thead>
+    <tbody>
+      <tr><td><strong>TranZit</strong></td><td>Lava avoidance, bus stop awareness, turbine/power interactions</td></tr>
+      <tr><td><strong>Nuketown</strong></td><td>Population counter awareness, bunker access timing</td></tr>
+      <tr><td><strong>Die Rise</strong></td><td>Elevator awareness, falling hazard avoidance</td></tr>
+      <tr><td><strong>Mob of the Dead</strong></td><td>Afterlife awareness, plane parts, bridge defense</td></tr>
+      <tr><td><strong>Buried</strong></td><td>Leroy avoidance (never attack the friendly giant), chalk weapons, witch avoidance</td></tr>
+      <tr><td><strong>Origins</strong></td><td>Generator defense, mud avoidance, Panzer timing, robot foot dodge</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ═══════════════════ MAP WEAPONS ═══════════════════ -->
+<section class="content-section fade-in" id="map-weapon-preferences">
+  <div class="section-title"><h2>Map Weapon Preferences</h2></div>
+  <p>Bots prioritize the best weapons for each map through score bonuses added to <code>bot_score_weapon()</code>.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Map</th><th>Top Weapons (Highest Bonus First)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>TranZit</strong></td><td>Ray Gun (+70), Galil (+50), HAMR (+45), AK74u (+45), RPD (+45), MP5 (+40), M16 (+35)</td></tr>
+      <tr><td><strong>Nuketown</strong></td><td>Galil (+50), AK74u (+45), MP5 (+40)</td></tr>
+      <tr><td><strong>Die Rise</strong></td><td>Sliquifier (+80), AN-94 (+55), PDW-57 (+45), SVU (+40), MP5 (+35)</td></tr>
+      <tr><td><strong>Mob of the Dead</strong></td><td>Blundergat/Acidgat (+80), Ray Gun (+70), Thompson (+50), PDW-57 (+45)</td></tr>
+      <tr><td><strong>Buried</strong></td><td>Ray Gun Mark II (+85), Paralyzer (+80), AN-94 (+55), LSAT (+50)</td></tr>
+      <tr><td><strong>Origins</strong></td><td>Staffs (+90), STG-44 (+50), MP40 (+45), MG08 (+40)</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ═══════════════════ EASTER EGGS ═══════════════════ -->
+<section class="content-section fade-in" id="easter-egg-support">
+  <div class="section-title"><h2>Easter Egg Support</h2></div>
+  <p>Bots assist with every Easter Egg step on all 6 maps. Toggled via <code>bo2_zm_bots_ee</code> (enabled by default).</p>
+
+  <div class="callout info">
+    <strong>Design Philosophy: "Assist Everything, Finish Nothing."</strong> Bots help with every step but will never complete the final one. The human player always gets the honor of finishing the Easter Egg.
+  </div>
+
+  <h3>Health Gate Safety</h3>
+  <p>If a bot drops below 30% health during an EE objective, the goal pauses for 3 seconds so combat/flee systems take over. Resumes automatically once stabilized.</p>
+
+  <h4>TranZit &mdash; Tower of Babble</h4>
+  <ul>
+    <li>Kill zombies near the pylon, position at lamp posts, target the Avogadro, cover NavCard area</li>
+    <li><strong>Will never:</strong> interact with the pylon, use turbines, throw EMPs, or touch the NavCard table</li>
+  </ul>
+
+  <h4>Nuketown &mdash; Mini Easter Eggs</h4>
+  <ul>
+    <li>Knife Marlton's bunker door, shoot mannequin heads, cover the bunker entrance</li>
+  </ul>
+
+  <h4>Die Rise &mdash; High Maintenance</h4>
+  <ul>
+    <li>Stand on gold elevator symbols (sticky 8-second minimum stay), buy SVU for sniper step, cover build locations</li>
+    <li><strong>Will never:</strong> place trample steams, interact with mahjong tiles, or activate the final device</li>
+  </ul>
+
+  <h4>Mob of the Dead &mdash; Pop Goes the Weasel</h4>
+  <ul>
+    <li>Kill near Cerberus heads, cover plane part collection, heavy fire on rooftop and bridge</li>
+    <li><strong>Will never:</strong> sit in electric chairs, fly the plane, or participate in the final confrontation</li>
+  </ul>
+
+  <h4>Buried &mdash; Mined Games</h4>
+  <ul>
+    <li>Take Sharpshooter positions, shoot targets, charge the soul lantern, protect Leroy</li>
+    <li><strong>Will never:</strong> place items for the final step</li>
+  </ul>
+
+  <h4>Origins &mdash; Little Lost Girl</h4>
+  <ul>
+    <li>Fill all 4 soul chests, defend all 6 generators, cover the Crazy Place, target Panzer near objectives</li>
+    <li>Faster soul chest scan (1.5s when player is near an active chest)</li>
+    <li><strong>Will never:</strong> place staffs into pedestals, interact with the tablet, or press the final button</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════ HAZARDS ═══════════════════ -->
+<section class="content-section fade-in" id="hazard-detection">
+  <div class="section-title"><h2>Hazard Detection</h2></div>
+  <p>Bots detect and avoid environmental hazards based on their <code>hazard_awareness</code> stat (0.0 to 1.0).</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Hazard</th><th>Map</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td>Lava</td><td>TranZit</td><td>Damages bots walking through</td></tr>
+      <tr><td>Mud</td><td>Origins, Buried</td><td>Slows movement</td></tr>
+      <tr><td>Fog/Denizens</td><td>TranZit</td><td>Denizen spawns in foggy areas</td></tr>
+      <tr><td>Robot Feet</td><td>Origins</td><td>Giant robot stomp zones</td></tr>
+      <tr><td>Active Traps</td><td>Mob of the Dead</td><td>Fan trap, acid trap when activated</td></tr>
+    </tbody>
+  </table></div>
+  <p>Shotguns (1.0 awareness) always avoids hazards. Bones (0.20) often walks right into them.</p>
+</section>
+
+<!-- ═══════════════════ SAFETY ═══════════════════ -->
+<section class="content-section fade-in" id="safety-and-stability">
+  <div class="section-title"><h2>Safety &amp; Stability</h2></div>
+  <p>Engineered for crash-free, long-session gameplay. Every system has safety guards.</p>
+
+  <h3>Loop Safety</h3>
+  <ul>
+    <li>74 <code>endon</code> guards across all functions for <code>death</code>, <code>disconnect</code>, and <code>game_ended</code></li>
+    <li>652 <code>IsDefined</code> checks validate bot state before every access</li>
+    <li>200-tick training abort counter prevents indefinite loops</li>
+  </ul>
+
+  <h3>Resource Management</h3>
+  <ul>
+    <li>Resource locks on Box, PaP, generators, and doors with automatic cleanup on disconnect and laststand</li>
+    <li>42-label goal sweep on every respawn for 100% clean state</li>
+    <li>Rank-scaled stuck detection: Shotguns = 2.5s, Bones = 4.5s</li>
+    <li>Door/debris stuck prevention: auto-cancels after 4 seconds with no movement</li>
+    <li>Ghost player kick loop every 10 seconds</li>
+  </ul>
+
+  <h3>Combat Safety</h3>
+  <ul>
+    <li>Triple LOS enforced everywhere: threat acquisition, aim/fire, training, last stand, mannequin shooting</li>
+    <li>3-frame stale clearing via <code>los_fail_count</code></li>
+    <li>No scatter at close range (&lt;150 units)</li>
+    <li>No fallback shooting: failed LOS = stop firing entirely</li>
+    <li><code>takeweapon()</code> preserves knife, grenades, and equipment during swaps</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════ ARCHITECTURE ═══════════════════ -->
+<section class="content-section fade-in" id="file-architecture">
+  <div class="section-title"><h2>File Architecture</h2></div>
+  <p>The entire mod is organized into 44 clearly delineated sections with Unicode box-drawing borders.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>Section</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Entry Point</td><td><code>init()</code> &mdash; Global setup, DVar parsing, spawn manager</td></tr>
+      <tr><td>2</td><td>Rank Profiles</td><td>Complete stat tables for all 5 ranks (35+ params each)</td></tr>
+      <tr><td>3</td><td>HUD System</td><td>Status display, welcome banners, notifications</td></tr>
+      <tr><td>4</td><td>Spawn Manager</td><td>Bot spawning loop with count management</td></tr>
+      <tr><td>5</td><td>Bot Init</td><td>Per-bot initialization, profile assignment</td></tr>
+      <tr><td>6</td><td>Main Loop</td><td>Central think loop with decision engine</td></tr>
+      <tr><td>7</td><td>Leader/Follow</td><td>Human tracking, teleport safety, stuck detection</td></tr>
+      <tr><td>8A</td><td>Knife Strategy</td><td>Smart knife mode with shot counting</td></tr>
+      <tr><td>8B</td><td>Early Game</td><td>Sequential startup (weapon &rarr; window &rarr; door)</td></tr>
+      <tr><td>9</td><td>Combat</td><td>Full combat engine with triple LOS</td></tr>
+      <tr><td>10</td><td>Training</td><td>Circle kiting AI (circuit build, turn-and-burn)</td></tr>
+      <tr><td>11</td><td>Revive</td><td>Teammate revival with clutch detection</td></tr>
+      <tr><td>12</td><td>Powerups</td><td>Powerup collection logic</td></tr>
+      <tr><td>13</td><td>Perks</td><td>Perk purchase priority and logic</td></tr>
+      <tr><td>14</td><td>Wall Weapons</td><td>Wall weapon purchase decisions</td></tr>
+      <tr><td>15</td><td>Mystery Box</td><td>Box usage with weapon evaluation</td></tr>
+      <tr><td>16</td><td>Pack-a-Punch</td><td>PaP timing and weapon upgrade logic</td></tr>
+      <tr><td>17</td><td>Doors</td><td>Door purchase with resource locking</td></tr>
+      <tr><td>18</td><td>Ammo</td><td>Ammo tracking, weapon switching, refills</td></tr>
+      <tr><td>19</td><td>Map Logic</td><td>Per-map unique mechanic handling</td></tr>
+      <tr><td>19A</td><td>Collectibles</td><td>Buildable parts and item collection</td></tr>
+      <tr><td>19B</td><td>Part Seeking</td><td>Patrol routes and build table navigation</td></tr>
+      <tr><td>20</td><td>Hazards</td><td>Environmental hazard avoidance</td></tr>
+      <tr><td>21</td><td>Danger Check</td><td>Quick danger assessment utility</td></tr>
+      <tr><td>22</td><td>Player Blocking</td><td>Smart perpendicular dodge</td></tr>
+      <tr><td>23</td><td>Cleanup</td><td>Resource lock release on disconnect</td></tr>
+      <tr><td>24</td><td>Utilities</td><td>Helper functions (dot product, distance, etc.)</td></tr>
+      <tr><td>25</td><td>Name Pool</td><td>Random bot name assignment per map</td></tr>
+      <tr><td>26A</td><td>Communication</td><td>Dual-layer callout system (HUD + chat)</td></tr>
+      <tr><td>26B</td><td>Decision Engine</td><td>Autonomous utility AI scoring</td></tr>
+      <tr><td>27</td><td>Personality</td><td>Random personality trait assignment</td></tr>
+      <tr><td>28A</td><td>Positioning</td><td>Anti-stacking and last zombie save</td></tr>
+      <tr><td>28B</td><td>Window Defense</td><td>Barrier defense and claiming</td></tr>
+      <tr><td>29</td><td>Round Scaling</td><td>Logarithmic + elite stat progression</td></tr>
+      <tr><td>30</td><td>Downed</td><td>Last stand combat with j_head targeting</td></tr>
+      <tr><td>31</td><td>Announcer</td><td>Milestone splash system</td></tr>
+      <tr><td>32&ndash;38</td><td>Easter Eggs</td><td>All 6 maps: TranZit, Nuketown, Die Rise, Mob, Buried, Origins</td></tr>
+      <tr><td>39</td><td>Map Weapons</td><td>Per-map weapon preference bonuses</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ═══════════════════ FAQ ═══════════════════ -->
+<section class="content-section fade-in" id="faq">
+  <div class="section-title"><h2>Frequently Asked Questions</h2></div>
+
+  <h3>Do I need to configure anything?</h3>
+  <p>No. The defaults (3 bots, Shotguns rank) work perfectly out of the box.</p>
+
+  <h3>Can I use this on any BO2 Zombies map?</h3>
+  <p>Yes. All 6 maps are fully supported with dedicated logic for each map's unique mechanics.</p>
+
+  <h3>Will bots steal my ice staff on Origins?</h3>
+  <p>Never. The ice staff is permanently reserved for human players.</p>
+
+  <h3>Do bots kill the last zombie?</h3>
+  <p>No. The last zombie save is hardcoded. Every round, all bots stop shooting and one kites the survivor. You can AFK safely.</p>
+
+  <h3>Will bots complete the Easter Egg for me?</h3>
+  <p>No. "Assist Everything, Finish Nothing." They help with every step but never complete the final one.</p>
+
+  <h3>What about the "Client/Server game mismatch" error?</h3>
+  <p>Fully restart Plutonium (close and reopen the launcher). This happens when you replace the GSC file without restarting, since scripts load at startup.</p>
+
+  <h3>Can I run more than 3 bots?</h3>
+  <p>Yes. Set <code>bo2_zm_bots_count</code> to 1&ndash;7 in the console.</p>
+
+  <h3>Do bots work in online matches?</h3>
+  <p>This mod is designed for Custom Games (local/private). It works with friends in private lobbies on Plutonium.</p>
+</section>
+
+<!-- ═══════════════════ ADDON GUIDE ═══════════════════ -->
+<section class="content-section fade-in" id="addon-guide">
+  <div class="section-title"><h2>Addon Development Guide</h2></div>
+  <p>A complete addon template (<code>custom_bots_addon_template.gsc</code>) is included for writing custom bot behaviors without modifying the main script.</p>
+  <h3>What's Included</h3>
+  <ul>
+    <li>Ready-to-use entry point that auto-detects and hooks into spawned bots</li>
+    <li>7 documented code examples (read state, callouts, movement, targeting, weapons, map logic, round triggers)</li>
+    <li>Full bot struct reference, available function list, reserved goal labels</li>
+    <li>Throttle timer patterns for performance</li>
+    <li>Common pitfalls and testing instructions</li>
+  </ul>
+  <h3>How to Use</h3>
+  <ol>
+    <li>Copy <code>custom_bots_addon_template.gsc</code> and rename it</li>
+    <li>Place it in <code>storage/t6/scripts/zm/</code> alongside <code>custom_bots.gsc</code></li>
+    <li>Edit <code>addon_custom_behavior()</code> with your logic</li>
+    <li>Both scripts share the same GSC VM and <code>level.*</code> variables</li>
+    <li>Fully restart Plutonium to load</li>
+  </ol>
+</section>
+
+<!-- ═══════════════════ CREDITS ═══════════════════ -->
+<section class="content-section fade-in" id="credits">
+  <div class="section-title"><h2>Credits</h2></div>
+  <p><strong>Created by Astroolean</strong></p>
+  <p>Inspired by <a href="https://github.com/osmnbtrclk/bo2_zm_bots" target="_blank" rel="noopener">osmnbtrclk/bo2_zm_bots</a>. This is a completely independent rewrite with different architecture, different AI systems, and different features. Credit to the original project for the concept and inspiration.</p>
+</section>
+
+      </div>
+    </article>
+
+    <!-- Footer -->
+    <div class="footer-wrap">
+      <div class="tagline">Custom Bots v5.0.0 &mdash; 2026 Edition</div>
+      <div class="sub">10,964 lines &bull; 44 sections &bull; 6 maps &bull; 6 Easter Eggs</div>
+      <div class="sub" style="margin-top:4px;">One file. Drop it in. Play.</div>
+    </div>
+  </main>
+</div>
+
+</div>
+
+<a class="back-top" href="#top" id="backTop" aria-label="Back to top">&uarr;</a>
+
+<script>
+  const links = [...document.querySelectorAll('.toc-link')];
+  const sections = [...document.querySelectorAll('.content-section[id]')];
+  const backTop = document.getElementById('backTop');
+  const sectionSelect = document.getElementById('sectionSelect');
+
+  if (sectionSelect) {
+    sectionSelect.addEventListener('change', e => {
+      if (e.target.value) window.location.hash = e.target.value;
+    });
+  }
+
+  const tocObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const id = entry.target.id;
+      links.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
+    });
+  }, { rootMargin: '-20% 0px -65% 0px', threshold: 0.01 });
+
+  sections.forEach(s => tocObserver.observe(s));
+
+  const fadeObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -60px 0px', threshold: 0.01 });
+
+  document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+  const toggleBackTop = () => {
+    backTop.classList.toggle('show', window.scrollY > 500);
+  };
+  toggleBackTop();
+  window.addEventListener('scroll', toggleBackTop, { passive: true });
+</script>
 </body>
 </html>
-
-
