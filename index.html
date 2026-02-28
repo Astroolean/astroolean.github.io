@@ -927,6 +927,7 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
     <li><strong>Ammo Conservation</strong> &mdash; Conservation activates at 60% ammo (not 40%). Range suppression kicks in at 350+ units even at full ammo (25% shot skip). Burst sizes capped to 2-3 shots at range. Pause between bursts doubled when low on ammo.</li>
     <li><strong>No Scatter at Close Range</strong> &mdash; Within 150 units, aim scatter is completely removed. Direct aim at the zombie. Scatter only applies at distance where it simulates natural aiming variance.</li>
     <li><strong>No Fallback Shooting</strong> &mdash; If the final aim point fails line-of-sight verification, the bot stops shooting entirely. No "shooting at the wall hoping to hit something."</li>
+    <li><strong>Dead Target Cutoff</strong> &mdash; Right before every trigger pull, the bot re-checks if the target is still alive. If the zombie died mid-burst (killed by another player or trap), the bot instantly stops firing. No more shooting at corpses or empty air.</li>
   </ul>
 
   <h3>Smart Grenades</h3>
