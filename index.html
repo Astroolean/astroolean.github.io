@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Custom Bots v5.0.0 — BO2 Zombies AI</title>
-<meta name="description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 11,007 lines of zombie-killing intelligence. One file. Drop it in. Play."/>
+<meta name="description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 10,923 lines of zombie-killing intelligence. 5-tier rank system, 6 maps, 6 Easter Eggs. One file. Drop it in. Play."/>
 <meta name="theme-color" content="#060a12"/>
 <meta property="og:title" content="Custom Bots v5.0.0 — BO2 Zombies AI"/>
 <meta property="og:description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 5-tier rank system, 6 maps, 6 Easter Eggs. One file install."/>
@@ -19,7 +19,7 @@
   --surface:rgba(12,18,32,0.78);--surface2:rgba(16,24,44,0.92);
   --border:rgba(120,160,255,0.10);--border2:rgba(120,160,255,0.22);--border3:rgba(120,160,255,0.38);
   --text:#e4ecff;--text2:#b0c4e8;--text3:#7b93bd;
-  --accent:#6cb4ff;--accent2:#5dffd8;--accent3:#a78bfa;--gold:#ffcc47;--red:#ff6b7a;
+  --accent:#6cb4ff;--accent2:#5dffd8;--accent3:#a78bfa;--gold:#ffcc47;--red:#ff6b7a;--orange:#ffa347;
   --glow-accent:rgba(108,180,255,0.12);--glow-green:rgba(93,255,216,0.08);--glow-purple:rgba(167,139,250,0.06);
   --font:'Inter',system-ui,-apple-system,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
@@ -46,25 +46,21 @@ a:hover{color:#b8dcff}
 
 .shell{position:relative;z-index:1;width:min(calc(100% - 28px),var(--max));margin:0 auto;padding:20px 0 100px}
 
-/* ═══ HERO ═══ */
 .hero{position:relative;overflow:hidden;border-radius:28px;border:1px solid var(--border);background:var(--surface2);padding:56px 48px 48px;margin-bottom:24px;box-shadow:0 32px 100px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04)}
 .hero::before{content:"";position:absolute;inset:-2px;border-radius:30px;background:linear-gradient(135deg,rgba(108,180,255,0.15),transparent 40%,transparent 60%,rgba(93,255,216,0.10));z-index:-1;opacity:0;transition:opacity .5s;pointer-events:none}
 .hero:hover::before{opacity:1}
-.hero-noise{position:absolute;inset:0;border-radius:28px;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
-.hero-orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;animation:float 12s ease-in-out infinite alternate}
-.hero-orb.a{width:400px;height:400px;right:-10%;top:-30%;background:radial-gradient(circle,rgba(108,180,255,0.18),transparent 70%)}
-.hero-orb.b{width:320px;height:320px;left:-5%;bottom:-25%;background:radial-gradient(circle,rgba(93,255,216,0.12),transparent 70%);animation-delay:-4s}
-.hero-orb.c{width:240px;height:240px;right:20%;bottom:10%;background:radial-gradient(circle,rgba(167,139,250,0.10),transparent 70%);animation-delay:-8s}
-@keyframes float{0%{transform:translate(0,0) scale(1)}50%{transform:translate(15px,-20px) scale(1.08)}100%{transform:translate(-10px,15px) scale(0.95)}}
-
-.hero-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:36px;align-items:end;position:relative;z-index:2}
-.hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid var(--border);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);backdrop-filter:blur(8px);transition:border-color .25s,background .25s}
-.badge:hover{border-color:var(--border2);background:rgba(255,255,255,0.07)}
-.badge .pulse{width:6px;height:6px;border-radius:50%;background:var(--accent2);box-shadow:0 0 8px var(--accent2);animation:pulse 2.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.8)}}
-
-.hero h1{font-size:clamp(3rem,6vw,5.6rem);line-height:.88;letter-spacing:-.055em;font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--accent) 50%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;max-width:11ch;filter:drop-shadow(0 4px 30px rgba(108,180,255,0.15))}
+.hero-noise{position:absolute;inset:0;opacity:.03;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;animation:float 8s ease-in-out infinite}
+.hero-orb.a{width:350px;height:350px;background:rgba(108,180,255,0.10);top:-120px;left:-80px;animation-delay:0s}
+.hero-orb.b{width:280px;height:280px;background:rgba(93,255,216,0.07);bottom:-100px;right:-60px;animation-delay:-3s}
+.hero-orb.c{width:220px;height:220px;background:rgba(167,139,250,0.06);top:40%;left:60%;animation-delay:-5s}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.05)}}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;position:relative;z-index:1}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text2);font-size:.82rem;font-weight:600;letter-spacing:.02em;backdrop-filter:blur(8px)}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--accent2);box-shadow:0 0 8px var(--accent2);animation:pulse-anim 2s ease-in-out infinite}
+@keyframes pulse-anim{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.8)}}
+.hero h1{font-size:clamp(3rem,5.5vw,4.8rem);font-weight:900;letter-spacing:-.05em;line-height:.95;background:linear-gradient(135deg,#fff 0%,#c0d8ff 40%,var(--accent) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-sub{max-width:580px;color:var(--text2);font-size:clamp(1rem,1.35vw,1.1rem);line-height:1.8;margin-top:18px}
 .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
 
@@ -86,7 +82,6 @@ a:hover{color:#b8dcff}
 .stat-val{font-size:clamp(1.3rem,2.2vw,1.8rem);font-weight:800;letter-spacing:-.035em;line-height:1;position:relative;z-index:1}
 .stat-val .counter{display:inline-block}
 
-/* ═══ LAYOUT ═══ */
 .mobile-nav{display:none;margin-bottom:16px}
 .mobile-nav select{width:100%;height:48px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0 16px;font:inherit;font-size:.95rem;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%237b93bd'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
 
@@ -110,20 +105,21 @@ a:hover{color:#b8dcff}
 .toc-link .toc-dot{width:4px;height:4px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .2s}
 .toc-link.active .toc-dot{background:var(--accent);box-shadow:0 0 6px var(--accent)}
 
+.toc-sep{height:1px;background:var(--border);margin:8px 12px}
+
 .main{min-width:0}
 .stack{display:flex;flex-direction:column;gap:14px}
 
-/* ═══ SECTIONS ═══ */
-.card{border-radius:24px;background:var(--surface);border:1px solid var(--border);padding:36px;box-shadow:0 4px 28px rgba(0,0,0,0.2);position:relative;overflow:hidden;transition:border-color .35s,box-shadow .35s}
+.card{border-radius:24px;background:var(--surface);border:1px solid var(--border);padding:20px 36px 36px;box-shadow:0 4px 28px rgba(0,0,0,0.2);position:relative;overflow:hidden;transition:border-color .35s,box-shadow .35s}
 .card::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent 40%);pointer-events:none}
 .card:hover{border-color:var(--border2);box-shadow:0 8px 40px rgba(0,0,0,0.28)}
 .card-glow{position:absolute;width:250px;height:250px;border-radius:50%;filter:blur(80px);opacity:0;transition:opacity .5s;pointer-events:none;z-index:0}
 .card:hover .card-glow{opacity:1}
-.card>*{position:relative;z-index:1}
+.card>*:not(.card-glow){position:relative;z-index:1}
 
 .card h2{font-size:clamp(1.55rem,2.8vw,2.2rem);font-weight:800;letter-spacing:-.035em;margin-bottom:6px;line-height:1.1}
-.card h3{margin-top:30px;margin-bottom:12px;font-size:clamp(1.05rem,1.5vw,1.25rem);font-weight:700;letter-spacing:-.02em;color:var(--text)}
-.card h4{margin-top:22px;margin-bottom:10px;font-size:1rem;font-weight:600;color:#c8d8f5}
+.card h3{margin-top:22px;margin-bottom:10px;font-size:clamp(1.05rem,1.5vw,1.25rem);font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.card h4{margin-top:16px;margin-bottom:8px;font-size:1rem;font-weight:600;color:#c8d8f5}
 .card p,.card li{color:var(--text2);font-size:.96rem;line-height:1.8}
 .card p{margin:12px 0}
 .card p:first-of-type{margin-top:0}
@@ -131,10 +127,8 @@ a:hover{color:#b8dcff}
 .card em{color:#c0d2f0}
 .card ul,.card ol{padding-left:1.3rem}
 .card li{margin-bottom:6px}
-
 .card hr{border:none;height:1px;background:var(--border);margin:28px 0}
 
-/* ═══ TABLES ═══ */
 .tw{overflow-x:auto;margin:16px 0;border-radius:16px;border:1px solid var(--border);background:rgba(3,6,14,0.5)}
 table{width:100%;border-collapse:collapse;min-width:580px}
 th,td{padding:13px 16px;text-align:left;border-bottom:1px solid rgba(120,160,255,0.06);vertical-align:top;font-size:.92rem}
@@ -168,29 +162,117 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
 .callout.warn::before{background:var(--gold)}
 .callout.danger{background:rgba(255,107,122,0.04);border-color:rgba(255,107,122,0.15);color:#ffb0b8}
 .callout.danger::before{background:var(--red)}
+.callout.success{background:rgba(93,255,216,0.04);border-color:rgba(93,255,216,0.15);color:#a0ffd8}
+.callout.success::before{background:var(--accent2)}
 .callout strong{color:inherit;font-weight:700}
 
-/* ═══ FOOTER ═══ */
-.footer{margin-top:24px;text-align:center;padding:40px 28px;border-radius:24px;background:var(--surface);border:1px solid var(--border);position:relative;overflow:hidden}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:20px 0}
+.feature-item{padding:22px 20px;border-radius:18px;background:rgba(255,255,255,0.02);border:1px solid var(--border);transition:all .3s var(--ease);position:relative;overflow:hidden}
+.feature-item::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(108,180,255,0.03),transparent);opacity:0;transition:opacity .3s}
+.feature-item:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.feature-item:hover::after{opacity:1}
+.feature-icon{font-size:1.6rem;margin-bottom:10px;display:block}
+.feature-title{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:6px}
+.feature-desc{font-size:.88rem;color:var(--text2);line-height:1.6}
+
+.rank-visual{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.rank-bar{padding:20px;border-radius:16px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;transition:all .3s var(--ease)}
+.rank-bar:hover{border-color:var(--border2);transform:translateY(-1px)}
+.rank-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.rank-name{font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:8px}
+.rank-tier{font-size:.78rem;font-weight:600;padding:3px 10px;border-radius:100px;border:1px solid;display:inline-flex}
+.rank-meter{height:8px;border-radius:4px;background:rgba(255,255,255,0.06);overflow:hidden}
+.rank-fill{height:100%;border-radius:4px;transition:width 1.5s var(--ease)}
+.rank-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px}
+.rank-stat{font-size:.82rem;color:var(--text2)}
+.rank-stat strong{color:var(--text);font-weight:600}
+
+.flow-steps{display:flex;flex-direction:column;gap:0;margin:20px 0}
+.flow-step{display:flex;gap:16px;position:relative;padding:16px 0}
+.flow-step:not(:last-child)::before{content:"";position:absolute;left:17px;top:48px;bottom:0;width:2px;background:var(--border)}
+.flow-num{width:36px;height:36px;border-radius:12px;background:rgba(108,180,255,0.08);border:1px solid rgba(108,180,255,0.20);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:var(--accent);flex-shrink:0;position:relative;z-index:1}
+.flow-content{flex:1}
+.flow-content h4{margin:0 0 4px;font-size:.98rem;font-weight:700;color:var(--text)}
+.flow-content p{margin:0;font-size:.9rem;color:var(--text2);line-height:1.65}
+
+.map-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;margin:20px 0}
+.map-card{padding:24px;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,0.015);transition:all .3s var(--ease);position:relative;overflow:hidden}
+.map-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
+.map-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.25)}
+.map-card.transit::before{background:linear-gradient(90deg,#ff6b7a,#ffa347)}
+.map-card.nuketown::before{background:linear-gradient(90deg,#5dffd8,#6cb4ff)}
+.map-card.dierise::before{background:linear-gradient(90deg,#a78bfa,#ff6b7a)}
+.map-card.mob::before{background:linear-gradient(90deg,#ffcc47,#ffa347)}
+.map-card.buried::before{background:linear-gradient(90deg,#6cb4ff,#a78bfa)}
+.map-card.origins::before{background:linear-gradient(90deg,#5dffd8,#ffcc47)}
+.map-card h4{margin:0 0 10px;font-size:1.1rem;font-weight:700;color:var(--text)}
+.map-card p{margin:0 0 8px;font-size:.9rem;color:var(--text2);line-height:1.6}
+.map-card ul{padding-left:1.1rem;margin:0}
+.map-card li{font-size:.88rem;color:var(--text2);margin-bottom:4px;line-height:1.5}
+
+.score-table{margin:16px 0}
+.score-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(120,160,255,0.04)}
+.score-row:last-child{border-bottom:0}
+.score-label{width:120px;font-size:.88rem;font-weight:600;color:var(--text);flex-shrink:0}
+.score-bar-wrap{flex:1;height:10px;border-radius:5px;background:rgba(255,255,255,0.04);overflow:hidden}
+.score-bar-fill{height:100%;border-radius:5px}
+.score-val{width:80px;font-size:.82rem;color:var(--text3);text-align:right;flex-shrink:0;font-family:var(--mono)}
+
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.compare-col{padding:24px;border-radius:16px;border:1px solid var(--border);background:rgba(255,255,255,0.015)}
+.compare-col h4{margin:0 0 12px;font-size:1rem;font-weight:700;text-align:center}
+.compare-col.before h4{color:var(--red)}
+.compare-col.after h4{color:var(--accent2)}
+.compare-col ul{padding-left:1.1rem;margin:0}
+.compare-col li{font-size:.88rem;color:var(--text2);margin-bottom:6px;line-height:1.5}
+
+.accordion{margin:16px 0}
+.acc-item{border:1px solid var(--border);border-radius:14px;margin-bottom:8px;overflow:hidden;transition:border-color .2s}
+.acc-item:hover{border-color:var(--border2)}
+.acc-trigger{width:100%;padding:16px 20px;background:rgba(255,255,255,0.02);border:none;color:var(--text);font:inherit;font-size:.96rem;font-weight:600;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .2s}
+.acc-trigger:hover{background:rgba(255,255,255,0.04)}
+.acc-trigger::after{content:"+";font-size:1.2rem;color:var(--text3);transition:transform .2s}
+.acc-item.open .acc-trigger::after{content:"-";transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .35s var(--ease)}
+.acc-item.open .acc-body{max-height:600px}
+.acc-inner{padding:0 20px 16px;color:var(--text2);font-size:.93rem;line-height:1.75}
+
+.tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:.78rem;font-weight:600;border:1px solid}
+.tag.blue{color:var(--accent);border-color:rgba(108,180,255,0.25);background:rgba(108,180,255,0.06)}
+.tag.green{color:var(--accent2);border-color:rgba(93,255,216,0.25);background:rgba(93,255,216,0.06)}
+.tag.purple{color:var(--accent3);border-color:rgba(167,139,250,0.25);background:rgba(167,139,250,0.06)}
+.tag.gold{color:var(--gold);border-color:rgba(255,204,71,0.25);background:rgba(255,204,71,0.06)}
+.tag.red{color:var(--red);border-color:rgba(255,107,122,0.25);background:rgba(255,107,122,0.06)}
+
+.footer{margin-top:24px;text-align:center;padding:48px 28px;border-radius:24px;background:var(--surface);border:1px solid var(--border);position:relative;overflow:hidden}
 .footer::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(108,180,255,0.06),transparent 60%);pointer-events:none}
-.footer-title{font-size:1.2rem;font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,var(--text),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;position:relative;z-index:1}
+.footer-title{font-size:1.3rem;font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,var(--text),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;position:relative;z-index:1}
 .footer-sub{font-size:.9rem;color:var(--text3);position:relative;z-index:1}
 .footer-line{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:6px;position:relative;z-index:1}
 .footer-line .sep{width:4px;height:4px;border-radius:50%;background:var(--text3);opacity:.5}
+.footer-tagline{margin-top:14px;font-size:1rem;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
 
-/* ═══ BACK TO TOP ═══ */
 .btt{position:fixed;right:20px;bottom:20px;width:50px;height:50px;border-radius:15px;border:1px solid var(--border);background:rgba(6,10,18,0.92);color:var(--text);display:flex;align-items:center;justify-content:center;font-size:1.1rem;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,0,0,0.3);opacity:0;transform:translateY(12px);pointer-events:none;transition:all .3s var(--ease);z-index:50;cursor:pointer;text-decoration:none}
 .btt.show{opacity:1;transform:translateY(0);pointer-events:auto}
 .btt:hover{border-color:var(--border2);background:rgba(108,180,255,0.08);color:var(--text)}
 
-/* ═══ ANIMATIONS ═══ */
+.dev-progress{border-radius:20px;background:var(--surface);border:1px solid var(--border);padding:22px 28px;margin-bottom:24px;position:relative;overflow:hidden}
+.dev-progress::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent 40%);pointer-events:none}
+.dev-progress-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;position:relative;z-index:1}
+.dev-progress-label{font-size:1.1rem;font-weight:800;color:var(--text);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.dev-progress-pct{font-size:1.3rem;font-weight:800;color:var(--accent);font-family:var(--mono);letter-spacing:.02em}
+.dev-progress-track{position:relative;height:10px;border-radius:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(120,160,255,0.08);overflow:hidden;z-index:1}
+.dev-progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));position:relative;width:0%;transition:width 1.8s cubic-bezier(.22,1,.36,1)}
+.dev-progress-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 40%,rgba(255,255,255,0.25) 50%,transparent 60%);animation:progressShimmer 2.5s infinite linear}
+.dev-progress-glow{position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:var(--accent2);filter:blur(6px);opacity:.7;animation:progressPulse 2s infinite ease-in-out}
+@keyframes progressShimmer{0%{transform:translateX(-200%)}100%{transform:translateX(200%)}}
+@keyframes progressPulse{0%,100%{opacity:.5;transform:translateY(-50%) scale(.8)}50%{opacity:1;transform:translateY(-50%) scale(1.2)}}
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
 .reveal.vis{opacity:1;transform:translateY(0)}
 .reveal.d1{transition-delay:.06s}
 .reveal.d2{transition-delay:.12s}
 .reveal.d3{transition-delay:.18s}
 
-/* ═══ CMD PALETTE ═══ */
 .cmd-overlay{position:fixed;inset:0;background:rgba(3,5,10,0.7);backdrop-filter:blur(8px);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;display:flex;align-items:flex-start;justify-content:center;padding-top:min(20vh,180px)}
 .cmd-overlay.open{opacity:1;pointer-events:auto}
 .cmd-box{width:min(560px,90vw);background:var(--surface2);border:1px solid var(--border2);border-radius:20px;box-shadow:0 32px 100px rgba(0,0,0,0.6);overflow:hidden;transform:scale(0.96) translateY(-8px);transition:transform .25s var(--ease);max-height:60vh;display:flex;flex-direction:column}
@@ -202,7 +284,8 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
 .cmd-item:hover,.cmd-item.sel{background:rgba(108,180,255,0.08);color:var(--text)}
 .cmd-item .cmd-hint{float:right;font-size:.8rem;color:var(--text3)}
 
-/* ═══ RESPONSIVE ═══ */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+
 @media(max-width:1180px){
   .layout{grid-template-columns:1fr}
   .sidebar{display:none}
@@ -212,7 +295,10 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
   .hero{padding:32px 24px;border-radius:22px}
   .hero-grid{grid-template-columns:1fr}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .card{padding:24px;border-radius:20px}
+  .card{padding:16px 24px 24px;border-radius:20px}
+  .compare-grid{grid-template-columns:1fr}
+  .map-cards{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
 }
 @media(max-width:560px){
   .shell{width:min(calc(100% - 12px),var(--max));padding-top:10px}
@@ -220,7 +306,8 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
   .btn{width:100%}
   table{min-width:480px}
   .hero h1{font-size:2.6rem}
-  .card{padding:20px}
+  .card{padding:14px 20px 20px}
+  .feature-grid{grid-template-columns:1fr}
 }
 @media print{
   .progress-bar,.sidebar,.btt,.mobile-nav,.canvas-bg,.ambient,.cmd-overlay,.hero-orb,.hero-noise{display:none!important}
@@ -239,7 +326,6 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
 
 <div class="shell">
 
-<!-- ═════════════════════ HERO ═════════════════════ -->
 <header class="hero" id="top">
   <div class="hero-noise"></div>
   <div class="hero-orb a"></div>
@@ -260,34 +346,52 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
         <a class="btn" href="#installation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Install</a>
         <a class="btn" href="#rank-system">Ranks</a>
         <a class="btn" href="#easter-egg-support">Easter Eggs</a>
+        <a class="btn" href="#whats-new">What's New</a>
       </div>
     </div>
     <div class="stats-grid">
-      <div class="stat"><div class="stat-label">Lines of Code</div><div class="stat-val"><span class="counter" data-target="11007">0</span></div></div>
+      <div class="stat"><div class="stat-label">Lines of Code</div><div class="stat-val"><span class="counter" data-target="10923">0</span></div></div>
       <div class="stat"><div class="stat-label">Supported Maps</div><div class="stat-val">All 6</div></div>
       <div class="stat"><div class="stat-label">Easter Eggs</div><div class="stat-val"><span class="counter" data-target="6">0</span> / 6</div></div>
       <div class="stat"><div class="stat-label">Default Setup</div><div class="stat-val">3 Bots</div></div>
+      <div class="stat"><div class="stat-label">Rank Tiers</div><div class="stat-val"><span class="counter" data-target="5">0</span></div></div>
+      <div class="stat"><div class="stat-label">Code Sections</div><div class="stat-val"><span class="counter" data-target="44">0</span></div></div>
     </div>
   </div>
 </header>
 
-<!-- ═════════════════ MOBILE NAV ═════════════════ -->
+<div class="dev-progress reveal vis">
+  <div class="dev-progress-head">
+    <span class="dev-progress-label"><span style="font-size:1.5em">🚀</span> Development Progress</span>
+    <span class="dev-progress-pct">50%</span>
+  </div>
+  <div class="dev-progress-track">
+    <div class="dev-progress-fill" id="devFill">
+      <div class="dev-progress-glow"></div>
+    </div>
+  </div>
+</div>
+
 <div class="mobile-nav">
 <select aria-label="Jump to section" id="mobileSelect">
 <option value="">Jump to section&hellip;</option>
 <option value="#overview">Overview</option>
+<option value="#whats-new">What's New in v5.0.0</option>
+<option value="#why-custom-bots">Why Custom Bots</option>
 <option value="#installation">Installation</option>
 <option value="#quick-start">Quick Start</option>
 <option value="#configuration-reference">Configuration</option>
 <option value="#rank-system">Rank System</option>
 <option value="#autonomous-decision-engine">Decision Engine</option>
 <option value="#advanced-combat-engine">Combat Engine</option>
+<option value="#triple-los">Triple Line of Sight</option>
 <option value="#autonomy-system">Autonomy</option>
 <option value="#survivability-system">Survivability</option>
 <option value="#early-game-flow">Early Game Flow</option>
 <option value="#early-round-knife-strategy">Knife Strategy</option>
 <option value="#training-ai">Training AI</option>
 <option value="#economy-system">Economy</option>
+<option value="#weapon-scoring">Weapon Scoring</option>
 <option value="#collectibles">Collectibles</option>
 <option value="#proactive-seeking">Part Seeking</option>
 <option value="#last-zombie-save">Last Zombie Save</option>
@@ -301,15 +405,17 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
 <option value="#map-weapon-preferences">Map Weapons</option>
 <option value="#easter-egg-support">Easter Eggs</option>
 <option value="#hazard-detection">Hazards</option>
+<option value="#smart-navigation">Navigation</option>
 <option value="#safety-and-stability">Safety</option>
+<option value="#anti-crash">Anti-Crash</option>
 <option value="#file-architecture">Architecture</option>
+<option value="#technical-deep-dive">Technical Deep Dive</option>
 <option value="#faq">FAQ</option>
 <option value="#addon-guide">Addon Guide</option>
 <option value="#credits">Credits</option>
 </select>
 </div>
 
-<!-- ═════════════════ LAYOUT ═════════════════ -->
 <div class="layout">
 
 <aside class="sidebar" aria-label="Navigation">
@@ -323,33 +429,48 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
   </div>
   <nav class="toc" id="toc">
     <a class="toc-link" href="#overview"><span class="toc-dot"></span>Overview</a>
+    <a class="toc-link" href="#whats-new"><span class="toc-dot"></span>What's New in v5.0.0</a>
+    <a class="toc-link" href="#why-custom-bots"><span class="toc-dot"></span>Why Custom Bots</a>
+    <div class="toc-sep"></div>
     <a class="toc-link" href="#installation"><span class="toc-dot"></span>Installation</a>
     <a class="toc-link" href="#quick-start"><span class="toc-dot"></span>Quick Start</a>
     <a class="toc-link" href="#configuration-reference"><span class="toc-dot"></span>Configuration</a>
+    <div class="toc-sep"></div>
     <a class="toc-link" href="#rank-system"><span class="toc-dot"></span>Rank System</a>
     <a class="toc-link" href="#autonomous-decision-engine"><span class="toc-dot"></span>Decision Engine</a>
     <a class="toc-link" href="#advanced-combat-engine"><span class="toc-dot"></span>Combat Engine</a>
-    <a class="toc-link" href="#autonomy-system"><span class="toc-dot"></span>Autonomy</a>
+    <a class="toc-link" href="#triple-los"><span class="toc-dot"></span>Triple Line of Sight</a>
+    <a class="toc-link" href="#autonomy-system"><span class="toc-dot"></span>Autonomy System</a>
     <a class="toc-link" href="#survivability-system"><span class="toc-dot"></span>Survivability</a>
+    <div class="toc-sep"></div>
     <a class="toc-link" href="#early-game-flow"><span class="toc-dot"></span>Early Game Flow</a>
     <a class="toc-link" href="#early-round-knife-strategy"><span class="toc-dot"></span>Knife Strategy</a>
     <a class="toc-link" href="#training-ai"><span class="toc-dot"></span>Training AI</a>
-    <a class="toc-link" href="#economy-system"><span class="toc-dot"></span>Economy</a>
+    <a class="toc-link" href="#economy-system"><span class="toc-dot"></span>Economy System</a>
+    <a class="toc-link" href="#weapon-scoring"><span class="toc-dot"></span>Weapon Scoring</a>
+    <div class="toc-sep"></div>
     <a class="toc-link" href="#collectibles"><span class="toc-dot"></span>Collectibles</a>
     <a class="toc-link" href="#proactive-seeking"><span class="toc-dot"></span>Part Seeking</a>
     <a class="toc-link" href="#last-zombie-save"><span class="toc-dot"></span>Last Zombie Save</a>
+    <div class="toc-sep"></div>
     <a class="toc-link" href="#bot-personality-system"><span class="toc-dot"></span>Personalities</a>
     <a class="toc-link" href="#bot-communication-system"><span class="toc-dot"></span>Communication</a>
     <a class="toc-link" href="#round-based-scaling"><span class="toc-dot"></span>Round Scaling</a>
     <a class="toc-link" href="#downed-bot-behavior"><span class="toc-dot"></span>Downed Behavior</a>
     <a class="toc-link" href="#announcer-system"><span class="toc-dot"></span>Announcer</a>
     <a class="toc-link" href="#hud-system"><span class="toc-dot"></span>HUD System</a>
+    <div class="toc-sep"></div>
     <a class="toc-link" href="#map-specific-logic"><span class="toc-dot"></span>Map Logic</a>
     <a class="toc-link" href="#map-weapon-preferences"><span class="toc-dot"></span>Map Weapons</a>
     <a class="toc-link" href="#easter-egg-support"><span class="toc-dot"></span>Easter Eggs</a>
     <a class="toc-link" href="#hazard-detection"><span class="toc-dot"></span>Hazards</a>
-    <a class="toc-link" href="#safety-and-stability"><span class="toc-dot"></span>Safety</a>
+    <a class="toc-link" href="#smart-navigation"><span class="toc-dot"></span>Navigation</a>
+    <div class="toc-sep"></div>
+    <a class="toc-link" href="#safety-and-stability"><span class="toc-dot"></span>Safety &amp; Stability</a>
+    <a class="toc-link" href="#anti-crash"><span class="toc-dot"></span>Anti-Crash Engineering</a>
     <a class="toc-link" href="#file-architecture"><span class="toc-dot"></span>Architecture</a>
+    <a class="toc-link" href="#technical-deep-dive"><span class="toc-dot"></span>Technical Deep Dive</a>
+    <div class="toc-sep"></div>
     <a class="toc-link" href="#faq"><span class="toc-dot"></span>FAQ</a>
     <a class="toc-link" href="#addon-guide"><span class="toc-dot"></span>Addon Guide</a>
     <a class="toc-link" href="#credits"><span class="toc-dot"></span>Credits</a>
@@ -359,563 +480,1348 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
 <main class="main">
 <div class="stack">
 
-<!-- ═══ OVERVIEW ═══ -->
-<section class="card reveal" id="overview">
+<section class="card reveal vis" id="overview">
   <div class="card-glow" style="top:-40%;right:-20%;background:radial-gradient(circle,var(--glow-accent),transparent 70%)"></div>
   <h2>Overview</h2>
-  <p><strong>Custom Bots</strong> is a single-file GSC mod for <strong>Call of Duty: Black Ops 2 Zombies</strong> on the <strong>Plutonium T6</strong> client. It spawns fully autonomous AI bots that play like real human teammates.</p>
+  <p><strong>Custom Bots</strong> is a single-file GSC mod for <strong>Call of Duty: Black Ops 2 Zombies</strong> on the <strong>Plutonium T6</strong> client. It spawns fully autonomous AI bots that play like real human teammates &mdash; not the scripted, predictable bots you see in other mods.</p>
   <p>These bots don't follow you around like bodyguards. They make their own decisions. They roam the map independently, train zombies into hordes, open doors, buy perks and weapons, pick up buildable parts, revive downed teammates, save the last zombie at the end of every round, knife in early rounds to maximize points, and fight their way through high rounds entirely on their own.</p>
-  <p>Every bot runs an <strong>autonomous decision engine</strong> that evaluates all available actions each tick and picks the smartest one based on current context: ammo, health, points, round number, nearby threats, and personality. No two bots make the same choices.</p>
-  <p>The entire system is contained in a single file: <code>custom_bots.gsc</code>. No compilation. No dependencies. No external tools. Drop it in and play.</p>
+  <p>Every bot runs an <strong>autonomous decision engine</strong> that evaluates all available actions each tick and picks the smartest one based on current context: ammo count, health percentage, point balance, current round number, nearby threats, teammate status, and its own personality traits. No two bots make the same choices, even on the same map with the same rank.</p>
+  <p>The combat system uses <strong>triple line-of-sight verification</strong> to ensure bots never shoot through walls. The training AI builds actual navigation circuits and runs them with turn-and-burn tactics. The economy system weighs every purchase against the bot's current financial situation and immediate needs. Every system is interconnected, creating behavior that feels genuinely human.</p>
+  <p>The entire system is contained in a single file: <code>custom_bots.gsc</code>. No compilation. No dependencies. No external tools. No additional files. Drop it in one folder and play.</p>
+
   <h3>At a Glance</h3>
   <div class="tw"><table>
     <thead><tr><th>Metric</th><th>Value</th></tr></thead>
     <tbody>
-      <tr><td>Lines of Code</td><td><strong>11,007</strong></td></tr>
+      <tr><td>Lines of Code</td><td><strong>10,923</strong></td></tr>
+      <tr><td>Code Sections</td><td><strong>44</strong> (Unicode box-drawing borders)</td></tr>
       <tr><td>Supported Maps</td><td>All 6 BO2 Zombie Maps</td></tr>
-      <tr><td>Easter Egg Coverage</td><td>All 6 Maps</td></tr>
-      <tr><td>Default Config</td><td>3 bots, Shotguns rank</td></tr>
+      <tr><td>Easter Egg Coverage</td><td>All 6 Maps (full step assistance)</td></tr>
+      <tr><td>Default Config</td><td>3 bots, Shotguns rank (highest tier)</td></tr>
       <tr><td>Rank Tiers</td><td>5 (Bones &rarr; Shotguns)</td></tr>
       <tr><td>DVars</td><td>12 configurable settings</td></tr>
+      <tr><td>Safety Guards</td><td>76 endon + 618 IsDefined checks</td></tr>
+      <tr><td>Bot Personalities</td><td>3 types (Aggressive, Supportive, Cautious)</td></tr>
+      <tr><td>Weapon Preferences</td><td>Per-map scored weapon lists</td></tr>
     </tbody>
   </table></div>
+
+  <h3>Core Capabilities</h3>
+  <div class="feature-grid">
+    <div class="feature-item">
+      <span class="feature-icon">&#9876;</span>
+      <div class="feature-title">Autonomous Combat</div>
+      <div class="feature-desc">Triple LOS targeting, weapon-class burst fire, directional flee, smart grenades, and rank-scaled accuracy with human-like reaction jitter.</div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">&#9881;</span>
+      <div class="feature-title">Decision Engine</div>
+      <div class="feature-desc">Utility AI scores every possible action each tick. Point reserves, cost awareness, personality bias, and situational urgency drive every choice.</div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">&#127968;</span>
+      <div class="feature-title">Full Economy</div>
+      <div class="feature-desc">Wallbuys, Mystery Box, Pack-a-Punch, perks, doors, debris, ammo purchases. All balanced against points, round number, and current loadout.</div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">&#128100;</span>
+      <div class="feature-title">Training AI</div>
+      <div class="feature-desc">Circuit-based zombie kiting with validated waypoints, turn-and-burn shooting, hazard checking, and adaptive route rebuilding.</div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">&#128736;</span>
+      <div class="feature-title">Easter Egg Support</div>
+      <div class="feature-desc">Step-by-step assistance on all 6 maps. Bots help with every step but never complete the final one &mdash; that honor is always yours.</div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">&#129504;</span>
+      <div class="feature-title">Personality System</div>
+      <div class="feature-desc">Aggressive, Supportive, and Cautious traits influence weapon preferences, grenade usage, spending habits, and combat positioning.</div>
+    </div>
+  </div>
 </section>
 
-<!-- ═══ INSTALLATION ═══ -->
+<section class="card reveal" id="whats-new">
+  <div class="card-glow" style="top:-30%;left:-10%;background:radial-gradient(circle,var(--glow-green),transparent 70%)"></div>
+  <h2>What's New in v5.0.0</h2>
+  <p>Version 5.0.0 is a ground-up overhaul of every major system. The combat engine was rebuilt with triple line-of-sight verification. The decision engine now evaluates all actions simultaneously instead of using priority chains. Training AI uses validated navigation circuits. Every stat scales logarithmically with round progression.</p>
+
+  <h3>Combat Engine Overhaul</h3>
+  <ul>
+    <li><strong>Triple LOS Verification</strong> &mdash; Every shot checks centroid, feet, and final aim point. If any check fails, the bot stops shooting entirely. No more shooting through walls.</li>
+    <li><strong>Reaction Jitter</strong> &mdash; Each new target acquisition adds random variation (&plusmn;50ms) to reaction time, preventing the robotic consistency that makes AI obvious.</li>
+    <li><strong>Focus Accuracy</strong> &mdash; When a bot stays locked on the same target, aim scatter tightens by 15% after 1 second and 25% after 2 seconds. Simulates real players "locking in" on a target.</li>
+    <li><strong>Weapon-Class Burst Fire</strong> &mdash; LMGs spray long continuous bursts. Shotguns fire 1&ndash;2 precise shots. SMGs burst 4&ndash;8 rounds. Snipers take 1&ndash;3 careful shots. Each weapon class feels authentic.</li>
+    <li><strong>Magazine-Aware Training</strong> &mdash; Before turning to shoot during a train, bots check their clip. If below 30%, they reload first instead of turning with 2 rounds left.</li>
+    <li><strong>Directional Flee</strong> &mdash; When overwhelmed, bots calculate the zombie cluster's center of mass and flee directly away from it, preferring paths that break line of sight.</li>
+  </ul>
+
+  <h3>Decision Engine Overhaul</h3>
+  <ul>
+    <li><strong>Utility AI Scoring</strong> &mdash; Every tick, all possible actions (combat, revive, flee, buy perks, buy weapons, use box, PaP, open doors, grab powerups, train) are scored and ranked. The highest score wins.</li>
+    <li><strong>Dynamic Perk Priority</strong> &mdash; Quick Revive gets +200 when a teammate is downed. Speed Cola gets +100 when using an LMG. Perks adjust to the situation instead of following a static list.</li>
+    <li><strong>Max Ammo Awareness</strong> &mdash; If a Max Ammo powerup is sitting on the ground, bots skip ammo purchases entirely to save points.</li>
+    <li><strong>Anti-AFK Leader</strong> &mdash; Bots track each human's velocity. If a human has been stationary for 10+ seconds, bots reduce their desire to follow that player by 50%.</li>
+    <li><strong>Smart Early Weapons</strong> &mdash; Instead of buying the nearest wallbuy, bots score available weapons and pick the best affordable one. They prefer the M14 over the Olympia.</li>
+    <li><strong>Launcher Avoidance</strong> &mdash; Launchers, RPGs, and War Machines receive a score of -999, effectively blacklisted. AI and splash damage don't mix well.</li>
+    <li><strong>Resource Lock Safety</strong> &mdash; All resource locks (Box, PaP, debris) are automatically cleared when a bot dies or enters last stand, preventing permanent lockouts.</li>
+  </ul>
+
+  <h3>Positioning &amp; Navigation</h3>
+  <ul>
+    <li><strong>Smart Dodge</strong> &mdash; When blocking a player's path, bots step perpendicular to the player's movement direction instead of teleporting to a random point. Looks like a natural "step aside."</li>
+    <li><strong>Rank-Scaled Stuck Detection</strong> &mdash; Shotguns bots detect they're stuck after 2.5 seconds. Bones bots get 4.5 seconds of tolerance. Higher-ranked bots react faster to navigation problems.</li>
+    <li><strong>Door/Debris Stuck Prevention</strong> &mdash; After 4 seconds of no movement toward a door goal, the goal is automatically cancelled and a different action is selected.</li>
+    <li><strong>Elite Early-Game Skip</strong> &mdash; Rank 3+ bots skip the window-camping phase at round 3+ and go straight to opening doors. Elite bots don't waste time.</li>
+  </ul>
+
+  <h3>Round Scaling</h3>
+  <ul>
+    <li><strong>Logarithmic Curve</strong> &mdash; Stats improve via <code>0.10 * log2(round)</code>, capped at 0.40 around round 16. Fast improvement early, diminishing returns later.</li>
+    <li><strong>Elite Scaling (R40+)</strong> &mdash; A secondary linear factor of <code>(round - 40) * 0.005</code> (capped at 0.15) kicks in for headshot chance, crowd flee count, and powerup range. Keeps bots viable through round 70+ without breaking early balance.</li>
+  </ul>
+
+  <h3>Communication &amp; Safety</h3>
+  <ul>
+    <li><strong>Randomized Callouts</strong> &mdash; 4+ variants per status category ("LOW AMMO" / "RUNNING DRY" / "NEED AMMO" / "ALMOST EMPTY") so bots sound like different personalities.</li>
+    <li><strong>Dynamic Headshots</strong> &mdash; Uses the <code>j_head</code> bone tag for accurate headshots on crawlers (lower head), standing zombies, and tall bosses (higher head).</li>
+    <li><strong>EE Health Gate</strong> &mdash; If a bot drops below 30% health during an Easter Egg objective, the goal pauses for 3 seconds so combat and flee systems can take over.</li>
+    <li><strong>Revive Danger Scaling</strong> &mdash; Bots without Juggernog use a lower danger threshold (4 vs 8 nearby zombies) before attempting revives. No more suicide revive attempts.</li>
+  </ul>
+</section>
+
+<section class="card reveal" id="why-custom-bots">
+  <h2>Why Custom Bots</h2>
+  <p>BO2 Zombies is designed for 4 players. Solo, you miss out on revives, the points economy is tighter, doors take forever to open, and Easter Eggs that require multiple players are impossible. Existing bot mods either give you bots that stand in corners doing nothing, or they follow you like shadows with no independent thought.</p>
+  <p>Custom Bots solves this by creating AI teammates that actually <em>play the game</em>. They don't just react to what you do &mdash; they make their own plans.</p>
+
+  <h3>Before vs. After</h3>
+  <div class="compare-grid">
+    <div class="compare-col before">
+      <h4>Without Custom Bots</h4>
+      <ul>
+        <li>Solo = no revives, instant game over on down</li>
+        <li>Full game economy designed for 4 players</li>
+        <li>Easter Eggs requiring 4 players are impossible</li>
+        <li>No one to train zombies while you do objectives</li>
+        <li>Last zombie dies while you buy perks</li>
+        <li>Boring solo gameplay loop</li>
+      </ul>
+    </div>
+    <div class="compare-col after">
+      <h4>With Custom Bots</h4>
+      <ul>
+        <li>Bots revive you with danger awareness</li>
+        <li>Full lobby economy with 4 players earning points</li>
+        <li>Easter Eggs fully assisted (all 6 maps)</li>
+        <li>Bots train zombies, defend generators, fill soul chests</li>
+        <li>Last zombie always saved, AFK-safe anchor system</li>
+        <li>Full multiplayer experience with AI teammates</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout success"><strong>One file. No setup.</strong> Custom Bots requires zero configuration. Drop the file in, launch Plutonium, and you have 3 Shotguns-rank teammates ready to go. Change nothing &mdash; it just works.</div>
+</section>
+
 <section class="card reveal" id="installation">
   <div class="card-glow" style="top:-30%;left:-15%;background:radial-gradient(circle,var(--glow-green),transparent 70%)"></div>
   <h2>Installation</h2>
-  <h3>Step 1 &mdash; Locate Your Plutonium T6 Folder</h3>
-  <p>Open your Plutonium launcher and find your T6 installation directory. The default location is:</p>
-  <div class="code-wrap"><div class="code-bar"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div><pre class="cb"><code>%LOCALAPPDATA%\Plutonium\storage\t6\</code></pre></div>
+  <p>Installation takes less than 30 seconds. You need Plutonium T6 installed on your PC. If you don't have it, download it from <a href="https://plutonium.pw" target="_blank" rel="noopener">plutonium.pw</a> and follow their setup guide first.</p>
 
-  <h3>Step 2 &mdash; Navigate to Scripts</h3>
-  <p>Inside the T6 folder, go to (or create):</p>
-  <div class="code-wrap"><div class="code-bar"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div><pre class="cb"><code>storage/t6/scripts/zm/</code></pre></div>
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h4>Locate Your Plutonium T6 Folder</h4>
+        <p>Open your Plutonium launcher and find your T6 installation directory. The default location is usually in your local app data folder. You can also right-click your Plutonium shortcut and open the file location.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h4>Navigate to the Scripts Folder</h4>
+        <p>Inside the T6 folder, navigate to (or create if it doesn't exist) the zombie scripts directory. This is where all custom GSC scripts for zombie mode are loaded from.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h4>Drop the File</h4>
+        <p>Copy <code>custom_bots.gsc</code> into the <code>zm</code> folder. That's it. No other files needed. No compilation. No dependencies.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <h4>Launch and Play</h4>
+        <p>Start Plutonium and begin a <strong>Custom Games</strong> Zombies match on any map. Bots spawn automatically at round 1 with a welcome banner showing their names, ranks, and personalities.</p>
+      </div>
+    </div>
+  </div>
 
-  <h3>Step 3 &mdash; Drop the File</h3>
-  <p>Copy <code>custom_bots.gsc</code> into the <code>zm</code> folder:</p>
-  <div class="code-wrap"><div class="code-bar"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div><pre class="cb"><code>storage/t6/scripts/zm/custom_bots.gsc</code></pre></div>
+  <h3>File Paths</h3>
+  <div class="code-wrap"><div class="code-bar"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div><pre class="cb"><code>%LOCALAPPDATA%\Plutonium\storage\t6\scripts\zm\custom_bots.gsc</code></pre></div>
 
-  <h3>Step 4 &mdash; Launch and Play</h3>
-  <p>Start Plutonium and begin a <strong>Custom Games</strong> Zombies match on any map. Bots spawn automatically at round 1.</p>
+  <div class="callout warn"><strong>Updating the file?</strong> If you replace <code>custom_bots.gsc</code> with a newer version, you must fully restart Plutonium (close and reopen the launcher). Restarting only the match will cause a "Client/Server game mismatch" error because GSC scripts are compiled and loaded at startup, not per-match.</div>
 
-  <div class="callout warn"><strong>Updating?</strong> If you replace the file, you must fully restart Plutonium (close and reopen). Restarting only the match causes a "Client/Server game mismatch" error because GSC scripts load at startup.</div>
+  <div class="callout info"><strong>Multiplayer note:</strong> Custom Bots is designed for Custom Games (local/private lobbies). It works in private lobbies on Plutonium where you're the host. It will not work in public matchmaking.</div>
 </section>
 
-<!-- ═══ QUICK START ═══ -->
 <section class="card reveal" id="quick-start">
   <h2>Quick Start</h2>
-  <p>No configuration needed. By default the mod spawns <strong>3 bots</strong> at <strong>Shotguns rank</strong> (highest tier). Just install and play.</p>
-  <p>Want to customize? Open the in-game console (<code>~</code>) and use any command from the <a href="#configuration-reference">Configuration Reference</a>.</p>
+  <p>No configuration is needed. By default, the mod spawns <strong>3 bots</strong> at <strong>Shotguns rank</strong> (the highest tier) the moment you start any Zombies map. This fills your lobby to 4 players (you + 3 bots), which is the intended player count for BO2 Zombies.</p>
+  <p>The bots will immediately begin playing: buying weapons at wall locations, defending windows in the early rounds, knifing zombies for bonus points, opening doors when they have enough money, buying perks, and scaling their behavior as rounds progress.</p>
+  <p>Want to customize? Open the in-game console (<code>~</code> tilde key) and type any command from the <a href="#configuration-reference">Configuration Reference</a>.</p>
+
+  <h3>Common Scenarios</h3>
+  <div class="two-col">
+    <div>
+      <h4>Casual Game</h4>
+      <p>Just install and play. Default 3 Shotguns bots handle everything. You can focus on having fun while they cover your back, open doors, and keep the last zombie alive between rounds.</p>
+    </div>
+    <div>
+      <h4>Challenge Run</h4>
+      <div class="code-wrap"><div class="code-bar"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div><pre class="cb"><code>set bo2_zm_bots_rank "bones"
+set bo2_zm_bots_count 1</code></pre></div>
+      <p>One terrible bot. It panics, sprays wildly, and walks into lava. Good luck keeping it alive.</p>
+    </div>
+  </div>
+  <div class="two-col">
+    <div>
+      <h4>Easter Egg Run</h4>
+      <div class="code-wrap"><div class="code-bar"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div><pre class="cb"><code>set bo2_zm_bots_ee 1
+set bo2_zm_bots_rank "shotguns"</code></pre></div>
+      <p>Full EE assistance on all 6 maps. Bots handle every step except the final one. That's always yours.</p>
+    </div>
+    <div>
+      <h4>Full House</h4>
+      <div class="code-wrap"><div class="code-bar"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div><pre class="cb"><code>set bo2_zm_bots_count 7</code></pre></div>
+      <p>On 8-player servers, fill the lobby with 7 AI teammates for absolute chaos.</p>
+    </div>
+  </div>
 </section>
 
-<!-- ═══ CONFIGURATION ═══ -->
 <section class="card reveal" id="configuration-reference">
   <div class="card-glow" style="bottom:-30%;right:-10%;background:radial-gradient(circle,var(--glow-purple),transparent 70%)"></div>
   <h2>Configuration Reference</h2>
-  <p>All settings are DVars entered in the in-game console. Every setting has a sensible default.</p>
+  <p>All settings are DVars (dynamic variables) entered in the in-game console. Press <code>~</code> (tilde) to open the console, type the command, and press Enter. Every setting has a sensible default &mdash; you never need to change anything unless you want to.</p>
+  <p>DVars persist for the current Plutonium session. If you want settings to apply every time, add them to your Plutonium configuration file.</p>
+
   <h3>Core Settings</h3>
-  <div class="tw"><table><thead><tr><th>DVar</th><th>Default</th><th>Description</th></tr></thead><tbody>
-    <tr><td><code>bo2_zm_bots_count</code></td><td><code>3</code></td><td>Number of bots (1&ndash;7)</td></tr>
-    <tr><td><code>bo2_zm_bots_rank</code></td><td><code>"shotguns"</code></td><td>Bot skill rank</td></tr>
+  <div class="tw"><table><thead><tr><th>DVar</th><th>Default</th><th>Range</th><th>Description</th></tr></thead><tbody>
+    <tr><td><code>bo2_zm_bots_count</code></td><td><code>3</code></td><td>1&ndash;7</td><td>Number of bots to spawn. 3 fills a standard 4-player lobby. Up to 7 on 8-player servers.</td></tr>
+    <tr><td><code>bo2_zm_bots_rank</code></td><td><code>"shotguns"</code></td><td>See <a href="#rank-system">Rank System</a></td><td>Bot skill tier. Controls aim accuracy, reaction time, decision quality, and whether bots can train zombies.</td></tr>
   </tbody></table></div>
+
   <h3>Feature Toggles</h3>
+  <p>Set to <code>1</code> to enable (default) or <code>0</code> to disable.</p>
   <div class="tw"><table><thead><tr><th>DVar</th><th>Default</th><th>Description</th></tr></thead><tbody>
-    <tr><td><code>bo2_zm_bots_revive</code></td><td><code>1</code></td><td>Revive downed teammates</td></tr>
-    <tr><td><code>bo2_zm_bots_perks</code></td><td><code>1</code></td><td>Purchase perks</td></tr>
-    <tr><td><code>bo2_zm_bots_wallbuys</code></td><td><code>1</code></td><td>Purchase wall weapons</td></tr>
-    <tr><td><code>bo2_zm_bots_box</code></td><td><code>1</code></td><td>Use Mystery Box</td></tr>
-    <tr><td><code>bo2_zm_bots_pack</code></td><td><code>1</code></td><td>Use Pack-a-Punch</td></tr>
-    <tr><td><code>bo2_zm_bots_doors</code></td><td><code>1</code></td><td>Open doors/debris</td></tr>
-    <tr><td><code>bo2_zm_bots_powerups</code></td><td><code>1</code></td><td>Grab powerups</td></tr>
-    <tr><td><code>bo2_zm_bots_ee</code></td><td><code>1</code></td><td>Assist Easter Eggs</td></tr>
-    <tr><td><code>bo2_zm_bots_callouts</code></td><td><code>1</code></td><td>Chat callouts</td></tr>
+    <tr><td><code>bo2_zm_bots_revive</code></td><td><code>1</code></td><td>Revive downed teammates. Bots check danger levels before attempting and prioritize human players over other bots.</td></tr>
+    <tr><td><code>bo2_zm_bots_perks</code></td><td><code>1</code></td><td>Purchase perks from machines. Priority order: Juggernog &rarr; Speed Cola &rarr; Double Tap &rarr; Stamin-Up &rarr; Deadshot &rarr; Mule Kick. Dynamic boosts for Quick Revive and Speed Cola based on situation.</td></tr>
+    <tr><td><code>bo2_zm_bots_wallbuys</code></td><td><code>1</code></td><td>Purchase wall weapons. Bots scan 1500 units for available wallbuys and score them against their current loadout.</td></tr>
+    <tr><td><code>bo2_zm_bots_box</code></td><td><code>1</code></td><td>Use the Mystery Box. Activated from round 10+ (earlier for aggressive personalities). One bot at a time to prevent crowding.</td></tr>
+    <tr><td><code>bo2_zm_bots_pack</code></td><td><code>1</code></td><td>Use Pack-a-Punch. Bots select their best weapon to upgrade (not necessarily current weapon) and need 5000+ points. One bot at a time.</td></tr>
+    <tr><td><code>bo2_zm_bots_doors</code></td><td><code>1</code></td><td>Open doors and clear debris. Debris lock system prevents multiple bots from trying to buy the same door simultaneously.</td></tr>
+    <tr><td><code>bo2_zm_bots_powerups</code></td><td><code>1</code></td><td>Pick up powerup drops (Max Ammo, Insta-Kill, Double Points, Nuke, etc.). Range scales with round progression.</td></tr>
+    <tr><td><code>bo2_zm_bots_ee</code></td><td><code>1</code></td><td>Assist with Easter Egg steps on all 6 maps. Safety-gated: bots never complete the final step.</td></tr>
+    <tr><td><code>bo2_zm_bots_callouts</code></td><td><code>1</code></td><td>Chat callouts and HUD notifications. Throttled to 1 per bot per 3 seconds. Uses randomized message variants for natural feel.</td></tr>
   </tbody></table></div>
-  <h3>Cosmetic</h3>
+
+  <h3>Cosmetic Settings</h3>
   <div class="tw"><table><thead><tr><th>DVar</th><th>Default</th><th>Description</th></tr></thead><tbody>
-    <tr><td><code>bo2_zm_bots_name_prefix</code></td><td><code>"BOT"</code></td><td>Name prefix (e.g. "BOT_Dempsey")</td></tr>
-    <tr><td><code>bo2_zm_bots_clan</code></td><td><code>"ZM"</code></td><td>Clan tag</td></tr>
+    <tr><td><code>bo2_zm_bots_name_prefix</code></td><td><code>"BOT"</code></td><td>Name prefix for bots. Combined with a random name from a pool of 50+ zombie-themed names (e.g., "BOT_Dempsey", "BOT_Nikolai").</td></tr>
+    <tr><td><code>bo2_zm_bots_clan</code></td><td><code>"ZM"</code></td><td>Clan tag displayed next to bot names in the scoreboard.</td></tr>
   </tbody></table></div>
+
   <h3>Console Examples</h3>
-  <div class="code-wrap"><div class="code-bar"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div><pre class="cb"><code>set bo2_zm_bots_count 2
-set bo2_zm_bots_rank "skull"
-set bo2_zm_bots_ee 0
-set bo2_zm_bots_callouts 0</code></pre></div>
+  <div class="code-wrap"><div class="code-bar"><div class="code-dots"><span></span><span></span><span></span></div><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div><pre class="cb"><code>set bo2_zm_bots_count 2         // Two bots instead of three
+set bo2_zm_bots_rank "skull"    // Mid-tier difficulty
+set bo2_zm_bots_ee 0            // Disable Easter Egg assistance
+set bo2_zm_bots_callouts 0      // Disable chat callouts
+set bo2_zm_bots_name_prefix ""  // No prefix (just the name)
+set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
 </section>
 
-<!-- ═══ RANK SYSTEM ═══ -->
 <section class="card reveal" id="rank-system">
-  <div class="card-glow" style="top:-25%;left:-15%;background:radial-gradient(circle,rgba(255,204,71,0.06),transparent 70%)"></div>
+  <div class="card-glow" style="top:-30%;right:-15%;background:radial-gradient(circle,var(--glow-accent),transparent 70%)"></div>
   <h2>Rank System</h2>
-  <p>Every bot operates under a <strong>rank profile</strong> that defines its entire behavior, mirroring the real BO2 ranking emblems.</p>
-  <h3>Rank Overview</h3>
-  <div class="tw"><table><thead><tr><th>Rank</th><th>Emblem</th><th>Scatter</th><th>HS %</th><th>Reaction</th><th>HP</th><th>Autonomy</th><th>Train</th></tr></thead><tbody>
-    <tr><td><strong>Bones</strong></td><td>Rank 0</td><td>12u</td><td>8%</td><td>800ms</td><td>250</td><td>0.15</td><td>No</td></tr>
-    <tr><td><strong>Crossed Bones</strong></td><td>Rank 1</td><td>8u</td><td>20%</td><td>500ms</td><td>300</td><td>0.30</td><td>No</td></tr>
-    <tr><td><strong>Skull</strong></td><td>Rank 2</td><td>5u</td><td>45%</td><td>280ms</td><td>400</td><td>0.55</td><td>R6+</td></tr>
-    <tr><td><strong>Skull &amp; Knife</strong></td><td>Rank 3</td><td>2u</td><td>72%</td><td>130ms</td><td>500</td><td>0.75</td><td>R4+</td></tr>
-    <tr><td><strong>Shotguns</strong></td><td>Rank 4</td><td>1u</td><td>98%</td><td>50ms</td><td>700</td><td>0.95</td><td>R3+</td></tr>
-  </tbody></table></div>
-  <h3>What Each Rank Plays Like</h3>
-  <p><strong>Bones</strong> &mdash; The player who just bought the game yesterday. Panicky, sprays wildly, 800ms reaction. Cannot train. Stays glued to you.</p>
-  <p><strong>Crossed Bones</strong> &mdash; Below average. Slightly better aim, knows to buy perks but makes poor decisions under pressure.</p>
-  <p><strong>Skull</strong> &mdash; Competent player. 45% headshots, can start training from round 6, handles moderate pressure.</p>
-  <p><strong>Skull &amp; Knife</strong> &mdash; Skilled veteran. 72% headshots, 130ms reactions, trains from round 4 with tight kite patterns. Rarely goes down.</p>
-  <p><strong>Shotguns</strong> &mdash; Aimbot-tier. 98% headshots, 50ms snap, trains from round 3 with perfect skill. 700 HP with rapid regen. <strong>This is the default rank.</strong></p>
-  <h3>Extended Stats</h3>
-  <div class="tw"><table><thead><tr><th>Stat</th><th>Bones</th><th>Crossed</th><th>Skull</th><th>S&amp;K</th><th>Shotguns</th></tr></thead><tbody>
-    <tr><td>Burst Min/Max</td><td>5&ndash;20</td><td>4&ndash;15</td><td>3&ndash;10</td><td>3&ndash;7</td><td>3&ndash;5</td></tr>
-    <tr><td>Burst Pause</td><td>200&ndash;600ms</td><td>150&ndash;450ms</td><td>100&ndash;300ms</td><td>50&ndash;150ms</td><td>30&ndash;80ms</td></tr>
-    <tr><td>Kite Range</td><td>180/450</td><td>200/500</td><td>220/550</td><td>240/580</td><td>250/600</td></tr>
-    <tr><td>Crowd Flee</td><td>5</td><td>6</td><td>5</td><td>4</td><td>7</td></tr>
-    <tr><td>ADS Chance</td><td>30%</td><td>45%</td><td>65%</td><td>85%</td><td>95%</td></tr>
-    <tr><td>Follow Dist</td><td>1200</td><td>1800</td><td>2500</td><td>3500</td><td>5000</td></tr>
-    <tr><td>Hazard</td><td>0.20</td><td>0.35</td><td>0.55</td><td>0.80</td><td>1.00</td></tr>
-    <tr><td>Regen/Tick</td><td>30%</td><td>35%</td><td>40%</td><td>50%</td><td>60%</td></tr>
-    <tr><td>Regen CD</td><td>3.0s</td><td>2.5s</td><td>2.0s</td><td>1.5s</td><td>1.0s</td></tr>
+  <p>Every bot is assigned a rank that controls over 35 behavioral parameters. Ranks mirror the BO2 Zombies ranking icons and represent a spectrum from helpless to superhuman. The default rank is <strong>Shotguns</strong> (highest tier) because most players want competent teammates.</p>
+  <p>Rank doesn't just change accuracy &mdash; it affects everything: how quickly bots react, how well they dodge hazards, whether they can train zombies, how aggressively they push for weapons, and how reliably they revive teammates.</p>
+
+  <div class="rank-visual">
+    <div class="rank-bar">
+      <div class="rank-header">
+        <span class="rank-name"><span class="tag red">Tier 0</span> Bones</span>
+        <span style="color:var(--text3);font-size:.85rem">The Liability</span>
+      </div>
+      <div class="rank-meter"><div class="rank-fill" style="width:10%;background:linear-gradient(90deg,var(--red),#ff9b7a)"></div></div>
+      <div class="rank-stats">
+        <div class="rank-stat"><strong>Aim:</strong> 6.0&deg; scatter</div>
+        <div class="rank-stat"><strong>Headshot:</strong> 5%</div>
+        <div class="rank-stat"><strong>Reaction:</strong> 800ms</div>
+        <div class="rank-stat"><strong>HP:</strong> 250</div>
+        <div class="rank-stat"><strong>Training:</strong> Cannot train</div>
+        <div class="rank-stat"><strong>Autonomy:</strong> 0.15</div>
+        <div class="rank-stat"><strong>Hazard Avoid:</strong> 20%</div>
+        <div class="rank-stat"><strong>Stuck Timeout:</strong> 4.5s</div>
+      </div>
+      <p style="margin-top:10px;font-size:.88rem;color:var(--text3)">Panics under pressure. Sprays wildly at zombie torsos. Walks into lava, mud, and fog without flinching. Burns through ammo with no concept of conservation. Follows the leader like a lost puppy. Entertaining to watch, but don't expect it to survive past round 10.</p>
+    </div>
+
+    <div class="rank-bar">
+      <div class="rank-header">
+        <span class="rank-name"><span class="tag gold">Tier 1</span> Crossed Bones</span>
+        <span style="color:var(--text3);font-size:.85rem">The Beginner</span>
+      </div>
+      <div class="rank-meter"><div class="rank-fill" style="width:25%;background:linear-gradient(90deg,var(--gold),#ffe088)"></div></div>
+      <div class="rank-stats">
+        <div class="rank-stat"><strong>Aim:</strong> 4.5&deg; scatter</div>
+        <div class="rank-stat"><strong>Headshot:</strong> 15%</div>
+        <div class="rank-stat"><strong>Reaction:</strong> 550ms</div>
+        <div class="rank-stat"><strong>HP:</strong> 300</div>
+        <div class="rank-stat"><strong>Training:</strong> Cannot train</div>
+        <div class="rank-stat"><strong>Autonomy:</strong> 0.30</div>
+        <div class="rank-stat"><strong>Hazard Avoid:</strong> 40%</div>
+        <div class="rank-stat"><strong>Stuck Timeout:</strong> 4.0s</div>
+      </div>
+      <p style="margin-top:10px;font-size:.88rem;color:var(--text3)">Sloppy aim with slow reactions. Can't train zombies but at least tries to help. Sometimes hits headshots by accident. Will occasionally avoid hazards. Follows the leader but starts making a few independent decisions. Buys perks and weapons when it has enough points.</p>
+    </div>
+
+    <div class="rank-bar">
+      <div class="rank-header">
+        <span class="rank-name"><span class="tag purple">Tier 2</span> Skull</span>
+        <span style="color:var(--text3);font-size:.85rem">The Competent</span>
+      </div>
+      <div class="rank-meter"><div class="rank-fill" style="width:50%;background:linear-gradient(90deg,var(--accent3),#c4a8ff)"></div></div>
+      <div class="rank-stats">
+        <div class="rank-stat"><strong>Aim:</strong> 3.0&deg; scatter</div>
+        <div class="rank-stat"><strong>Headshot:</strong> 35%</div>
+        <div class="rank-stat"><strong>Reaction:</strong> 350ms</div>
+        <div class="rank-stat"><strong>HP:</strong> 400</div>
+        <div class="rank-stat"><strong>Training:</strong> Round 6+</div>
+        <div class="rank-stat"><strong>Autonomy:</strong> 0.55</div>
+        <div class="rank-stat"><strong>Hazard Avoid:</strong> 60%</div>
+        <div class="rank-stat"><strong>Stuck Timeout:</strong> 3.5s</div>
+      </div>
+      <p style="margin-top:10px;font-size:.88rem;color:var(--text3)">Decent all-around player. Can train zombies starting at round 6 when the horde is big enough. Hits headshots about a third of the time. Makes independent decisions more than half the time. Reliably avoids most hazards. A solid teammate that won't carry you but won't drag you down either.</p>
+    </div>
+
+    <div class="rank-bar">
+      <div class="rank-header">
+        <span class="rank-name"><span class="tag blue">Tier 3</span> Skull &amp; Knife</span>
+        <span style="color:var(--text3);font-size:.85rem">The Veteran</span>
+      </div>
+      <div class="rank-meter"><div class="rank-fill" style="width:75%;background:linear-gradient(90deg,var(--accent),#8ecfff)"></div></div>
+      <div class="rank-stats">
+        <div class="rank-stat"><strong>Aim:</strong> 1.5&deg; scatter</div>
+        <div class="rank-stat"><strong>Headshot:</strong> 55%</div>
+        <div class="rank-stat"><strong>Reaction:</strong> 180ms</div>
+        <div class="rank-stat"><strong>HP:</strong> 500</div>
+        <div class="rank-stat"><strong>Training:</strong> Round 4+</div>
+        <div class="rank-stat"><strong>Autonomy:</strong> 0.75</div>
+        <div class="rank-stat"><strong>Hazard Avoid:</strong> 85%</div>
+        <div class="rank-stat"><strong>Stuck Timeout:</strong> 3.0s</div>
+      </div>
+      <p style="margin-top:10px;font-size:.88rem;color:var(--text3)">Skilled and reliable. Trains zombies from round 4 with solid kiting skill. Over half their kills are headshots. Quick 180ms reactions mean they acquire targets almost instantly. Makes most decisions independently. Excellent hazard avoidance. Skips the window phase at round 3+ because they don't need it. This is what a good human teammate looks like.</p>
+    </div>
+
+    <div class="rank-bar" style="border-color:rgba(93,255,216,0.15)">
+      <div class="rank-header">
+        <span class="rank-name"><span class="tag green">Tier 4</span> Shotguns <span class="tag green" style="margin-left:6px">DEFAULT</span></span>
+        <span style="color:var(--text3);font-size:.85rem">The Machine</span>
+      </div>
+      <div class="rank-meter"><div class="rank-fill" style="width:100%;background:linear-gradient(90deg,var(--accent2),#a0ffdd)"></div></div>
+      <div class="rank-stats">
+        <div class="rank-stat"><strong>Aim:</strong> 0.3&deg; scatter</div>
+        <div class="rank-stat"><strong>Headshot:</strong> 80%</div>
+        <div class="rank-stat"><strong>Reaction:</strong> 50ms</div>
+        <div class="rank-stat"><strong>HP:</strong> 700</div>
+        <div class="rank-stat"><strong>Training:</strong> Round 3+</div>
+        <div class="rank-stat"><strong>Autonomy:</strong> 0.95</div>
+        <div class="rank-stat"><strong>Hazard Avoid:</strong> 100%</div>
+        <div class="rank-stat"><strong>Stuck Timeout:</strong> 2.5s</div>
+      </div>
+      <p style="margin-top:10px;font-size:.88rem;color:var(--text3)">Near-perfect aim with aimbot-tier accuracy. 50ms reaction time means targets are acquired almost before they appear. 80% headshot rate demolishes hordes efficiently. 700 HP with fast regeneration makes them extremely hard to down. Trains zombies from round 3 with perfect kiting. 95% autonomous &mdash; they barely need a leader. Always avoids every hazard. This is the default rank because it gives you the best teammates possible.</p>
+    </div>
+  </div>
+
+  <h3>Rank Capability Matrix</h3>
+  <div class="tw"><table><thead><tr><th>Capability</th><th>Bones</th><th>Crossed</th><th>Skull</th><th>Skull+K</th><th>Shotguns</th></tr></thead><tbody>
+    <tr><td>Buy weapons</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Open doors</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Buy perks</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Revive teammates</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Train zombies</td><td style="color:var(--red)">No</td><td style="color:var(--red)">No</td><td>R6+</td><td>R4+</td><td>R3+</td></tr>
+    <tr><td>Pack-a-Punch</td><td>Rarely</td><td>Sometimes</td><td>Yes</td><td>Yes</td><td>Always</td></tr>
+    <tr><td>Avoid hazards</td><td>20%</td><td>40%</td><td>60%</td><td>85%</td><td>100%</td></tr>
+    <tr><td>Conserve ammo</td><td>Never</td><td>Rarely</td><td>Sometimes</td><td>Often</td><td>Always</td></tr>
+    <tr><td>Skip early windows</td><td style="color:var(--red)">No</td><td style="color:var(--red)">No</td><td style="color:var(--red)">No</td><td>R3+</td><td>R3+</td></tr>
+    <tr><td>Easter Egg assist</td><td>Basic</td><td>Basic</td><td>Good</td><td>Good</td><td>Expert</td></tr>
   </tbody></table></div>
 </section>
 
-<!-- ═══ DECISION ENGINE ═══ -->
 <section class="card reveal" id="autonomous-decision-engine">
+  <div class="card-glow" style="top:-30%;left:-15%;background:radial-gradient(circle,var(--glow-purple),transparent 70%)"></div>
   <h2>Autonomous Decision Engine</h2>
-  <p>The brain of every bot. Instead of rigid priorities, each bot evaluates <strong>all</strong> available actions every tick and picks the highest utility score. This makes bots genuinely think for themselves.</p>
-  <h3>How It Works</h3>
-  <p>Every 100ms, <code>bot_evaluate_best_action()</code> scores every possible action. The bot executes whichever scored highest. Factors include ammo level, health, points, round number, nearby threats, and personality traits.</p>
-  <h3>Scoring Table</h3>
-  <div class="tw"><table><thead><tr><th>Action</th><th>Score</th><th>Key Factors</th></tr></thead><tbody>
-    <tr><td><strong>Revive</strong></td><td>1000&ndash;1200</td><td>Always highest when teammate down. Supportive +200.</td></tr>
-    <tr><td><strong>Flee</strong></td><td>800&ndash;950</td><td>Crowd exceeds threshold or health &lt;35%.</td></tr>
-    <tr><td><strong>Powerup</strong></td><td>650&ndash;700</td><td>Active powerup within 2000 units.</td></tr>
-    <tr><td><strong>Knife</strong></td><td>600&ndash;700</td><td>Early rounds, zombie in melee range.</td></tr>
-    <tr><td><strong>Ammo</strong></td><td>300&ndash;600</td><td>Inversely scales with ammo%. &lt;10% = emergency 600. Skipped if Max Ammo on ground.</td></tr>
-    <tr><td><strong>Juggernog</strong></td><td>500&ndash;580</td><td>Highest perk. Cautious +80. Needs 2500+ pts.</td></tr>
-    <tr><td><strong>Quick Revive</strong></td><td>+200</td><td>Dynamic boost when teammate downed.</td></tr>
-    <tr><td><strong>Speed Cola</strong></td><td>350&ndash;490</td><td>+100 when using LMG.</td></tr>
-    <tr><td><strong>PaP</strong></td><td>250&ndash;550</td><td>R20+ with no PaP weapon = 500+.</td></tr>
-    <tr><td><strong>Wallbuy</strong></td><td>150&ndash;550</td><td>Pistol at R10+ = +200 urgency.</td></tr>
-    <tr><td><strong>Box</strong></td><td>100&ndash;500</td><td>Smooth ramp from R8+. Launchers = -999.</td></tr>
-    <tr><td><strong>Door</strong></td><td>100&ndash;400</td><td>+10 per round. Needs 750+ pts.</td></tr>
-    <tr><td><strong>Train</strong></td><td>100&ndash;250</td><td>+15 per nearby zombie.</td></tr>
-    <tr><td><strong>Roam</strong></td><td>50</td><td>Default when nothing better.</td></tr>
-  </tbody></table></div>
-  <h3>Why This Matters</h3>
-  <p>A traditional priority system always buys Jug before ammo. But a smart player with 500 rounds refills ammo first &mdash; you can't survive the walk to the perk machine empty. The decision engine evaluates each bot's unique situation every single tick.</p>
+  <p>The decision engine is the brain of every bot. Every tick (approximately every 0.25 seconds), the engine evaluates <strong>all possible actions</strong> simultaneously and picks the one with the highest score. This is a utility AI system &mdash; not a priority list, not a state machine, not a behavior tree.</p>
+  <p>The key insight is that every action competes on the same scale. A revive opportunity scoring 1200 will always beat a perk purchase scoring 400, but a perk purchase scoring 400 will beat a routine roam scoring 50. Context changes scores dynamically: the same action can score 100 in one situation and 600 in another.</p>
+
+  <h3>Action Scoring Overview</h3>
+  <div class="score-table">
+    <div class="score-row"><span class="score-label">Revive</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:100%;background:linear-gradient(90deg,var(--red),#ff9b7a)"></div></div><span class="score-val">1000&ndash;1200+</span></div>
+    <div class="score-row"><span class="score-label">Flee</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:79%;background:linear-gradient(90deg,var(--orange),var(--gold))"></div></div><span class="score-val">800&ndash;950</span></div>
+    <div class="score-row"><span class="score-label">Powerup</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:58%;background:linear-gradient(90deg,var(--gold),#ffe088)"></div></div><span class="score-val">650&ndash;700+</span></div>
+    <div class="score-row"><span class="score-label">Knife</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:54%;background:linear-gradient(90deg,var(--accent2),#a0ffd8)"></div></div><span class="score-val">600+</span></div>
+    <div class="score-row"><span class="score-label">Ammo Buy</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:50%;background:linear-gradient(90deg,var(--accent),#8ecfff)"></div></div><span class="score-val">300&ndash;600</span></div>
+    <div class="score-row"><span class="score-label">PaP</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:46%;background:linear-gradient(90deg,var(--accent3),#c4a8ff)"></div></div><span class="score-val">250&ndash;550</span></div>
+    <div class="score-row"><span class="score-label">Perk</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:42%;background:linear-gradient(90deg,#6cb4ff,#5dffd8)"></div></div><span class="score-val">250&ndash;500</span></div>
+    <div class="score-row"><span class="score-label">Wallbuy</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:38%;background:linear-gradient(90deg,#a78bfa,#6cb4ff)"></div></div><span class="score-val">150&ndash;550</span></div>
+    <div class="score-row"><span class="score-label">Mystery Box</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:33%;background:linear-gradient(90deg,var(--gold),var(--orange))"></div></div><span class="score-val">100&ndash;500</span></div>
+    <div class="score-row"><span class="score-label">Door</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:29%;background:linear-gradient(90deg,var(--accent2),var(--accent))"></div></div><span class="score-val">100&ndash;400</span></div>
+    <div class="score-row"><span class="score-label">Train</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:21%;background:linear-gradient(90deg,var(--accent),var(--accent3))"></div></div><span class="score-val">100&ndash;250</span></div>
+    <div class="score-row"><span class="score-label">Roam</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:4%;background:var(--text3)"></div></div><span class="score-val">50</span></div>
+    <div class="score-row"><span class="score-label">Combat</span><div class="score-bar-wrap"><div class="score-bar-fill" style="width:1%;background:var(--text3)"></div></div><span class="score-val">10</span></div>
+  </div>
+
+  <h3>Dynamic Score Modifiers</h3>
+  <ul>
+    <li><strong>Point Reserve</strong> &mdash; Supportive bots maintain a 1500 point buffer for emergencies. Purchase scores are reduced when the bot would drop below this reserve.</li>
+    <li><strong>Weapon-Quality Urgency</strong> &mdash; Holding a pistol at round 10+ massively boosts Mystery Box and PaP scores. The bot knows it needs a real weapon.</li>
+    <li><strong>Cost-Aware Scoring</strong> &mdash; Expensive purchases are penalized when the bot is low on points. A 3000-point perk might score lower than a 1500-point wallbuy if the bot only has 4000 points.</li>
+    <li><strong>Round Pressure</strong> &mdash; PaP urgency scales exponentially in higher rounds. By round 20, the decision engine strongly pushes bots toward upgrading their best weapon.</li>
+    <li><strong>Personality Bias</strong> &mdash; Aggressive bots boost weapon, box, and PaP scores. Supportive bots boost revive scores by +200. Cautious bots boost perk, ammo, and flee scores.</li>
+    <li><strong>Ammo Emergency</strong> &mdash; When ammo drops below 10% of max capacity, ammo buy scores jump to 600 (urgent). Below 25%, scores are 300&ndash;500.</li>
+    <li><strong>Max Ammo Awareness</strong> &mdash; If a Max Ammo powerup is on the ground, ammo buy scores drop to 0. No point wasting money when free ammo is available.</li>
+    <li><strong>Smart PaP Selection</strong> &mdash; Bots don't just PaP their current weapon. They evaluate all held weapons and upgrade whichever one scores highest based on damage, magazine size, and fire rate.</li>
+    <li><strong>Launcher Blacklist</strong> &mdash; Any weapon with "launcher," "smaw," "rpg," or "war_machine" in the name receives a score of -999. AI bots and splash damage are a bad combination.</li>
+    <li><strong>Debris Lock</strong> &mdash; When a bot targets a door or debris, it's locked to prevent other bots from trying to buy the same one. Lock clears when the purchase completes, fails, or the bot dies.</li>
+  </ul>
 </section>
 
-<!-- ═══ COMBAT ENGINE ═══ -->
 <section class="card reveal" id="advanced-combat-engine">
-  <div class="card-glow" style="bottom:-25%;left:-10%;background:radial-gradient(circle,rgba(255,107,122,0.06),transparent 70%)"></div>
+  <div class="card-glow" style="top:-20%;right:-20%;background:radial-gradient(circle,var(--glow-accent),transparent 70%)"></div>
   <h2>Advanced Combat Engine</h2>
-  <p>Core of the bot AI. Runs every frame: target acquisition, aiming, firing, grenades, fleeing, strafing. Every component is rank-scaled.</p>
-  <h3>Processing Pipeline</h3>
-  <ol>
-    <li><strong>Knife Mode</strong> &mdash; Early-round knife mode suppresses all shooting.</li>
-    <li><strong>Validate State</strong> &mdash; Alive, not climbing, not in menu.</li>
-    <li><strong>Crowd Census</strong> &mdash; Count nearby zombies.</li>
-    <li><strong>Target Acquire</strong> &mdash; Weighted scoring + triple LOS.</li>
-    <li><strong>Target Validate</strong> &mdash; Alive, visible, not stale (3-frame clearing).</li>
-    <li><strong>Flee Decision</strong> &mdash; Health, crowd, damage, proximity, training state.</li>
-    <li><strong>Grenade Check</strong> &mdash; Dense cluster evaluation.</li>
-    <li><strong>Combat Move</strong> &mdash; Perpendicular strafe + kite distance.</li>
-    <li><strong>Aim &amp; Fire</strong> &mdash; Triple LOS, zero-fallback shooting.</li>
-  </ol>
-  <h3>Triple Line-of-Sight Verification</h3>
-  <p>Every shot passes <strong>three</strong> independent checks:</p>
-  <ol>
-    <li><code>botsighttracepassed(ent)</code> &mdash; Engine bot AI sight</li>
-    <li><code>SightTracePassed(eye, centroid)</code> &mdash; Ray to chest</li>
-    <li><code>SightTracePassed(eye, feet+10)</code> &mdash; Ray to feet</li>
-  </ol>
-  <p>All three must pass. No fallback. If LOS fails, the bot stops firing entirely.</p>
-  <h3>Burst Fire &amp; Ammo Conservation</h3>
+  <p>The v5.0.0 combat engine was rebuilt from scratch with one goal: bots should never shoot through walls, and they should feel human when they fight. Every aspect of target acquisition, aiming, and firing is controlled by rank-scaled parameters that produce realistic combat behavior.</p>
+
+  <h3>Target Acquisition</h3>
+  <p>When scanning for targets, bots evaluate all zombies within their weapon's effective range. Each potential target receives a composite score based on distance (closer = higher), clustering (splash weapons prefer groups), threat level (zombies running at teammates get priority), and line-of-sight quality. The highest-scoring target is selected.</p>
+  <p>A <strong>reaction jitter</strong> of &plusmn;50ms is added to every new target acquisition. This prevents the perfectly consistent snap-to-target timing that makes AI bots obvious. Combined with rank-based reaction time (800ms for Bones, 50ms for Shotguns), the result is targeting that looks human.</p>
+
+  <h3>Focus Accuracy System</h3>
+  <p>Real players get more accurate the longer they track a target. Custom Bots simulates this with a focus timer. When a bot stays locked on the same zombie:</p>
   <ul>
-    <li><strong>Burst Size</strong> &mdash; Bones: 5&ndash;20 shots (panic). Shotguns: 3&ndash;5 (disciplined).</li>
-    <li><strong>Below 40% ammo</strong> &mdash; Probabilistic shot suppression via <code>ammo_conserve</code> stat.</li>
-    <li><strong>Below 30%</strong> &mdash; Bursts capped at 3, pauses increase 50%.</li>
-    <li><strong>Range-Gated</strong> &mdash; 600u normal, 400u at 50% ammo, 250u at 25%.</li>
+    <li><strong>After 1 second</strong> &mdash; Aim scatter reduces by 15%. The bot is "dialing in" its aim.</li>
+    <li><strong>After 2 seconds</strong> &mdash; Aim scatter reduces by 25%. Full focus achieved.</li>
+    <li><strong>On target switch</strong> &mdash; Focus timer resets. The bot has to re-acquire its precision.</li>
   </ul>
-  <h3>Reaction &amp; Focus</h3>
-  <p>Target acquisition has rank-scaled delay (Bones: 800ms, Shotguns: 50ms) with &plusmn;50ms jitter. Focus accuracy improves aim by 15% after 1s on same target, 25% after 2s.</p>
-  <h3>Grenade Intelligence</h3>
+
+  <h3>Weapon-Class Behavior</h3>
+  <div class="tw"><table><thead><tr><th>Weapon Class</th><th>Burst Length</th><th>Cluster Bonus</th><th>Effective Range</th><th>Behavior</th></tr></thead><tbody>
+    <tr><td><strong>LMGs</strong></td><td>Long spray</td><td>+200</td><td>Extended</td><td>Sustained fire into groups. Turn-and-burn uses +800ms extended timing.</td></tr>
+    <tr><td><strong>Shotguns</strong></td><td>1&ndash;2 shots</td><td>+400</td><td>Close</td><td>Precise close-range blasts. Waits for targets to close distance.</td></tr>
+    <tr><td><strong>SMGs</strong></td><td>4&ndash;8 rounds</td><td>+200</td><td>Medium</td><td>Controlled bursts with quick target switching between kills.</td></tr>
+    <tr><td><strong>Assault Rifles</strong></td><td>3&ndash;6 rounds</td><td>+200</td><td>Medium-Long</td><td>Balanced fire with moderate burst pauses.</td></tr>
+    <tr><td><strong>Snipers</strong></td><td>1&ndash;3 shots</td><td>+100</td><td>Long</td><td>Precise single shots focused on individual high-value targets.</td></tr>
+    <tr><td><strong>Splash Weapons</strong></td><td>Varies</td><td>+600</td><td>Medium</td><td>Wonder Weapons and explosives target the densest zombie clusters.</td></tr>
+  </tbody></table></div>
+
+  <h3>Firing Discipline</h3>
   <ul>
-    <li>Crowd threshold: Bones = 7 zombies, Shotguns = 5</li>
-    <li>Cooldown: Bones = 20s, Shotguns = 12s</li>
-    <li>Ammo-gated: won't throw below 25% gun ammo</li>
-    <li>Range band: 300&ndash;800 units only</li>
+    <li><strong>Range-Gated Firing</strong> &mdash; Bots only fire when targets are within effective range for their weapon class. No cross-map SMG spraying.</li>
+    <li><strong>Ammo Conservation</strong> &mdash; When ammo is low, burst lengths shorten and some shots are probabilistically suppressed based on the bot's ammo_conserve personality stat.</li>
+    <li><strong>No Scatter at Close Range</strong> &mdash; Within 150 units, aim scatter is completely removed. Direct aim at the zombie. Scatter only applies at distance where it simulates natural aiming variance.</li>
+    <li><strong>No Fallback Shooting</strong> &mdash; If the final aim point fails line-of-sight verification, the bot stops shooting entirely. No "shooting at the wall hoping to hit something."</li>
+  </ul>
+
+  <h3>Smart Grenades</h3>
+  <p>Grenades use a separate decision system with multiple safety checks:</p>
+  <ul>
+    <li><strong>Self-damage prevention</strong> &mdash; No grenade throws within 300 units of self. Bots won't kill themselves.</li>
+    <li><strong>Rank-scaled cooldown</strong> &mdash; Bones: 20 second cooldown. Shotguns: 12 seconds. Prevents grenade spam.</li>
+    <li><strong>Ammo gating</strong> &mdash; Bots track grenade count and don't throw their last one unless it's an emergency.</li>
+    <li><strong>Cluster targeting</strong> &mdash; Grenades are aimed at the center of zombie clusters (3+ zombies) for maximum effectiveness.</li>
   </ul>
 </section>
 
-<!-- ═══ AUTONOMY ═══ -->
+<section class="card reveal" id="triple-los">
+  <h2>Triple Line-of-Sight Verification</h2>
+  <p>The single most important technical feature in Custom Bots. Every shot a bot fires passes through three independent line-of-sight checks. If any check fails, the bot stops firing immediately.</p>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h4>Centroid Check</h4>
+        <p>A trace is fired from the bot's eye position to the target zombie's centroid (center of mass). This verifies the bot can see the zombie's body. Walls, pillars, debris, and other solid geometry will block this trace.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h4>Feet Check</h4>
+        <p>A second trace is fired to the zombie's feet position. This catches edge cases where the centroid is visible but the zombie is actually behind a low wall, railing, or barricade. Both traces must pass for target validation.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h4>Final Aim Verification</h4>
+        <p>After scatter is applied and the actual aim point is calculated, a third trace verifies the final shot trajectory. Even if the zombie's body is visible, if the scattered aim point would hit a wall or obstacle, the shot is suppressed.</p>
+      </div>
+    </div>
+  </div>
+
+  <p>Additionally, at the moment of target <strong>acquisition</strong> (before any firing begins), a pathfinding validation check confirms the zombie is reachable and not trapped behind geometry. This eliminates the common AI behavior of fixating on zombies they can see through cracks but can't actually shoot.</p>
+
+  <div class="callout info"><strong>Stale Target Clearing:</strong> If a target fails LOS checks for 3 consecutive frames, it's automatically dropped and the bot acquires a new target. This prevents bots from staring at a wall waiting for a zombie to reappear.</div>
+</section>
+
 <section class="card reveal" id="autonomy-system">
   <h2>Autonomy System</h2>
-  <p>Bots <strong>do not</strong> follow the player like bodyguards. They operate independently based on <code>autonomy</code> (0.0&ndash;1.0).</p>
-  <div class="tw"><table><thead><tr><th>Behavior</th><th>Low (Bones 0.15)</th><th>High (Shotguns 0.95)</th></tr></thead><tbody>
-    <tr><td>Roaming</td><td>Within 1200 units</td><td>Up to 5000 units</td></tr>
-    <tr><td>Follow Trigger</td><td>Teleport at 3000u</td><td>Not until 8000u</td></tr>
-    <tr><td>Decisions</td><td>Relies on player proximity</td><td>Fully independent</td></tr>
-    <tr><td>Training</td><td>Never</td><td>Solo anywhere on map</td></tr>
+  <p>Autonomy is a per-rank value (0.15 for Bones, 0.95 for Shotguns) that controls how independently a bot behaves. Every decision has an autonomy threshold. When the bot's autonomy exceeds the threshold, it can make that decision on its own. Below the threshold, it defers to the leader or skips the action entirely.</p>
+  <p>This creates a natural spectrum: Bones bots are clingy followers that rarely act independently. Shotguns bots are almost entirely self-directed, only loosely tracking the leader's position while making their own plans.</p>
+
+  <h3>Autonomy Thresholds</h3>
+  <div class="tw"><table><thead><tr><th>Action</th><th>Threshold</th><th>Who Can Do It</th></tr></thead><tbody>
+    <tr><td>Open doors independently</td><td>0.40</td><td>Skull, Skull &amp; Knife, Shotguns</td></tr>
+    <tr><td>Buy weapons without leader nearby</td><td>0.30</td><td>Crossed Bones+</td></tr>
+    <tr><td>Roam to distant map areas</td><td>0.60</td><td>Skull &amp; Knife, Shotguns</td></tr>
+    <tr><td>Use Mystery Box independently</td><td>0.50</td><td>Skull+</td></tr>
+    <tr><td>PaP without group</td><td>0.70</td><td>Skull &amp; Knife, Shotguns</td></tr>
+    <tr><td>Train zombies</td><td>Rank-gated</td><td>Skull (R6+), Skull &amp; Knife (R4+), Shotguns (R3+)</td></tr>
+    <tr><td>Full independent play</td><td>0.90</td><td>Shotguns only</td></tr>
   </tbody></table></div>
-  <p>Bots with active goals are <strong>never</strong> interrupted by follow logic.</p>
+
+  <h3>Leader Selection Intelligence</h3>
+  <p>When a bot does follow a leader, it uses a scored selection system instead of just picking the nearest human. Each human player receives a leader score based on proximity and <strong>activity level</strong>. If a human has been stationary for 10+ seconds (velocity near zero), their leader score drops by 50%. This prevents bots from clustering around an AFK player while active players fight alone on the other side of the map.</p>
 </section>
 
-<!-- ═══ SURVIVABILITY ═══ -->
 <section class="card reveal" id="survivability-system">
   <h2>Survivability System</h2>
-  <div class="tw"><table><thead><tr><th>Rank</th><th>HP</th><th>Regen/Tick</th><th>Tick Rate</th><th>Cooldown</th></tr></thead><tbody>
-    <tr><td>Bones</td><td>250</td><td>30%</td><td>1.5s</td><td>3.0s</td></tr>
-    <tr><td>Crossed Bones</td><td>300</td><td>35%</td><td>1.3s</td><td>2.5s</td></tr>
-    <tr><td>Skull</td><td>400</td><td>40%</td><td>1.0s</td><td>2.0s</td></tr>
-    <tr><td>Skull &amp; Knife</td><td>500</td><td>50%</td><td>0.8s</td><td>1.5s</td></tr>
-    <tr><td>Shotguns</td><td>700</td><td>60%</td><td>0.6s</td><td>1.0s</td></tr>
-  </tbody></table></div>
-  <p>A Shotguns bot heals to full in ~1.5 seconds. Combined with smart fleeing and kite management, they're nearly unkillable.</p>
+  <p>Staying alive is a multi-layered system. Health, revive logic, flee behavior, and team defense all work together to keep bots in the fight.</p>
+
+  <h3>Revive Logic</h3>
+  <ul>
+    <li><strong>Human Priority</strong> &mdash; Downed human players are always prioritized over downed bots. If two players are down, the human gets revived first.</li>
+    <li><strong>Danger Awareness</strong> &mdash; Before attempting a revive, bots count nearby zombies. With Juggernog, the threshold is 8 zombies. Without Juggernog, it drops to 4. If danger is too high, the bot fights its way to safety first.</li>
+    <li><strong>Clutch Revive</strong> &mdash; If a bot successfully revives someone while below 25% health, a special "CLUTCH REVIVE" splash displays on the HUD.</li>
+    <li><strong>Team Defense</strong> &mdash; Bots protect ALL teammates, not just their designated leader. If any teammate is in danger (multiple zombies closing in), nearby bots will engage those zombies.</li>
+  </ul>
+
+  <h3>Directional Flee</h3>
+  <p>When the bot is overwhelmed (too many zombies within flee distance), it doesn't run to a random point. The flee system calculates the <strong>centroid</strong> of all nearby zombie positions, then moves in the opposite direction. It prefers paths that break line of sight with the zombie cluster, using nav nodes and cover positions.</p>
+  <p>Dynamic strafe distance scales with zombie count: fewer zombies = wider strafes (more evasive), many zombies = tighter strafes (more direct escape).</p>
+
+  <h3>Elite Survivability (Shotguns Rank)</h3>
+  <p>Shotguns-rank bots have several survival advantages: 700 HP (nearly 3x the base 250), faster health regeneration, and intelligent repositioning. When health drops below a critical threshold, elite bots break from their current action and seek a defensible position before re-engaging.</p>
 </section>
 
-<!-- ═══ EARLY GAME ═══ -->
 <section class="card reveal" id="early-game-flow">
   <h2>Early Game Flow</h2>
-  <p>Every bot follows a strict sequential startup mirroring real player behavior:</p>
-  <ol>
-    <li><strong>Buy Weapon</strong> &mdash; Scores nearby wallbuys via <code>bot_score_weapon()</code>, picks the best affordable one.</li>
-    <li><strong>Claim Window</strong> &mdash; Finds unoccupied barrier (200+ units from others) and defends for points.</li>
-    <li><strong>Buy Door</strong> &mdash; At 750+ points, opens the nearest door.</li>
-    <li><strong>Full Autonomy</strong> &mdash; Decision engine takes over.</li>
-  </ol>
-  <div class="callout info"><strong>Elite Skip:</strong> Rank 3+ bots skip the window phase at round 3+ and go straight to doors.</div>
+  <p>The first few rounds of a Zombies game have specific rhythms that experienced players follow. Custom Bots replicates this with a structured early game sequence that maximizes points and sets up the team for success.</p>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h4>Weapon Phase (Round 1)</h4>
+        <p>Bots immediately move to the nearest affordable wall weapon. Instead of buying the closest one blindly, they score available wallbuys using the weapon scoring system and pick the best affordable option. An M14 scores higher than an Olympia because it's more effective for point-building. Once armed, they advance to window defense.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h4>Window Phase (Rounds 1&ndash;3)</h4>
+        <p>Bots claim windows and defend them to earn points. They knife zombies as they climb through for maximum point value (130 per knife kill vs. 60&ndash;70 for gun kills). The dynamic round cap ensures bots don't overstay &mdash; they move on when the round gets too chaotic for safe window camping.</p>
+        <p><strong>Elite Skip:</strong> Rank 3+ bots (Skull &amp; Knife and Shotguns) bypass this phase entirely at round 3+ and move straight to door buying. They're skilled enough to handle open areas immediately.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h4>Door Phase (Rounds 2&ndash;5)</h4>
+        <p>When bots accumulate enough points, they start opening doors to expand the playable area. The debris lock system ensures only one bot targets each door. Bots with door goals have a 4-second stuck timer &mdash; if they can't reach the door, the goal cancels and they pick a different action.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <h4>Transition to Main Loop</h4>
+        <p>After the early phases complete, bots transition to the autonomous decision engine for the rest of the game. The decision engine handles all further purchases, combat, training, and objectives dynamically.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- ═══ KNIFE STRATEGY ═══ -->
 <section class="card reveal" id="early-round-knife-strategy">
   <h2>Early Round Knife Strategy</h2>
-  <div class="tw"><table><thead><tr><th>Round</th><th>Strategy</th><th>Points/Kill</th></tr></thead><tbody>
-    <tr><td>Round 1</td><td>Pure knife</td><td>130</td></tr>
-    <tr><td>Round 2</td><td>4 body shots + knife</td><td>170</td></tr>
-    <tr><td>Round 3</td><td>8 body shots + knife</td><td>210</td></tr>
-    <tr><td>Round 4+</td><td>Full gunfire</td><td>50&ndash;70</td></tr>
-  </tbody></table></div>
-  <p>On Origins, bots with Iron Fist extend knife rounds through round 8.</p>
+  <p>In Zombies, knife kills in early rounds award 130 points vs. 60&ndash;70 for gun kills. Experienced players knife as much as possible in rounds 1&ndash;3 to build their point economy. Custom Bots replicates this strategy.</p>
+  <p>When <code>knife_mode</code> is active, the combat engine respects it: bots switch to their knife and engage zombies in melee range. The system tracks the number of bullets needed to soften a zombie for a one-hit knife kill based on the current round. On round 1, zombies die to a single knife. On round 2, one bullet + knife. On round 3, two bullets + knife.</p>
+  <p>On Origins, bots with the Iron Fist perk extend their knife rounds through round 8, since the upgraded melee damage makes knifing viable much longer.</p>
+
+  <div class="callout info"><strong>Point Optimization:</strong> A bot that knifes through rounds 1&ndash;3 earns approximately 2,600&ndash;3,800 points vs. 1,500&ndash;2,200 from gun kills alone. That's often enough for Juggernog by round 4.</div>
 </section>
 
-<!-- ═══ TRAINING ═══ -->
 <section class="card reveal" id="training-ai">
   <div class="card-glow" style="top:-20%;right:-15%;background:radial-gradient(circle,var(--glow-accent),transparent 70%)"></div>
   <h2>Training AI</h2>
-  <p>Training (zombie kiting) is the primary behavior for capable ranks.</p>
-  <div class="tw"><table><thead><tr><th>Rank</th><th>Start</th><th>Skill</th><th>Threshold</th></tr></thead><tbody>
-    <tr><td>Bones / Crossed</td><td>Never</td><td>N/A</td><td>N/A</td></tr>
-    <tr><td>Skull</td><td>R6+</td><td>0.50</td><td>5 zombies</td></tr>
-    <tr><td>Skull &amp; Knife</td><td>R4+</td><td>0.75</td><td>3 zombies</td></tr>
-    <tr><td>Shotguns</td><td>R3+</td><td>1.00</td><td>2 zombies</td></tr>
+  <p>Training (zombie kiting) is the core high-round survival strategy in Zombies. You run in circles, let zombies pile up behind you into a tight horde, then turn and shoot them all at once. It's the most efficient way to clear rounds and it's what separates good players from great ones. Custom Bots does it autonomously.</p>
+
+  <h3>Who Can Train</h3>
+  <div class="tw"><table><thead><tr><th>Rank</th><th>Start Round</th><th>Train Skill</th><th>Min Horde Size</th><th>Behavior</th></tr></thead><tbody>
+    <tr><td><strong>Bones / Crossed</strong></td><td>Never</td><td>N/A</td><td>N/A</td><td>Cannot train. Fight and flee only.</td></tr>
+    <tr><td><strong>Skull</strong></td><td>Round 6+</td><td>0.50</td><td>5 zombies</td><td>Basic kiting with frequent mistakes. Gets cornered occasionally.</td></tr>
+    <tr><td><strong>Skull &amp; Knife</strong></td><td>Round 4+</td><td>0.75</td><td>3 zombies</td><td>Reliable kiting with good route selection. Rarely gets trapped.</td></tr>
+    <tr><td><strong>Shotguns</strong></td><td>Round 3+</td><td>1.00</td><td>2 zombies</td><td>Perfect kiting with optimal routes. Almost never makes mistakes.</td></tr>
   </tbody></table></div>
-  <h3>Process</h3>
-  <ol>
-    <li><strong>Zone Evaluation</strong> &mdash; 8+ nav nodes within 500u, 2+ exits.</li>
-    <li><strong>Circuit Building</strong> &mdash; Ring of validated waypoints.</li>
-    <li><strong>Circuit Running</strong> &mdash; Draw zombies into trailing horde.</li>
-    <li><strong>Danger Detection</strong> &mdash; Dot product detects frontal approach; bot reverses.</li>
-    <li><strong>Emergency Abort</strong> &mdash; Zombie breaches melee range.</li>
-    <li><strong>Turn-and-Burn</strong> &mdash; Periodically fire into horde. Magazine-aware: reloads first if clip &lt;30%.</li>
-    <li><strong>Lap Counting</strong> &mdash; Auto-rebuilds after set laps. 200-tick abort cap.</li>
-  </ol>
+
+  <h3>Training Process</h3>
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h4>Zone Evaluation</h4>
+        <p>The bot scans its surroundings for a suitable training zone: at least 8 navigation nodes within 500 units, with 2 or more exits. This ensures the circuit has enough room and the bot won't trap itself in a dead end.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h4>Circuit Building</h4>
+        <p>A ring of validated waypoints is constructed using nav nodes. Each connection between waypoints is checked for hazards using midpoint analysis &mdash; not just the endpoints but the path between them. Waypoints near lava, mud, or active traps are excluded.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h4>Circuit Running</h4>
+        <p>The bot runs the circuit, drawing zombies into a trailing horde. Movement speed and circuit radius adjust based on the current zombie count and round number.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <h4>Danger Detection</h4>
+        <p>Dot product analysis detects when zombies approach from the front (angle between bot's forward vector and zombie direction). If a zombie is detected ahead, the bot reverses direction on the circuit instead of running into it.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">5</div>
+      <div class="flow-content">
+        <h4>Turn-and-Burn</h4>
+        <p>Periodically, the bot turns around and fires into the trailing horde. Magazine-aware: if the current clip is below 30% capacity, the bot reloads before turning. Weapon-class timing: Wonder Weapons hold the turn for +1200ms, LMGs for +800ms, pistols keep short bursts.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">6</div>
+      <div class="flow-content">
+        <h4>Emergency Abort</h4>
+        <p>If a zombie breaches melee range (too close for safe kiting), the bot abandons the circuit and enters flee mode. A 200-tick abort cap also triggers if the circuit has been running too long without completing. Lap counting triggers automatic circuit rebuilds after a set number of laps.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- ═══ ECONOMY ═══ -->
 <section class="card reveal" id="economy-system">
   <h2>Economy System</h2>
-  <p>All economy options evaluated simultaneously through the decision engine.</p>
-  <h3>Perk Priority</h3>
-  <ol>
-    <li>Juggernog (500) &mdash; Speed Cola +100 when using LMG</li>
-    <li>Speed Cola (350) &mdash; Quick Revive +200 when teammate downed</li>
-    <li>Double Tap (300) &mdash; Aggressive personality bonus</li>
-    <li>Stamin-Up, Deadshot, Mule Kick</li>
-  </ol>
-  <h3>Weapons &amp; Ammo</h3>
+  <p>Points are the lifeblood of Zombies. Every purchase, from a 500-point door to a 5000-point Pack-a-Punch, is weighed against the bot's current financial situation, immediate needs, and round pressure. The decision engine handles all economy decisions simultaneously &mdash; perks, weapons, doors, ammo, box, and PaP all compete for the same pool of points.</p>
+
+  <h3>Perk Priority System</h3>
+  <p>Perks follow a base priority order but are dynamically adjusted based on the current situation:</p>
+  <div class="tw"><table><thead><tr><th>Perk</th><th>Base Score</th><th>Dynamic Boost</th><th>Notes</th></tr></thead><tbody>
+    <tr><td><strong>Juggernog</strong></td><td>500</td><td>&mdash;</td><td>Always first priority. 2x health is essential for survival.</td></tr>
+    <tr><td><strong>Speed Cola</strong></td><td>350</td><td>+100 if using LMG</td><td>LMGs benefit the most from fast reload. Dynamic boost recognizes this.</td></tr>
+    <tr><td><strong>Quick Revive</strong></td><td>300</td><td>+200 if teammate downed</td><td>Jumps to near-top priority when a revive is needed.</td></tr>
+    <tr><td><strong>Double Tap</strong></td><td>300</td><td>+50 for aggressive personality</td><td>More damage per bullet. Aggressive bots prioritize it.</td></tr>
+    <tr><td><strong>Stamin-Up</strong></td><td>200</td><td>&mdash;</td><td>Faster movement helps with training and escape.</td></tr>
+    <tr><td><strong>Deadshot Daiquiri</strong></td><td>150</td><td>&mdash;</td><td>Auto-aim assist. Less impactful for bots than humans.</td></tr>
+    <tr><td><strong>Mule Kick</strong></td><td>100</td><td>&mdash;</td><td>Third weapon slot. Low priority because bots manage 2 weapons well.</td></tr>
+  </tbody></table></div>
+
+  <h3>Spending Priorities</h3>
   <ul>
-    <li><strong>Wallbuys</strong> &mdash; 1500u scan. High priority with &lt;2 primaries.</li>
-    <li><strong>Box</strong> &mdash; Scores from R10+. Aggressive bots hit earlier.</li>
-    <li><strong>PaP</strong> &mdash; At <code>pap_min_round</code> with 5000+ points.</li>
-    <li><strong>Ammo</strong> &mdash; Below 25% = scores 300&ndash;500. Below 10% = emergency 600.</li>
+    <li><strong>Emergency Ammo</strong> &mdash; Below 10% ammo = score 600 (urgent). Below 25% = score 300&ndash;500. Bots won't run dry if they can help it.</li>
+    <li><strong>Max Ammo Awareness</strong> &mdash; If a Max Ammo powerup is on the ground, ammo buy score drops to 0. Why spend points when free ammo is sitting right there?</li>
+    <li><strong>Weapon Upgrades</strong> &mdash; PaP is prioritized once the bot reaches <code>pap_min_round</code> with 5000+ points. The bot selects its best weapon to upgrade &mdash; not necessarily the one currently held.</li>
+    <li><strong>Door Investment</strong> &mdash; Doors are purchased when the bot has enough points AND the door leads somewhere useful (perk machine, Mystery Box, better training area).</li>
+    <li><strong>Point Reserve</strong> &mdash; Supportive personality bots keep a 1500-point buffer. They won't spend their last points on a non-essential purchase.</li>
   </ul>
 </section>
 
-<!-- ═══ COLLECTIBLES ═══ -->
+<section class="card reveal" id="weapon-scoring">
+  <h2>Weapon Scoring System</h2>
+  <p>Every weapon in the game has a score that determines how desirable it is for bots. Scores are calculated from a combination of base weapon stats (damage, fire rate, magazine size), map-specific bonuses (some weapons are better on certain maps), and contextual modifiers (what the bot already has, how many points it has).</p>
+
+  <h3>Scoring Factors</h3>
+  <ul>
+    <li><strong>Base Weapon Quality</strong> &mdash; Assault rifles and LMGs score higher than pistols and shotguns (with exceptions for wonder weapons and Pack-a-Punched weapons).</li>
+    <li><strong>Map Bonuses</strong> &mdash; Each map has a curated list of weapon preferences. The Sliquifier gets +80 on Die Rise. The Blundergat gets +80 on Mob. The Paralyzer gets +80 on Buried. See <a href="#map-weapon-preferences">Map Weapon Preferences</a>.</li>
+    <li><strong>Current Loadout</strong> &mdash; If the bot already has a strong primary, the urgency to acquire another weapon drops. If the bot only has a pistol at round 10+, weapon scores skyrocket.</li>
+    <li><strong>Cost Assessment</strong> &mdash; Expensive wallbuys are penalized when the bot is low on points. A 1500-point M14 might outscore a 3000-point Galil if the bot only has 3500 points.</li>
+    <li><strong>Launcher Blacklist</strong> &mdash; Launchers, RPGs, SMWAs, and War Machines receive -999. Self-damage weapons are too dangerous for AI.</li>
+    <li><strong>Ice Staff Reservation</strong> &mdash; On Origins, the Ice Staff is permanently reserved for human players. Bots will never pick up ice staff parts, crystals, or the completed weapon. This is hardcoded at every level of the weapon system.</li>
+  </ul>
+</section>
+
 <section class="card reveal" id="collectibles">
   <h2>Collectible &amp; Buildable Pickup</h2>
-  <div class="tw"><table><thead><tr><th>Map</th><th>Collectibles</th></tr></thead><tbody>
-    <tr><td><strong>TranZit</strong></td><td>Turbine, Jet Gun, Electric Trap, Shield parts</td></tr>
-    <tr><td><strong>Die Rise</strong></td><td>Trample Steam, Sliquifier, Shield, Nav Cards</td></tr>
-    <tr><td><strong>Mob</strong></td><td>Plane parts, Hell's Retriever, Acid Gat Kit, Shield</td></tr>
-    <tr><td><strong>Buried</strong></td><td>Head Chopper, Resonator, Turbine, Chalk weapons</td></tr>
-    <tr><td><strong>Origins</strong></td><td>Shovels, Dig sites, Staff parts (never ice), Shield, Drone, Gramophone, Discs, Crystals</td></tr>
-  </tbody></table></div>
-  <div class="callout danger"><strong>Ice Staff Reservation:</strong> Bots <strong>never</strong> pick up ice staff parts, crystals, or the weapon. Permanently reserved for human players at every level of the code.</div>
+  <p>Bots actively search for and collect buildable parts across all maps. They don't just stumble into parts &mdash; they route to known spawn locations and pick them up with purpose. After collecting enough parts, they navigate to the build table and craft the buildable.</p>
+
+  <div class="map-cards">
+    <div class="map-card transit">
+      <h4>TranZit</h4>
+      <p>Parts for Turbine, Jet Gun, Electric Trap, and Zombie Shield. Bots prioritize the Turbine early since it's needed for power and EE steps.</p>
+    </div>
+    <div class="map-card dierise">
+      <h4>Die Rise</h4>
+      <p>Trample Steam parts, Sliquifier parts, Zombie Shield, and Nav Card Table. Bots know the elevator locations for each part spawn.</p>
+    </div>
+    <div class="map-card mob">
+      <h4>Mob of the Dead</h4>
+      <p>Plane parts (5 total), Hell's Retriever, Acid Gat Kit, and Zombie Shield. Bots can locate plane parts across the prison map.</p>
+    </div>
+    <div class="map-card buried">
+      <h4>Buried</h4>
+      <p>Head Chopper, Resonator, Turbine, and chalk weapon drawings. Bots place chalk drawings at wallbuy locations when found.</p>
+    </div>
+    <div class="map-card origins">
+      <h4>Origins</h4>
+      <p>Shovels (8-method search), dig sites, staff parts (fire, wind, lightning &mdash; <strong>never ice</strong>), Zombie Shield, Maxis Drone, Gramophone, Vinyl Discs, and Staff Crystals. The most complex collectible system of any map.</p>
+    </div>
+  </div>
+
+  <div class="callout danger"><strong>Ice Staff Reservation:</strong> Bots <strong>never</strong> pick up Ice Staff parts, Ice Staff crystals, or the completed Ice Staff weapon. This is permanently reserved for human players and is enforced at every level of the code: <code>bot_is_ice_staff_item()</code> and <code>bot_is_ice_staff_weapon()</code> block all bot access.</div>
 </section>
 
-<!-- ═══ PART SEEKING ═══ -->
 <section class="card reveal" id="proactive-seeking">
   <h2>Proactive Part Seeking</h2>
-  <p>Bots <strong>actively route</strong> to known part spawn areas across the entire map using hardcoded patrol waypoints. After collecting enough parts, they navigate to the build table and craft. On Origins, bots seek unpowered generators across all 6 locations.</p>
+  <p>Bots don't wait to stumble across parts. They <strong>actively route</strong> to known part spawn areas across the entire map using hardcoded patrol waypoints. The seeking system runs during early game to ensure parts are collected before they're needed.</p>
+  <p>On Origins, the proactive seeking system is particularly sophisticated. Bots navigate to all 6 generator locations using a 6-method search system (<code>bot_find_generators()</code>). They seek shovels with an 8-method search that includes trigger_use fallback detection. They patrol dig site locations and staff part spawns (excluding ice staff).</p>
+  <p>After collecting enough parts for a buildable, bots automatically navigate to the build table and craft the item. Shovel reservation ensures at least 1 shovel is always left for the human player.</p>
 </section>
 
-<!-- ═══ LAST ZOMBIE ═══ -->
 <section class="card reveal" id="last-zombie-save">
   <h2>Last Zombie Save &amp; AFK Training</h2>
-  <p>When 1&ndash;2 zombies remain, <strong>every bot</strong> stops shooting. No exceptions. Hardcoded.</p>
-  <ol>
-    <li>One bot becomes the <strong>anchor</strong> and kites the last zombie.</li>
-    <li>Others can buy perks/weapons/PaP but <strong>cannot shoot</strong>.</li>
-    <li>Anchor runs: sprint away if close, circle in sweet spot, walk back if far.</li>
-  </ol>
-  <div class="callout info"><strong>AFK Safe:</strong> The anchor pattern runs indefinitely. Walk away and come back whenever. The zombie will still be alive.</div>
+  <p>One of the most important features in any Zombies mod. When 1&ndash;2 zombies remain at the end of a round, <strong>every bot stops shooting</strong>. No exceptions. This is hardcoded, not scored &mdash; the decision engine cannot override it.</p>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h4>Detection</h4>
+        <p>When the zombie count drops to 2 or fewer, all bots receive the cease-fire signal. They holster weapons and stop engaging.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h4>Anchor Assignment</h4>
+        <p>One bot becomes the designated anchor. Its job is to kite the last zombie indefinitely, keeping it alive while other players do whatever they need.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h4>AFK Training Pattern</h4>
+        <p>The anchor runs a specific pattern: sprint away when the zombie gets close, circle at the sweet spot distance, walk back if the zombie falls too far behind. This runs indefinitely &mdash; you can walk away from your controller and the zombie will still be alive when you come back.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <h4>Economy Window</h4>
+        <p>While the anchor keeps the zombie alive, other bots can buy perks, weapons, and use Pack-a-Punch. They just can't shoot. This gives the entire team a safe window for between-round preparation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout success"><strong>AFK Safe:</strong> The anchor pattern runs indefinitely without degradation. Walk away and come back 20 minutes later &mdash; the zombie will still be alive, being kited in circles by the anchor bot.</div>
 </section>
 
-<!-- ═══ PERSONALITY ═══ -->
 <section class="card reveal" id="bot-personality-system">
   <h2>Bot Personality System</h2>
-  <div class="tw"><table><thead><tr><th>Trait</th><th>Stat Effects</th><th>Decision Effects</th></tr></thead><tbody>
-    <tr><td><strong>Aggressive</strong></td><td>Reduced kite, smaller backoff, +5% autonomy</td><td>Boosts weapon/box/PaP/training scores</td></tr>
-    <tr><td><strong>Supportive</strong></td><td>+15% revive chance, follows closer</td><td>Revive score +200</td></tr>
-    <tr><td><strong>Cautious</strong></td><td>Larger flee count, +15% hazard awareness</td><td>Boosts perk/ammo/flee scores</td></tr>
+  <p>Every bot receives a randomly assigned personality at spawn that subtly influences all of its decisions. Personalities don't change fundamental capabilities (a Bones bot is still terrible regardless of personality), but they add variety and create situations where two Shotguns bots behave noticeably differently.</p>
+
+  <div class="tw"><table><thead><tr><th>Trait</th><th>Stat Effects</th><th>Decision Effects</th><th>Combat Style</th></tr></thead><tbody>
+    <tr><td><strong>Aggressive</strong></td><td>Reduced kite distance, smaller backoff radius, +5% autonomy</td><td>Boosts weapon/box/PaP/training scores. Pushes for combat engagement. Earlier Mystery Box usage.</td><td>Closes distance faster. Uses grenades more frequently. Prefers high-damage weapons.</td></tr>
+    <tr><td><strong>Supportive</strong></td><td>+15% revive success chance, follows leader more closely</td><td>Revive score +200. Point reserve of 1500. Prioritizes Quick Revive purchase. Stays near teammates.</td><td>Defensive positioning. Prioritizes covering fire for teammates. Shares areas with other bots.</td></tr>
+    <tr><td><strong>Cautious</strong></td><td>Larger flee trigger count, +15% hazard awareness radius</td><td>Boosts perk/ammo/flee scores. Earlier ammo purchases. Higher danger threshold for revive attempts.</td><td>Keeps more distance. Flees earlier. Conserves ammo more aggressively. Avoids hazards at greater range.</td></tr>
   </tbody></table></div>
-  <p>All three traits influence behavior simultaneously. Dominant trait is displayed on spawn.</p>
+
+  <p>The dominant personality trait is displayed in the spawn notification when bots join the game (e.g., "BOT_Dempsey [Aggressive] joined"). All three traits exist on a spectrum &mdash; a bot is never purely one type. The dominant trait just has the strongest influence.</p>
 </section>
 
-<!-- ═══ COMMUNICATION ═══ -->
 <section class="card reveal" id="bot-communication-system">
   <h2>Bot Communication</h2>
-  <p>Dual-layer system: HUD feeds + chat messages. Throttled to 1 per bot per 3 seconds.</p>
-  <div class="tw"><table><thead><tr><th>Category</th><th>Display</th><th>Examples</th></tr></thead><tbody>
-    <tr><td><strong>Action</strong></td><td>HUD (white)</td><td>"Buying Juggernog", "Opening door"</td></tr>
-    <tr><td><strong>Status</strong></td><td>Notification (red)</td><td>"LOW AMMO", "RUNNING DRY", "BARELY ALIVE"</td></tr>
-    <tr><td><strong>Combat</strong></td><td>HUD (orange)</td><td>"COVERING YOU", "WATCHING YOUR SIX"</td></tr>
-    <tr><td><strong>Easter Egg</strong></td><td>Notification (cyan)</td><td>"Standing on symbol", "Feeding dog head"</td></tr>
+  <p>Bots communicate through two channels: HUD notifications (visual splashes on screen) and chat messages. All callouts are throttled to 1 per bot per 3 seconds to prevent message spam.</p>
+
+  <h3>Randomized Callout System</h3>
+  <p>Instead of static strings, every callout uses a <code>bot_random_callout()</code> function that picks from an array of 4+ variants. This means the same situation produces different messages each time, making bots sound like distinct personalities.</p>
+
+  <div class="tw"><table><thead><tr><th>Situation</th><th>Possible Callouts</th></tr></thead><tbody>
+    <tr><td><strong>Low Ammo</strong></td><td>"LOW AMMO" / "RUNNING DRY" / "NEED AMMO" / "ALMOST EMPTY"</td></tr>
+    <tr><td><strong>Critical Health</strong></td><td>"CRITICAL HEALTH" / "HURTING BAD" / "NEED HELP" / "BARELY ALIVE"</td></tr>
+    <tr><td><strong>Covering Leader</strong></td><td>"COVERING LEADER" / "GOT YOUR BACK" / "WATCHING YOUR SIX" / "COVERING YOU"</td></tr>
+    <tr><td><strong>Training</strong></td><td>"TRAINING ZOMBIES" / "GOT A HORDE" / "RUNNING TRAIN" / "KITING"</td></tr>
+    <tr><td><strong>Downed</strong></td><td>"IM DOWN" / "NEED REVIVE" / "DOWN - HELP" / "MAN DOWN"</td></tr>
   </tbody></table></div>
-  <p>Callouts use <strong>randomized variants</strong> (4+ per category) so bots sound like different people.</p>
+
+  <h3>Communication Categories</h3>
+  <div class="tw"><table><thead><tr><th>Category</th><th>Display Method</th><th>Color</th><th>Examples</th></tr></thead><tbody>
+    <tr><td><strong>Action</strong></td><td>HUD overlay</td><td>White</td><td>"Buying Juggernog", "Opening door", "Using Pack-a-Punch"</td></tr>
+    <tr><td><strong>Status</strong></td><td>Notification bar</td><td>Red</td><td>"LOW AMMO", "CRITICAL HEALTH", "NEED REVIVE"</td></tr>
+    <tr><td><strong>Combat</strong></td><td>HUD overlay</td><td>Orange</td><td>"COVERING YOU", "TRAINING ZOMBIES", "FLEEING"</td></tr>
+    <tr><td><strong>Easter Egg</strong></td><td>Notification bar</td><td>Cyan</td><td>"Standing on symbol", "Feeding dog head", "Defending generator"</td></tr>
+    <tr><td><strong>Milestone</strong></td><td>HUD splash</td><td>Gold</td><td>"50 KILLS", "100 KILLS", "200 KILLS", "500 KILLS"</td></tr>
+  </tbody></table></div>
 </section>
 
-<!-- ═══ ROUND SCALING ═══ -->
 <section class="card reveal" id="round-based-scaling">
   <h2>Round-Based Scaling</h2>
-  <p>Stats improve via logarithmic curve: fast improvement early, diminishing returns later. Cap at 0.40 around R16. Affects scatter, headshot chance, reaction time, burst pause, revive delay, crowd tolerance, and training skill.</p>
-  <div class="callout info"><strong>Elite Scaling (R40+):</strong> Secondary linear factor kicks in (capped 0.15). Applied to headshot chance, crowd flee, and powerup range only. Keeps bots viable R40&ndash;R70+ without breaking early game.</div>
+  <p>Bot stats aren't static. They improve as rounds progress using a carefully tuned logarithmic curve that provides fast improvement in early rounds and diminishing returns later. This mirrors how real players "warm up" and improve their play as a session goes on.</p>
+
+  <h3>Logarithmic Curve</h3>
+  <p>The primary scaling formula is <code>0.10 &times; log2(round)</code>, capped at 0.40 (reached around round 16). This curve is applied to:</p>
+  <ul>
+    <li><strong>Aim Scatter</strong> &mdash; Reduces over time, making bots more accurate in later rounds.</li>
+    <li><strong>Headshot Chance</strong> &mdash; Increases, reflecting improved target selection.</li>
+    <li><strong>Reaction Time</strong> &mdash; Decreases, making bots faster to acquire targets.</li>
+    <li><strong>Burst Pause</strong> &mdash; Shorter pauses between bursts in later rounds.</li>
+    <li><strong>Revive Delay</strong> &mdash; Faster response to downed teammates.</li>
+    <li><strong>Crowd Flee Count</strong> &mdash; Higher tolerance before fleeing (bots get braver).</li>
+    <li><strong>Powerup Range</strong> &mdash; Wider search radius for powerup drops.</li>
+    <li><strong>Training Skill</strong> &mdash; Smoother, more reliable kiting patterns.</li>
+  </ul>
+
+  <h3>Elite Scaling (Round 40+)</h3>
+  <p>After round 40, a secondary linear factor kicks in: <code>(round - 40) &times; 0.005</code>, capped at 0.15 (maxed at round 70). This is applied <strong>only</strong> to three stats to keep bots viable in ultra-high rounds without breaking early game balance:</p>
+  <ul>
+    <li><strong>Headshot Chance</strong> &mdash; Higher headshot rate needed because zombie health scales exponentially.</li>
+    <li><strong>Crowd Flee Count</strong> &mdash; Higher tolerance because zombie spawns increase dramatically.</li>
+    <li><strong>Powerup Range</strong> &mdash; Wider search because powerups become critical for survival.</li>
+  </ul>
+
+  <div class="callout info"><strong>Why logarithmic?</strong> A linear curve would make bots improve too slowly early and too quickly late. An exponential curve would make them overpowered by round 10. Logarithmic gives fast early improvement (where it matters most) and gentle late improvement (where it provides polish without imbalance).</div>
 </section>
 
-<!-- ═══ DOWNED ═══ -->
 <section class="card reveal" id="downed-bot-behavior">
   <h2>Downed Bot Behavior</h2>
+  <p>When a bot goes down, it doesn't just lie there waiting. Downed bots have their own behavioral system that maximizes their chances of survival and contribution even while incapacitated.</p>
+
+  <h3>Downed Actions</h3>
   <ul>
-    <li>500u scan range for nearby zombies</li>
-    <li>Rank 3+ land headshots 70% via <code>j_head</code> tag targeting</li>
-    <li>Crawl toward nearest teammate for faster revive</li>
-    <li>Resource locks (box, PaP, debris) auto-cleared on down</li>
+    <li><strong>Crawl Toward Teammates</strong> &mdash; Downed bots slowly crawl toward the nearest living teammate, reducing the distance the reviver needs to travel.</li>
+    <li><strong>Downed Combat</strong> &mdash; Using their pistol, downed bots scan for zombies within 500 units and engage them. This provides covering fire for teammates attempting the revive.</li>
+    <li><strong>Dynamic Headshots</strong> &mdash; Rank 3+ bots land headshots 70% of the time while downed, using the <code>j_head</code> bone tag for accurate aiming. This works correctly for crawlers (lower head), standing zombies, and tall bosses like the Panzer.</li>
+    <li><strong>Resource Lock Cleanup</strong> &mdash; The moment a bot goes down, all resource locks (Mystery Box, Pack-a-Punch, debris) are automatically cleared. This prevents permanent lockouts that could cripple the team.</li>
   </ul>
 </section>
 
-<!-- ═══ ANNOUNCER ═══ -->
 <section class="card reveal" id="announcer-system">
   <h2>Announcer System</h2>
-  <p>HUD splashes at rounds 5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 100, and 115. Clutch revives (&lt;25% health) get special splashes. "FULL SQUAD ONLINE" when all bots are healthy.</p>
+  <p>The announcer provides dramatic HUD splashes at key moments throughout the game. These milestones celebrate progress and give the experience a polished, production-quality feel.</p>
+
+  <h3>Round Milestones</h3>
+  <div class="tw"><table><thead><tr><th>Round</th><th>Splash</th><th>Significance</th></tr></thead><tbody>
+    <tr><td>5</td><td>Round milestone</td><td>Early game phase complete</td></tr>
+    <tr><td>10</td><td>Round milestone</td><td>Mid-game begins</td></tr>
+    <tr><td>15</td><td>Round milestone</td><td>Zombies start getting serious</td></tr>
+    <tr><td>20</td><td>Round milestone</td><td>High round territory</td></tr>
+    <tr><td>25</td><td>Round milestone</td><td>Quarter century</td></tr>
+    <tr><td>30</td><td>Round milestone</td><td>Experienced player territory</td></tr>
+    <tr><td>40</td><td>Round milestone</td><td>Elite scaling kicks in</td></tr>
+    <tr><td>50</td><td>Major milestone</td><td>Half century achievement</td></tr>
+    <tr><td>60</td><td>Major milestone</td><td>Deep into high rounds</td></tr>
+    <tr><td>75</td><td>Major milestone</td><td>Expert-level gameplay</td></tr>
+    <tr><td>100</td><td>Legendary milestone</td><td>Triple digits. Legendary achievement</td></tr>
+    <tr><td>115</td><td>Ultimate milestone</td><td>The Zombies number. Maximum prestige</td></tr>
+  </tbody></table></div>
+
+  <h3>Special Splashes</h3>
+  <ul>
+    <li><strong>BOTS DEPLOYED</strong> &mdash; Displayed when all bots have spawned and initialized successfully.</li>
+    <li><strong>Clutch Revive</strong> &mdash; Special splash when a bot revives someone while below 25% health. Celebrates the heroic play.</li>
+    <li><strong>Kill Milestones</strong> &mdash; Individual bot callouts at 50, 100, 200, and 500 kills. Shows which bots are carrying their weight.</li>
+  </ul>
 </section>
 
-<!-- ═══ HUD ═══ -->
 <section class="card reveal" id="hud-system">
   <h2>HUD System</h2>
-  <p>Bot names display with unique colors (Blue, Gold, Green). Welcome banners, notification bars, milestone splashes, and event feeds provide live status. All elements fade and destroy cleanly on game end via dual watchers.</p>
-  <h3>Anti-Overlap Safeguards</h3>
-  <ul>
-    <li><strong>Welcome Banner Lock</strong> &mdash; Milestone splashes and squad alerts wait until the welcome banner finishes before displaying.</li>
-    <li><strong>Milestone Queuing</strong> &mdash; If a milestone is already on screen, the next one waits 4.5 seconds to prevent stacking.</li>
-    <li><strong>Feed Overflow Protection</strong> &mdash; Event feed limits to 8 active entries, then pauses 1 second before resetting to prevent text pileup.</li>
-    <li><strong>Bot Name Spacing</strong> &mdash; 30px vertical gap between each bot name (fontScale 1.4) prevents any overlap.</li>
-  </ul>
-  <h3>Element Zones</h3>
-  <div class="tw"><table><thead><tr><th>Element</th><th>Position</th><th>Duration</th></tr></thead><tbody>
-    <tr><td>Bot Names</td><td>Bottom-right (y -135, -105, -75)</td><td>Persistent</td></tr>
-    <tr><td>Welcome Banner</td><td>Center (y -80 to +34)</td><td>10 seconds</td></tr>
-    <tr><td>Milestone Splash</td><td>Upper-center (y -130, -98)</td><td>3.5 seconds</td></tr>
-    <tr><td>Squad Alert</td><td>Center-low (y +70)</td><td>9 seconds</td></tr>
-    <tr><td>Notification</td><td>Bottom-center (y 195)</td><td>3 seconds</td></tr>
-    <tr><td>Event Feed</td><td>Top-right (y 80+, 22px spacing)</td><td>4 seconds per entry</td></tr>
+  <p>The HUD system provides real-time visual feedback about bot status, actions, and events. Every element is carefully positioned to avoid overlapping with the game's existing UI.</p>
+
+  <h3>Element Positioning</h3>
+  <div class="tw"><table><thead><tr><th>Element</th><th>Position</th><th>Duration</th><th>Description</th></tr></thead><tbody>
+    <tr><td>Bot Names</td><td>Bottom-right (y -105, -84, -65)</td><td>Persistent</td><td>Colored names (Blue/Gold/Green) with fontScale 1.4. Displayed next to score numbers.</td></tr>
+    <tr><td>Welcome Banner</td><td>Center (y -60 to +40)</td><td>10 seconds</td><td>Title, version, rank info. Fades in on game start.</td></tr>
+    <tr><td>Milestone Splash</td><td>Center (y -30 to 0)</td><td>3.5 seconds</td><td>Round milestone celebrations with dramatic styling.</td></tr>
+    <tr><td>Squad Alert</td><td>Center-low (y +50)</td><td>9 seconds</td><td>"BOTS DEPLOYED" confirmation after initialization.</td></tr>
+    <tr><td>Notification Bar</td><td>Bottom-center (y 160)</td><td>3 seconds</td><td>Status updates (low ammo, critical health, etc.).</td></tr>
+    <tr><td>Event Feed</td><td>Top-right (step 18px, max y 200)</td><td>4 seconds per entry</td><td>Scrolling feed of bot actions (buying, opening, reviving).</td></tr>
   </tbody></table></div>
+
+  <h3>Clean Lifecycle</h3>
+  <p>All HUD elements follow a strict lifecycle: create, fade in, display, fade out, destroy. Elements are properly cleaned up on game end. The system handles edge cases like rapid succession events, simultaneous displays, and game-ending mid-animation.</p>
 </section>
 
-<!-- ═══ MAP LOGIC ═══ -->
 <section class="card reveal" id="map-specific-logic">
   <h2>Map-Specific Logic</h2>
-  <div class="tw"><table><thead><tr><th>Map</th><th>Special Logic</th></tr></thead><tbody>
-    <tr><td><strong>TranZit</strong></td><td>Lava avoidance, bus stops, turbine/power interactions</td></tr>
-    <tr><td><strong>Nuketown</strong></td><td>Population counter, bunker timing</td></tr>
-    <tr><td><strong>Die Rise</strong></td><td>Elevator awareness, falling hazards</td></tr>
-    <tr><td><strong>Mob</strong></td><td>Afterlife awareness, plane parts, bridge defense</td></tr>
-    <tr><td><strong>Buried</strong></td><td>Leroy avoidance, chalk weapons, witch avoidance</td></tr>
-    <tr><td><strong>Origins</strong></td><td>Generators, mud avoidance, Panzer timing, robot foot dodge</td></tr>
-  </tbody></table></div>
+  <p>Every BO2 Zombie map has unique mechanics that require specialized AI behavior. Custom Bots has dedicated logic for all 6 maps.</p>
+
+  <div class="map-cards">
+    <div class="map-card transit">
+      <h4>TranZit</h4>
+      <ul>
+        <li>Lava damage detection and avoidance pathfinding</li>
+        <li>Bus stop awareness and route tracking</li>
+        <li>Turbine and power interactions</li>
+        <li>Fog zone hazard detection with Denizen awareness</li>
+        <li>Galvaknuckle and Bowie Knife locations</li>
+        <li>Buildable part locations across all areas</li>
+      </ul>
+    </div>
+    <div class="map-card nuketown">
+      <h4>Nuketown Zombies</h4>
+      <ul>
+        <li>Population counter tracking</li>
+        <li>Bunker door timing and positioning</li>
+        <li>Compact map with adjusted training zones</li>
+        <li>Mannequin Easter Egg positioning</li>
+        <li>Shelter defense coordination</li>
+      </ul>
+    </div>
+    <div class="map-card dierise">
+      <h4>Die Rise</h4>
+      <ul>
+        <li>Elevator awareness and safe positioning</li>
+        <li>Falling hazard detection</li>
+        <li>Sliquifier priority weapon scoring (+80)</li>
+        <li>Trample Steam part collection</li>
+        <li>Multi-floor navigation management</li>
+        <li>Elevator symbol positioning for Easter Egg</li>
+      </ul>
+    </div>
+    <div class="map-card mob">
+      <h4>Mob of the Dead</h4>
+      <ul>
+        <li>Afterlife mode awareness (don't interact with ghosts)</li>
+        <li>Plane part collection across the prison</li>
+        <li>Bridge defense coordination and positioning</li>
+        <li>Active trap detection and avoidance (fan traps, acid traps)</li>
+        <li>Cerberus head feeding for Easter Egg</li>
+        <li>Blundergat/Acid Gat priority scoring (+80)</li>
+      </ul>
+    </div>
+    <div class="map-card buried">
+      <h4>Buried</h4>
+      <ul>
+        <li>Leroy (The Giant) pathfinding avoidance</li>
+        <li>Chalk weapon placement and activation</li>
+        <li>Witch (Ghost Lady) avoidance zones</li>
+        <li>Paralyzer priority weapon scoring (+80)</li>
+        <li>Ray Gun Mark II debut map (+85 highest priority)</li>
+        <li>Unique underground maze navigation</li>
+      </ul>
+    </div>
+    <div class="map-card origins">
+      <h4>Origins</h4>
+      <ul>
+        <li>6 generators with defense and activation logic</li>
+        <li>Mud zone detection and avoidance</li>
+        <li>Panzer Soldat timing and targeting priority</li>
+        <li>Giant Robot foot stomp zone avoidance</li>
+        <li>Staff part collection (fire, wind, lightning &mdash; never ice)</li>
+        <li>Shovel seeking (8-method search) with dig site awareness</li>
+        <li>Crazy Place navigation and defense</li>
+        <li>Iron Fist extended knife rounds through R8</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<!-- ═══ MAP WEAPONS ═══ -->
 <section class="card reveal" id="map-weapon-preferences">
   <h2>Map Weapon Preferences</h2>
-  <div class="tw"><table><thead><tr><th>Map</th><th>Top Weapons (Highest Bonus First)</th></tr></thead><tbody>
+  <p>Each map has a curated weapon preference list that adds bonus scores to certain weapons. These bonuses stack with the base weapon quality score to guide bots toward the best weapons available on each map. Higher bonus = higher priority.</p>
+
+  <div class="tw"><table><thead><tr><th>Map</th><th>Top Weapons (Bonus Score)</th></tr></thead><tbody>
     <tr><td><strong>TranZit</strong></td><td>Ray Gun (+70), Galil (+50), HAMR (+45), AK74u (+45), RPD (+45), MP5 (+40)</td></tr>
     <tr><td><strong>Nuketown</strong></td><td>Galil (+50), AK74u (+45), MP5 (+40)</td></tr>
     <tr><td><strong>Die Rise</strong></td><td>Sliquifier (+80), AN-94 (+55), PDW-57 (+45), SVU (+40)</td></tr>
-    <tr><td><strong>Mob</strong></td><td>Blundergat/Acidgat (+80), Ray Gun (+70), Thompson (+50), PDW-57 (+45)</td></tr>
+    <tr><td><strong>Mob of the Dead</strong></td><td>Blundergat/Acidgat (+80), Ray Gun (+70), Thompson (+50), PDW-57 (+45)</td></tr>
     <tr><td><strong>Buried</strong></td><td>Ray Gun Mk II (+85), Paralyzer (+80), AN-94 (+55), LSAT (+50)</td></tr>
     <tr><td><strong>Origins</strong></td><td>Staffs (+90), STG-44 (+50), MP40 (+45), MG08 (+40)</td></tr>
   </tbody></table></div>
+
+  <div class="callout info"><strong>Staff Priority:</strong> On Origins, all elemental staffs except Ice receive a +90 bonus &mdash; the highest weapon score in the game. Bots will aggressively pursue staff construction when parts are available. The Ice Staff is permanently reserved for human players.</div>
 </section>
 
-<!-- ═══ EASTER EGGS ═══ -->
 <section class="card reveal" id="easter-egg-support">
   <div class="card-glow" style="top:-30%;right:-20%;background:radial-gradient(circle,rgba(93,255,216,0.06),transparent 70%)"></div>
   <h2>Easter Egg Support</h2>
-  <p>Bots assist with every Easter Egg step on all 6 maps. Toggled via <code>bo2_zm_bots_ee</code>.</p>
-  <div class="callout info"><strong>"Assist Everything, Finish Nothing."</strong> Bots help with every step but never complete the final one. That honor is always yours.</div>
-  <p>Health gate: if bot drops below 30% during an EE objective, the goal pauses for 3 seconds so combat/flee systems take over.</p>
-  <h4>TranZit &mdash; Tower of Babble</h4>
-  <p>Kill near pylon, position at lamp posts, target Avogadro. <strong>Never:</strong> interact with pylon/turbines/NavCard table.</p>
-  <h4>Nuketown &mdash; Mini Easter Eggs</h4>
-  <p>Knife Marlton's door, shoot mannequin heads, cover bunker entrance.</p>
-  <h4>Die Rise &mdash; High Maintenance</h4>
-  <p>Stand on gold symbols (sticky 8s stay), buy SVU. <strong>Never:</strong> place trample steams or activate final device.</p>
-  <h4>Mob of the Dead &mdash; Pop Goes the Weasel</h4>
-  <p>Feed Cerberus heads, cover plane parts, heavy fire on rooftop/bridge. <strong>Never:</strong> electric chairs or final confrontation.</p>
-  <h4>Buried &mdash; Mined Games</h4>
-  <p>Sharpshooter positions, shoot targets, charge soul lantern. <strong>Never:</strong> place final items.</p>
-  <h4>Origins &mdash; Little Lost Girl</h4>
-  <p>Fill all 4 soul chests (1.5s scan when player nearby), defend 6 generators, cover Crazy Place, target Panzer. <strong>Never:</strong> place staffs/interact with tablet/press final button.</p>
+  <p>Custom Bots provides step-by-step Easter Egg assistance on all 6 BO2 Zombie maps. Toggled via <code>bo2_zm_bots_ee</code> (enabled by default). The core philosophy is simple:</p>
+
+  <div class="callout success"><strong>"Assist Everything, Finish Nothing."</strong> Bots help with every step of every Easter Egg but never complete the final one. That honor &mdash; and the achievement &mdash; is always yours.</div>
+
+  <p><strong>Health Gate Safety:</strong> If a bot drops below 30% health during an active Easter Egg objective, the EE goal pauses for 3 seconds. The combat and flee systems take over until the bot stabilizes, then the EE goal resumes. This prevents bots from standing on an EE position while being overwhelmed by zombies.</p>
+
+  <div class="map-cards">
+    <div class="map-card transit">
+      <h4>TranZit &mdash; Tower of Babble</h4>
+      <p>Bots assist with the pylon activation sequence, position at lamp posts, and target the Avogadro when it spawns. They provide covering fire during the critical activation window.</p>
+      <p><strong>Never:</strong> Interact with the pylon, place turbines on activation points, or touch the NavCard Table. These final steps are left entirely to the human player.</p>
+    </div>
+    <div class="map-card nuketown">
+      <h4>Nuketown &mdash; Mini Easter Eggs</h4>
+      <p>Bots knife Marlton's bunker door (population count step), shoot mannequin heads for the mushroom cloud EE, and provide cover at the bunker entrance during critical moments.</p>
+      <p><strong>Never:</strong> Complete the final mannequin sequence. The finishing blow is always the player's.</p>
+    </div>
+    <div class="map-card dierise">
+      <h4>Die Rise &mdash; High Maintenance</h4>
+      <p>Bots stand on gold symbols in elevators with a sticky 8-second minimum stay (prevents flickering if the human briefly steps off). They prioritize buying the SVU sniper rifle which is needed for a step. They provide roof coverage during the dragon head sequence.</p>
+      <p><strong>Never:</strong> Place trample steams on specific locations or interact with the final activation device.</p>
+    </div>
+    <div class="map-card mob">
+      <h4>Mob of the Dead &mdash; Pop Goes the Weasel</h4>
+      <p>Bots feed Cerberus dog heads by killing zombies near them, cover plane part locations while the player collects them, and provide heavy suppressive fire during the rooftop sequence and bridge confrontation. They coordinate positioning for maximum coverage.</p>
+      <p><strong>Never:</strong> Sit in electric chairs or participate in the final Weasel confrontation. The endgame choice is always the player's.</p>
+    </div>
+    <div class="map-card buried">
+      <h4>Buried &mdash; Mined Games</h4>
+      <p>Bots take sharpshooter positions for the target shooting steps, shoot targets when they appear, and charge soul lanterns by killing zombies near them. They protect the player during vulnerable lantern charging moments.</p>
+      <p><strong>Never:</strong> Place final items in the witchcraft locations or activate the Guillotine step. The resolution belongs to the player.</p>
+    </div>
+    <div class="map-card origins">
+      <h4>Origins &mdash; Little Lost Girl</h4>
+      <p>The most complex Easter Egg support in the mod. Bots fill all 4 soul chests by killing zombies near them (scan interval drops from 5s to 1.5s when a player is near an active chest). They defend all 6 generators during activation. They provide Crazy Place coverage and prioritize Panzer Soldat targeting when it spawns.</p>
+      <p><strong>Never:</strong> Place staffs in their pedestals, interact with the Maxis tablet, or press the final button in the Crazy Place. The Little Lost Girl is saved by you, not the AI.</p>
+    </div>
+  </div>
 </section>
 
-<!-- ═══ HAZARDS ═══ -->
 <section class="card reveal" id="hazard-detection">
   <h2>Hazard Detection</h2>
-  <div class="tw"><table><thead><tr><th>Hazard</th><th>Map</th><th>Effect</th></tr></thead><tbody>
-    <tr><td>Lava</td><td>TranZit</td><td>Contact damage</td></tr>
-    <tr><td>Mud</td><td>Origins, Buried</td><td>Movement slow</td></tr>
-    <tr><td>Fog/Denizens</td><td>TranZit</td><td>Denizen spawns</td></tr>
-    <tr><td>Robot Feet</td><td>Origins</td><td>Stomp zones</td></tr>
-    <tr><td>Active Traps</td><td>Mob</td><td>Fan/acid traps</td></tr>
+  <p>Each map has environmental hazards that damage or slow players. The hazard detection system identifies these zones and routes bots around them. Hazard awareness scales with rank &mdash; Shotguns bots always avoid every hazard, while Bones bots stumble through them regularly.</p>
+
+  <div class="tw"><table><thead><tr><th>Hazard</th><th>Map</th><th>Effect</th><th>Bot Response</th></tr></thead><tbody>
+    <tr><td><strong>Lava Pools</strong></td><td>TranZit</td><td>Contact damage (burns health rapidly)</td><td>Pathfind around lava. Cancel any goal that would require crossing lava.</td></tr>
+    <tr><td><strong>Mud Zones</strong></td><td>Origins, Buried</td><td>60% movement slow</td><td>Avoid mud when possible. If forced through, sprint to minimize exposure.</td></tr>
+    <tr><td><strong>Fog &amp; Denizens</strong></td><td>TranZit</td><td>Denizen spawns on head</td><td>Stay on paths. Avoid lingering in fog zones. Knife denizens off head.</td></tr>
+    <tr><td><strong>Robot Feet</strong></td><td>Origins</td><td>Instant down on stomp</td><td>Detect robot approach. Move to safe zone during stomp window.</td></tr>
+    <tr><td><strong>Active Traps</strong></td><td>Mob of the Dead</td><td>Fan traps, acid traps damage</td><td>Detect active trap triggers within 300 units. Route around active traps.</td></tr>
   </tbody></table></div>
-  <p>Shotguns (1.0) always avoids hazards. Bones (0.20) walks right into them.</p>
+
+  <h3>Hazard Avoidance by Rank</h3>
+  <ul>
+    <li><strong>Shotguns (100%)</strong> &mdash; Perfect avoidance. Never touches a hazard.</li>
+    <li><strong>Skull &amp; Knife (85%)</strong> &mdash; Occasional misstep in tight areas.</li>
+    <li><strong>Skull (60%)</strong> &mdash; Usually avoids hazards, sometimes walks through mud.</li>
+    <li><strong>Crossed Bones (40%)</strong> &mdash; Regularly takes unnecessary hazard damage.</li>
+    <li><strong>Bones (20%)</strong> &mdash; Basically ignores hazards. Walks straight through lava.</li>
+  </ul>
 </section>
 
-<!-- ═══ SAFETY ═══ -->
+<section class="card reveal" id="smart-navigation">
+  <h2>Smart Navigation &amp; Positioning</h2>
+  <p>Bots don't just pathfind to destinations. They position themselves intelligently relative to teammates, zombies, and map geometry.</p>
+
+  <h3>Spread-Out System</h3>
+  <p>When not actively pursuing a goal, bots maintain distance from each other using a cover angle system. Each bot faces a different direction (distributed evenly around 360&deg;) to maximize map awareness. The spread radius scales with player count: more players = wider spread.</p>
+
+  <h3>Smart Player Dodge</h3>
+  <p>When a human player is looking at a bot AND moving toward it (calculated via dot product of player's forward vector and direction to bot, threshold > 0.7), the bot steps <strong>perpendicular</strong> to the player's movement direction. Instead of randomly teleporting away, the bot naturally sidesteps like a real person would when blocking a doorway.</p>
+
+  <h3>Window Defense</h3>
+  <p>During early rounds, bots claim windows using a 1200-unit search range and defend them against boarding zombies. A dynamic round cap prevents bots from overstaying at windows when the round gets too chaotic. Window defense is skipped entirely by elite bots (rank 3+) after round 3.</p>
+
+  <h3>Stuck Detection &amp; Recovery</h3>
+  <p>Rank-scaled stuck detection monitors bot movement. If a bot's position hasn't changed significantly within the timeout window, a full recovery sequence initiates: all goals are cleared (61 labels swept), the bot teleports to a safe position, and the decision engine restarts from scratch.</p>
+  <div class="tw"><table><thead><tr><th>Rank</th><th>Stuck Timeout</th><th>Recovery</th></tr></thead><tbody>
+    <tr><td>Shotguns</td><td>2.5 seconds</td><td>Fast detection, quick recovery</td></tr>
+    <tr><td>Skull &amp; Knife</td><td>3.0 seconds</td><td>Moderate detection</td></tr>
+    <tr><td>Skull</td><td>3.5 seconds</td><td>Standard detection</td></tr>
+    <tr><td>Crossed Bones</td><td>4.0 seconds</td><td>Slow detection</td></tr>
+    <tr><td>Bones</td><td>4.5 seconds</td><td>Very slow, often stuck longer</td></tr>
+  </tbody></table></div>
+</section>
+
 <section class="card reveal" id="safety-and-stability">
   <h2>Safety &amp; Stability</h2>
-  <p>Engineered for crash-free long sessions. Every system has safety guards.</p>
+  <p>Custom Bots is engineered for crash-free long sessions. When you're going for round 100+, stability isn't optional &mdash; it's the most important feature. Every system has redundant safety guards and graceful failure modes.</p>
+
   <h3>Loop Safety</h3>
   <ul>
-    <li>74 <code>endon</code> guards for death/disconnect/game_ended</li>
-    <li>628 <code>IsDefined</code> checks validate bot state</li>
-    <li>200-tick training abort counter</li>
+    <li><strong>76 <code>endon</code> guards</strong> &mdash; Every threaded function includes endon guards for death, disconnect, and game_ended events. If the game state changes, all bot threads terminate cleanly instead of erroring out.</li>
+    <li><strong>618 <code>IsDefined</code> checks</strong> &mdash; Before accessing any entity, variable, or reference, the code verifies it still exists. Entities can be destroyed by the game engine at any time &mdash; every access is guarded.</li>
+    <li><strong>67 <code>isAlive</code> checks</strong> &mdash; Dead bots don't try to act. Every action entry point verifies the bot is alive before proceeding.</li>
+    <li><strong>200-tick training abort</strong> &mdash; Training circuits have a maximum iteration counter. If a circuit runs for 200 ticks without completing, it aborts to prevent infinite loops.</li>
   </ul>
+
   <h3>Resource Management</h3>
   <ul>
-    <li>Locks on Box, PaP, generators, doors with auto-cleanup on disconnect/laststand</li>
-    <li>61-label goal sweep on every stuck reset and respawn</li>
-    <li>Rank-scaled stuck detection: Shotguns 2.5s, Bones 4.5s</li>
-    <li>Ghost player kick loop every 10 seconds</li>
+    <li><strong>Resource Locks</strong> &mdash; Mystery Box, Pack-a-Punch, generators, and doors each have a lock system preventing multiple bots from accessing the same resource simultaneously. All locks auto-clear on disconnect, laststand, or game end.</li>
+    <li><strong>61-Label Goal Sweep</strong> &mdash; On every stuck reset and respawn, all 61 possible goal labels are cleared from the bot. No stale goals survive a recovery cycle.</li>
+    <li><strong>Ghost Player Kick</strong> &mdash; Every 10 seconds, a sweep checks for invalid player references and removes them. Prevents crashes from disconnected clients.</li>
   </ul>
+
   <h3>Combat Safety</h3>
   <ul>
-    <li>Triple LOS everywhere: acquisition, firing, training, last stand</li>
-    <li>3-frame stale clearing via <code>los_fail_count</code></li>
-    <li>No scatter at &lt;150 units. No fallback shooting.</li>
-    <li><code>takeweapon()</code> preserves knife/grenades/equipment</li>
+    <li><strong>Triple LOS</strong> &mdash; Every shot is verified against three independent line-of-sight checks. Zero wall-shooting.</li>
+    <li><strong>3-Frame Stale Clearing</strong> &mdash; If a target fails LOS for 3 consecutive frames, it's dropped. No fixating on invisible targets.</li>
+    <li><strong>No Scatter &lt;150u</strong> &mdash; At close range, aim scatter is disabled entirely. Direct aim only.</li>
+    <li><strong>No Fallback Shooting</strong> &mdash; If the final aim point fails LOS, the bot stops shooting. No hopeful wall-spraying.</li>
+    <li><strong><code>takeweapon()</code> Only</strong> &mdash; Weapon swaps always use <code>takeweapon()</code>, never <code>takeallweapons()</code>. This preserves the bot's knife, grenades, and tactical equipment.</li>
   </ul>
 </section>
 
-<!-- ═══ ARCHITECTURE ═══ -->
+<section class="card reveal" id="anti-crash">
+  <h2>Anti-Crash Engineering</h2>
+  <p>The T6 GSC engine has many undocumented limitations and crash triggers. Custom Bots handles all of them.</p>
+
+  <h3>Known T6 GSC Pitfalls</h3>
+  <div class="tw"><table><thead><tr><th>Issue</th><th>Cause</th><th>Custom Bots Solution</th></tr></thead><tbody>
+    <tr><td>Server crash on entity access</td><td>Entity destroyed between check and use</td><td>618 IsDefined guards on every entity access</td></tr>
+    <tr><td>Orphaned threads</td><td>Bot dies/disconnects during threaded function</td><td>76 endon guards terminate threads cleanly</td></tr>
+    <tr><td>Infinite loops</td><td>Goal never reached, path never completes</td><td>200-tick abort counters on all loops</td></tr>
+    <tr><td>Resource deadlock</td><td>Bot dies holding a resource lock</td><td>Automatic lock cleanup on death/laststand</td></tr>
+    <tr><td>Ghost players</td><td>Client disconnect without cleanup</td><td>10-second ghost sweep loop</td></tr>
+    <tr><td>Stale goals</td><td>Goals persist after context changes</td><td>61-label full goal sweep on recovery</td></tr>
+    <tr><td>HUD overflow</td><td>Too many HUD elements created</td><td>Strict lifecycle: create, display, destroy</td></tr>
+  </tbody></table></div>
+
+  <h3>Functions That Don't Exist in T6 GSC</h3>
+  <p>Many common scripting functions from other CoD titles don't exist in the T6 engine. Using them causes silent failures or crashes:</p>
+  <ul>
+    <li><code>exec()</code>, <code>setname()</code>, <code>setclantag()</code> &mdash; Not available in T6</li>
+    <li><code>pressusebutton()</code>, <code>pressuse()</code>, <code>pressfrag()</code> &mdash; Not available in T6</li>
+    <li><code>pressmelee()</code> with parameters &mdash; Exists but parameters are ignored</li>
+    <li><code>takeallweapons()</code> &mdash; Exists but strips everything including knife. Custom Bots uses <code>takeweapon()</code> instead to preserve loadout.</li>
+  </ul>
+</section>
+
 <section class="card reveal" id="file-architecture">
   <h2>File Architecture</h2>
-  <p>44 sections with Unicode box-drawing borders in a single file.</p>
+  <p>The entire codebase lives in a single file with 44 clearly delineated sections using Unicode box-drawing borders. Each section has a standardized header format with its number, name, and a brief description.</p>
+
   <div class="tw"><table><thead><tr><th>#</th><th>Section</th><th>Description</th></tr></thead><tbody>
-    <tr><td>1</td><td>Entry Point</td><td><code>init()</code> &mdash; setup, DVars, spawn manager</td></tr>
-    <tr><td>2</td><td>Rank Profiles</td><td>5 ranks, 35+ params each</td></tr>
-    <tr><td>3</td><td>HUD</td><td>Status, banners, notifications</td></tr>
-    <tr><td>4&ndash;5</td><td>Spawn &amp; Init</td><td>Bot spawning and profile assignment</td></tr>
-    <tr><td>6</td><td>Main Loop</td><td>Decision engine integration</td></tr>
-    <tr><td>7</td><td>Leader/Follow</td><td>Tracking, teleport, stuck detection</td></tr>
-    <tr><td>8A&ndash;8B</td><td>Early Game</td><td>Knife strategy + sequential startup</td></tr>
-    <tr><td>9</td><td>Combat</td><td>Triple LOS combat engine</td></tr>
-    <tr><td>10</td><td>Training</td><td>Circuit kiting + turn-and-burn</td></tr>
-    <tr><td>11&ndash;18</td><td>Economy</td><td>Revive, powerups, perks, weapons, box, PaP, doors, ammo</td></tr>
-    <tr><td>19&ndash;19B</td><td>Map Systems</td><td>Map logic, collectibles, part seeking</td></tr>
-    <tr><td>20&ndash;24</td><td>Utilities</td><td>Hazards, danger, blocking, cleanup, helpers</td></tr>
-    <tr><td>25&ndash;28B</td><td>Social</td><td>Names, callouts, decisions, personality, positioning, windows</td></tr>
-    <tr><td>29&ndash;31</td><td>Progression</td><td>Round scaling, downed behavior, announcer</td></tr>
-    <tr><td>32&ndash;38</td><td>Easter Eggs</td><td>All 6 maps</td></tr>
-    <tr><td>39</td><td>Map Weapons</td><td>Per-map preference bonuses</td></tr>
+    <tr><td>1</td><td>Entry Point</td><td><code>init()</code> function. DVar loading, spawn manager initialization, level-scope variable setup.</td></tr>
+    <tr><td>2</td><td>Rank Profiles</td><td>5 rank definitions with 35+ parameters each. All behavioral stats configured here.</td></tr>
+    <tr><td>3</td><td>HUD</td><td>Welcome banners, bot names, notifications, milestones, event feed, squad alerts.</td></tr>
+    <tr><td>4</td><td>Spawn Manager</td><td>Bot spawning, testclient management, connection handling.</td></tr>
+    <tr><td>5</td><td>Bot Init</td><td>Profile assignment, personality generation, stat initialization.</td></tr>
+    <tr><td>6</td><td>Main Loop</td><td>Decision engine integration. 0.25s tick rate. Action selection and execution.</td></tr>
+    <tr><td>7</td><td>Leader/Follow</td><td>Leader scoring, AFK detection, follow distance, stuck detection.</td></tr>
+    <tr><td>8A</td><td>Knife Strategy</td><td>Early round knifing for point optimization. Round-scaled softening.</td></tr>
+    <tr><td>8B</td><td>Early Game Flow</td><td>Weapon &rarr; Window &rarr; Door sequential startup. Elite skip logic.</td></tr>
+    <tr><td>9</td><td>Combat</td><td>Triple LOS engine, target acquisition, burst fire, focus accuracy, reaction jitter.</td></tr>
+    <tr><td>10</td><td>Training</td><td>Circuit building, kiting, turn-and-burn, magazine awareness, lap counting.</td></tr>
+    <tr><td>11</td><td>Revive</td><td>Danger-aware reviving, human priority, clutch detection, crawl-toward behavior.</td></tr>
+    <tr><td>12</td><td>Powerups</td><td>Powerup detection, scoring, collection, Max Ammo awareness.</td></tr>
+    <tr><td>13</td><td>Perks</td><td>Dynamic perk priority, Quick Revive boost, Speed Cola LMG boost.</td></tr>
+    <tr><td>14</td><td>Wall Weapons</td><td>Wallbuy scanning, weapon scoring, cost assessment, launcher blacklist.</td></tr>
+    <tr><td>15</td><td>Mystery Box</td><td>Box detection, single-bot lock, weapon evaluation, lock cleanup.</td></tr>
+    <tr><td>16</td><td>Pack-a-Punch</td><td>Best weapon selection, single-bot lock, upgrade execution, lock cleanup.</td></tr>
+    <tr><td>17</td><td>Doors</td><td>Door/debris detection, debris lock, stuck prevention, cost evaluation.</td></tr>
+    <tr><td>18</td><td>Ammo</td><td>Ammo monitoring, emergency buying, Max Ammo awareness, conservation.</td></tr>
+    <tr><td>19</td><td>Map Logic</td><td>Map-specific behaviors for all 6 maps. Hazard zones, special mechanics.</td></tr>
+    <tr><td>19A</td><td>Collectibles</td><td>Part pickup across all maps. Build table navigation. Shovel reservation.</td></tr>
+    <tr><td>19B</td><td>Proactive Seeking</td><td>Active routing to part spawns. Generator seeking. Dig site patrol.</td></tr>
+    <tr><td>20</td><td>Hazards</td><td>Lava, mud, fog, robot feet, active traps. Rank-scaled avoidance.</td></tr>
+    <tr><td>21</td><td>Danger Check</td><td>Zombie counting, threat assessment, flee triggering.</td></tr>
+    <tr><td>22</td><td>Player Blocking</td><td>Smart dodge system. Perpendicular step-aside behavior.</td></tr>
+    <tr><td>23</td><td>Cleanup</td><td>Goal sweep, resource lock cleanup, stuck recovery, respawn handling.</td></tr>
+    <tr><td>24</td><td>Utilities</td><td>Helper functions. Distance calculations, entity validation, safe accessors.</td></tr>
+    <tr><td>25</td><td>Name Pool</td><td>50+ zombie-themed bot names. Random selection with prefix.</td></tr>
+    <tr><td>26A</td><td>Communication</td><td>Randomized callouts, chat messages, HUD feeds, throttling.</td></tr>
+    <tr><td>26B</td><td>Decision Engine</td><td>Utility AI scoring. All actions evaluated simultaneously.</td></tr>
+    <tr><td>27</td><td>Personality</td><td>Aggressive/Supportive/Cautious trait generation and application.</td></tr>
+    <tr><td>28A</td><td>Smart Positioning</td><td>Spread-out system, cover angles, facing distribution.</td></tr>
+    <tr><td>28B</td><td>Window Defense</td><td>Window claiming, dynamic round cap, 1200-unit search.</td></tr>
+    <tr><td>29</td><td>Round Scaling</td><td>Logarithmic curve + elite R40+ scaling. 10 stats affected.</td></tr>
+    <tr><td>30</td><td>Downed Behavior</td><td>Crawl toward teammates, downed combat, j_head headshots, lock cleanup.</td></tr>
+    <tr><td>31</td><td>Announcer</td><td>Round milestones, clutch revive splashes, kill milestones, squad alerts.</td></tr>
+    <tr><td>32</td><td>EE Core</td><td>Easter Egg management, health gate, step tracking, completion guard.</td></tr>
+    <tr><td>33</td><td>TranZit EE</td><td>Tower of Babble: pylon, lamp posts, Avogadro, NavCard.</td></tr>
+    <tr><td>34</td><td>Nuketown EE</td><td>Mini EEs: bunker door, mannequins, shelter cover.</td></tr>
+    <tr><td>35</td><td>Die Rise EE</td><td>High Maintenance: gold symbols, SVU buying, sticky timer.</td></tr>
+    <tr><td>36</td><td>Mob EE</td><td>Pop Goes the Weasel: Cerberus heads, plane parts, bridge/rooftop.</td></tr>
+    <tr><td>37</td><td>Buried EE</td><td>Mined Games: sharpshooter positions, targets, soul lanterns.</td></tr>
+    <tr><td>38</td><td>Origins EE</td><td>Little Lost Girl: soul chests (1.5s scan), generators, Crazy Place, Panzer.</td></tr>
+    <tr><td>39</td><td>Map Weapons</td><td>Per-map weapon preference bonuses. 6 maps with curated lists.</td></tr>
   </tbody></table></div>
+
+  <h3>Border Formatting</h3>
+  <p>Every section uses Unicode box-drawing characters for visual clarity. Three border widths are used consistently throughout:</p>
+  <ul>
+    <li><strong>Section Headers</strong> &mdash; 76 <code>&#9552;</code> characters (81 total including <code>&#9553;</code> and spacing)</li>
+    <li><strong>Medium Functions</strong> &mdash; 74 <code>&#9552;</code> characters (79 total)</li>
+    <li><strong>Small Functions</strong> &mdash; 71 <code>&#9552;</code> characters (76 total)</li>
+  </ul>
 </section>
 
-<!-- ═══ FAQ ═══ -->
+<section class="card reveal" id="technical-deep-dive">
+  <h2>Technical Deep Dive</h2>
+  <p>For modders and developers who want to understand how the code works under the hood.</p>
+
+  <h3>GSC Engine Details</h3>
+  <p>GSC (Game Script Code) is Treyarch's proprietary scripting language for Call of Duty. It runs server-side, is single-threaded with cooperative multitasking (using <code>wait</code> statements), and has access to the game's entity system, animation system, and AI navigation mesh.</p>
+  <p>Key technical constraints:</p>
+  <ul>
+    <li>No arrays of structs &mdash; arrays can only hold primitives or entity references</li>
+    <li>No string concatenation at runtime without <code>+</code> operator</li>
+    <li>No try/catch &mdash; every error is a server crash</li>
+    <li>No modules or imports from custom files (only game-provided includes)</li>
+    <li>No dynamic function calls or reflection</li>
+    <li>All bot commands are fire-and-forget &mdash; no confirmation of execution</li>
+  </ul>
+
+  <h3>Trigger Interaction System</h3>
+  <p>T6 uses a complex trigger hierarchy for interactive elements. <code>bot_trigger_entity()</code> implements a 4-path fallback system to interact with any trigger type:</p>
+  <ol>
+    <li><code>unitrigger_stub</code> &rarr; <code>use_trigger</code> (primary path)</li>
+    <li><code>trigger</code> property (secondary path)</li>
+    <li><code>trigger_stub</code> property (tertiary path)</li>
+    <li>Direct entity notify (last resort)</li>
+  </ol>
+  <p>This layered approach ensures bots can interact with doors, perk machines, buildable tables, and other interactive elements across all maps, regardless of how each map's triggers are structured.</p>
+
+  <h3>Entity Search Methods</h3>
+  <p>Finding entities (parts, weapons, triggers) in T6 requires multiple approaches because different maps use different naming conventions. The collectible system uses a 10-target entity name search. The shovel finder uses an 8-method search. The generator finder uses a 6-method search. Each method tries progressively broader searches until the target is found.</p>
+
+  <h3>Navigation &amp; Pathfinding</h3>
+  <p>T6 provides a navigation mesh that bots can query for pathfinding. Custom Bots uses nav nodes for training circuit construction, hazard checking (midpoint analysis between waypoints), and safe position finding. When the nav mesh fails (common in complex geometry), the stuck detection system kicks in and teleports the bot to a known safe position.</p>
+</section>
+
 <section class="card reveal" id="faq">
   <h2>Frequently Asked Questions</h2>
-  <h3>Do I need to configure anything?</h3>
-  <p>No. Defaults (3 bots, Shotguns rank) work perfectly out of the box.</p>
-  <h3>Will bots steal my ice staff?</h3>
-  <p>Never. Permanently reserved for humans.</p>
-  <h3>Do bots kill the last zombie?</h3>
-  <p>No. Hardcoded save every round. AFK safe.</p>
-  <h3>Will bots finish the Easter Egg?</h3>
-  <p>No. "Assist Everything, Finish Nothing." Final step is always yours.</p>
-  <h3>"Client/Server game mismatch" error?</h3>
-  <p>Fully restart Plutonium. Scripts load at startup.</p>
-  <h3>More than 3 bots?</h3>
-  <p>Set <code>bo2_zm_bots_count</code> to 1&ndash;7.</p>
-  <h3>Online matches?</h3>
-  <p>Designed for Custom Games (local/private). Works in private lobbies on Plutonium.</p>
+
+  <div class="accordion">
+    <div class="acc-item">
+      <button class="acc-trigger">Do I need to configure anything?</button>
+      <div class="acc-body"><div class="acc-inner">No. The default configuration (3 bots, Shotguns rank) works perfectly out of the box. Just drop the file in and play. You can customize everything later through DVars if you want, but nothing is required.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">Will bots steal my Ice Staff?</button>
+      <div class="acc-body"><div class="acc-inner">Never. The Ice Staff is permanently reserved for human players. This is enforced at every level of the code: <code>bot_is_ice_staff_item()</code> blocks all ice staff parts and crystals, and <code>bot_is_ice_staff_weapon()</code> blocks the completed weapon. Bots will never touch it.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">Do bots kill the last zombie?</button>
+      <div class="acc-body"><div class="acc-inner">No. Every round, when 1-2 zombies remain, all bots stop shooting. This is hardcoded, not scored &mdash; the decision engine cannot override it. One bot becomes the anchor and kites the last zombie indefinitely. The pattern runs forever &mdash; you can go AFK and the zombie will still be alive when you come back.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">Will bots finish the Easter Egg for me?</button>
+      <div class="acc-body"><div class="acc-inner">No. "Assist Everything, Finish Nothing." Bots help with every step of every Easter Egg on all 6 maps, but they never complete the final step. On Origins, they'll fill soul chests, defend generators, and cover the Crazy Place &mdash; but they won't place staffs, interact with the tablet, or press the final button. The achievement is always yours.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">I'm getting "Client/Server game mismatch" error</button>
+      <div class="acc-body"><div class="acc-inner">Fully restart Plutonium (close and reopen the launcher). GSC scripts are compiled and loaded at startup, not per-match. Replacing the file and just restarting the match will cause this error because the client and server have different compiled versions of the script.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">Can I have more than 3 bots?</button>
+      <div class="acc-body"><div class="acc-inner">Yes. Set <code>bo2_zm_bots_count</code> to any number from 1 to 7. The default is 3 because standard BO2 lobbies hold 4 players (you + 3). On 8-player servers, you can run up to 7 bots for a full lobby.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">Do bots work in online matches?</button>
+      <div class="acc-body"><div class="acc-inner">Custom Bots is designed for Custom Games (local and private lobbies). It works in private lobbies on Plutonium where you're the host. It will not work in public matchmaking.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">Which rank should I use?</button>
+      <div class="acc-body"><div class="acc-inner">The default Shotguns rank gives you the best teammates. If you want a more authentic experience, Skull &amp; Knife feels like playing with good human players. Skull is decent. Crossed Bones and Bones are intentionally bad &mdash; use them for challenge runs or entertainment.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">Will bots crash my game?</button>
+      <div class="acc-body"><div class="acc-inner">Custom Bots has 76 endon guards, 618 IsDefined checks, and 67 isAlive validations specifically to prevent crashes. Every entity access is guarded, every thread has cleanup handlers, and every loop has abort counters. The code is designed for 100+ round sessions without issues.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">Can I modify the bot behavior?</button>
+      <div class="acc-body"><div class="acc-inner">Yes. A complete addon template (<code>custom_bots_addon_template.gsc</code>) is provided. It auto-detects and hooks into spawned bots, with 7 documented examples covering state management, callouts, movement, targeting, weapons, map logic, and round-specific behavior. You never need to touch the main script.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">Do bots work on all 6 maps?</button>
+      <div class="acc-body"><div class="acc-inner">Yes. TranZit, Nuketown Zombies, Die Rise, Mob of the Dead, Buried, and Origins all have dedicated map-specific logic. Each map has tailored hazard detection, weapon preferences, collectible systems, and Easter Egg support.</div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger">How do bots decide what to do?</button>
+      <div class="acc-body"><div class="acc-inner">Every 0.25 seconds, the autonomous decision engine evaluates all possible actions (revive, flee, combat, buy perks, buy weapons, use box, PaP, open doors, grab powerups, train) and scores each one. The action with the highest score wins. Scores are influenced by health, ammo, points, round number, nearby threats, teammate status, and personality. See the <a href="#autonomous-decision-engine">Decision Engine</a> section for full details.</div></div>
+    </div>
+  </div>
 </section>
 
-<!-- ═══ ADDON GUIDE ═══ -->
 <section class="card reveal" id="addon-guide">
   <h2>Addon Development Guide</h2>
-  <p>A complete template (<code>custom_bots_addon_template.gsc</code>) lets you add custom behaviors without touching the main script.</p>
+  <p>A complete template file (<code>custom_bots_addon_template.gsc</code>) is included for developers who want to add custom behaviors without modifying the main script. The addon system hooks into spawned bots automatically and provides a clean interface for extending behavior.</p>
+
+  <h3>What You Can Do</h3>
   <ul>
-    <li>Auto-detects and hooks into spawned bots</li>
-    <li>7 documented examples (state, callouts, movement, targeting, weapons, map, rounds)</li>
-    <li>Full bot struct reference &amp; available functions</li>
-    <li>Reserved goal labels &amp; throttle patterns</li>
+    <li><strong>Custom State Logic</strong> &mdash; Add new behavioral states that trigger under specific conditions</li>
+    <li><strong>Custom Callouts</strong> &mdash; Add new chat messages and HUD notifications</li>
+    <li><strong>Movement Overrides</strong> &mdash; Modify bot movement in specific situations or map areas</li>
+    <li><strong>Targeting Rules</strong> &mdash; Add custom target priorities or exclusions</li>
+    <li><strong>Weapon Preferences</strong> &mdash; Override weapon scoring for specific scenarios</li>
+    <li><strong>Map-Specific Logic</strong> &mdash; Add behaviors for custom map areas or mechanics</li>
+    <li><strong>Round-Based Events</strong> &mdash; Trigger actions at specific round numbers</li>
   </ul>
+
   <h3>Setup</h3>
-  <ol>
-    <li>Copy and rename the template</li>
-    <li>Place in <code>storage/t6/scripts/zm/</code></li>
-    <li>Edit <code>addon_custom_behavior()</code></li>
-    <li>Restart Plutonium</li>
-  </ol>
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h4>Copy the Template</h4>
+        <p>Copy <code>custom_bots_addon_template.gsc</code> and rename it (e.g., <code>custom_bots_addon_mymod.gsc</code>).</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h4>Place in Scripts Folder</h4>
+        <p>Place the renamed file in <code>storage/t6/scripts/zm/</code> alongside <code>custom_bots.gsc</code>.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h4>Edit Your Behavior</h4>
+        <p>Modify the <code>addon_custom_behavior()</code> function with your custom logic. The 7 documented examples in the template show exactly how to access bot state, weapons, goals, and more.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <h4>Restart Plutonium</h4>
+        <p>Fully restart Plutonium to load the new addon. It hooks into bots automatically at spawn.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn"><strong>Reserved Goal Labels:</strong> Custom Bots uses 61 internal goal labels. Your addon should use unique names (prefix with your mod name) to avoid conflicts. Check the template for the full list of reserved labels.</div>
 </section>
 
-<!-- ═══ CREDITS ═══ -->
 <section class="card reveal" id="credits">
   <h2>Credits</h2>
   <p><strong>Created by Astroolean</strong></p>
-  <p>Inspired by <a href="https://github.com/osmnbtrclk/bo2_zm_bots" target="_blank" rel="noopener">osmnbtrclk/bo2_zm_bots</a>. Completely independent rewrite with different architecture, AI systems, and features.</p>
+  <p>10,923 lines of autonomous zombie-killing intelligence, built from the ground up for the Plutonium T6 community.</p>
+  <p>Inspired by <a href="https://github.com/osmnbtrclk/bo2_zm_bots" target="_blank" rel="noopener">osmnbtrclk/bo2_zm_bots</a>. Completely independent rewrite with different architecture, different AI systems, and different features. Credit where due for the original concept and inspiration.</p>
+  <p>Version 5.0.0 &mdash; 2026 Edition</p>
 </section>
 
 </div>
+</main>
 
-<!-- ═══ FOOTER ═══ -->
 <div class="footer">
   <div class="footer-title">Custom Bots v5.0.0 &mdash; 2026 Edition</div>
   <div class="footer-line">
-    <span class="footer-sub">11,007 lines</span><span class="sep"></span>
+    <span class="footer-sub">10,923 lines</span><span class="sep"></span>
     <span class="footer-sub">44 sections</span><span class="sep"></span>
     <span class="footer-sub">6 maps</span><span class="sep"></span>
-    <span class="footer-sub">6 Easter Eggs</span>
+    <span class="footer-sub">6 Easter Eggs</span><span class="sep"></span>
+    <span class="footer-sub">5 ranks</span>
   </div>
-  <div class="footer-sub" style="margin-top:8px;font-weight:600;color:var(--text2)">One file. Drop it in. Play.</div>
+  <div class="footer-tagline">One file. Drop it in. Play.</div>
 </div>
 
-</main>
 </div>
 </div>
 
-<!-- CMD PALETTE -->
 <div class="cmd-overlay" id="cmdOverlay" role="dialog" aria-label="Search documentation" aria-modal="true">
   <div class="cmd-box">
     <input class="cmd-input" id="cmdInput" placeholder="Search documentation&hellip;" type="text" autocomplete="off" aria-label="Search sections"/>
@@ -930,7 +1836,6 @@ set bo2_zm_bots_callouts 0</code></pre></div>
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
 
-  // ═══ DOT GRID CANVAS ═══
   const canvas = $('#gridCanvas');
   const ctx = canvas.getContext('2d');
   let W, H, cols, rows;
@@ -971,14 +1876,12 @@ set bo2_zm_bots_callouts 0</code></pre></div>
   window.addEventListener('resize', resize);
   document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
 
-  // ═══ PROGRESS BAR ═══
   const pb = $('#progressBar');
   function updateProgress() {
     const h = document.documentElement.scrollHeight - window.innerHeight;
     pb.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0%';
   }
 
-  // ═══ BACK TO TOP ═══
   const btt = $('#btt');
   function updateBtt() { btt.classList.toggle('show', window.scrollY > 400); }
 
@@ -986,7 +1889,6 @@ set bo2_zm_bots_callouts 0</code></pre></div>
   updateProgress();
   updateBtt();
 
-  // ═══ REVEAL ANIMATIONS ═══
   const revealObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) { e.target.classList.add('vis'); revealObs.unobserve(e.target); }
@@ -994,7 +1896,6 @@ set bo2_zm_bots_callouts 0</code></pre></div>
   }, { rootMargin: '0px 0px -40px 0px', threshold: 0.01 });
   $$('.reveal').forEach(el => revealObs.observe(el));
 
-  // ═══ TOC TRACKING ═══
   const tocLinks = $$('.toc-link');
   const sections = $$('.card[id]');
   const tocObs = new IntersectionObserver(entries => {
@@ -1005,7 +1906,6 @@ set bo2_zm_bots_callouts 0</code></pre></div>
   }, { rootMargin: '-15% 0px -70% 0px', threshold: 0.01 });
   sections.forEach(s => tocObs.observe(s));
 
-  // ═══ SIDEBAR FILTER ═══
   const sideSearch = $('#sidebarSearch');
   sideSearch && sideSearch.addEventListener('input', () => {
     const q = sideSearch.value.toLowerCase();
@@ -1014,11 +1914,9 @@ set bo2_zm_bots_callouts 0</code></pre></div>
     });
   });
 
-  // ═══ MOBILE SELECT ═══
   const mSel = $('#mobileSelect');
   mSel && mSel.addEventListener('change', e => { if (e.target.value) location.hash = e.target.value; });
 
-  // ═══ ANIMATED COUNTERS ═══
   const counters = $$('.counter');
   const counterObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
@@ -1038,7 +1936,9 @@ set bo2_zm_bots_callouts 0</code></pre></div>
   }, { threshold: 0.5 });
   counters.forEach(c => counterObs.observe(c));
 
-  // ═══ COMMAND PALETTE ═══
+  const devFill = $('#devFill');
+  if (devFill) setTimeout(() => { devFill.style.width = '50%'; }, 400);
+
   const overlay = $('#cmdOverlay');
   const cmdInput = $('#cmdInput');
   const cmdResults = $('#cmdResults');
@@ -1056,33 +1956,56 @@ set bo2_zm_bots_callouts 0</code></pre></div>
   }
 
   cmdInput && cmdInput.addEventListener('input', () => renderCmd(cmdInput.value));
-  cmdInput && cmdInput.addEventListener('keydown', e => {
+
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openCmd(); return; }
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); openCmd(); return; }
+    if (e.key === 'Escape' && overlay.classList.contains('open')) { closeCmd(); return; }
+    if (!overlay.classList.contains('open')) return;
     const items = [...cmdResults.querySelectorAll('.cmd-item')];
     const sel = cmdResults.querySelector('.cmd-item.sel');
     const idx = items.indexOf(sel);
-    if (e.key === 'ArrowDown') { e.preventDefault(); items.forEach(i => i.classList.remove('sel')); items[Math.min(idx + 1, items.length - 1)]?.classList.add('sel'); }
-    if (e.key === 'ArrowUp') { e.preventDefault(); items.forEach(i => i.classList.remove('sel')); items[Math.max(idx - 1, 0)]?.classList.add('sel'); }
-    if (e.key === 'Enter') { e.preventDefault(); const s = cmdResults.querySelector('.cmd-item.sel'); if (s) { location.hash = s.getAttribute('href'); closeCmd(); } }
-    if (e.key === 'Escape') closeCmd();
+    if (e.key === 'ArrowDown') { e.preventDefault(); items.forEach(i => i.classList.remove('sel')); items[(idx + 1) % items.length]?.classList.add('sel'); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); items.forEach(i => i.classList.remove('sel')); items[(idx - 1 + items.length) % items.length]?.classList.add('sel'); }
+    if (e.key === 'Enter' && sel) { e.preventDefault(); location.hash = sel.getAttribute('href'); closeCmd(); }
   });
 
   overlay && overlay.addEventListener('click', e => { if (e.target === overlay) closeCmd(); });
 
-  document.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); overlay.classList.contains('open') ? closeCmd() : openCmd(); }
-    if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) { e.preventDefault(); openCmd(); }
-    if (e.key === 'Escape' && overlay.classList.contains('open')) closeCmd();
+  $$('.acc-trigger').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const wasOpen = item.classList.contains('open');
+      item.classList.toggle('open', !wasOpen);
+    });
+  });
+
+  const rankFills = $$('.rank-fill');
+  const rankObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.transition = 'width 1.5s cubic-bezier(0.16,1,0.3,1)';
+        rankObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  rankFills.forEach(r => {
+    const w = r.style.width;
+    r.style.width = '0%';
+    r.dataset.target = w;
+    rankObs.observe(r);
+    setTimeout(() => { r.style.width = r.dataset.target; }, 300);
   });
 })();
 
-// ═══ COPY TO CLIPBOARD ═══
 function copyCode(btn) {
   const code = btn.closest('.code-wrap').querySelector('code').textContent;
   navigator.clipboard.writeText(code).then(() => {
     btn.classList.add('copied');
-    const orig = btn.innerHTML;
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Copied';
-    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 1800);
+    const svg = btn.querySelector('svg');
+    const origText = btn.childNodes[btn.childNodes.length - 1];
+    origText.textContent = 'Copied!';
+    setTimeout(() => { btn.classList.remove('copied'); origText.textContent = 'Copy'; }, 2000);
   });
 }
 </script>
