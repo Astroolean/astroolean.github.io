@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Custom Bots v5.0.0 — BO2 Zombies AI</title>
-<meta name="description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 10,964 lines of zombie-killing intelligence. One file. Drop it in. Play."/>
+<meta name="description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 11,007 lines of zombie-killing intelligence. One file. Drop it in. Play."/>
 <meta name="theme-color" content="#060a12"/>
 <meta property="og:title" content="Custom Bots v5.0.0 — BO2 Zombies AI"/>
 <meta property="og:description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 5-tier rank system, 6 maps, 6 Easter Eggs. One file install."/>
@@ -263,7 +263,7 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
       </div>
     </div>
     <div class="stats-grid">
-      <div class="stat"><div class="stat-label">Lines of Code</div><div class="stat-val"><span class="counter" data-target="10964">0</span></div></div>
+      <div class="stat"><div class="stat-label">Lines of Code</div><div class="stat-val"><span class="counter" data-target="11007">0</span></div></div>
       <div class="stat"><div class="stat-label">Supported Maps</div><div class="stat-val">All 6</div></div>
       <div class="stat"><div class="stat-label">Easter Eggs</div><div class="stat-val"><span class="counter" data-target="6">0</span> / 6</div></div>
       <div class="stat"><div class="stat-label">Default Setup</div><div class="stat-val">3 Bots</div></div>
@@ -371,7 +371,7 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
   <div class="tw"><table>
     <thead><tr><th>Metric</th><th>Value</th></tr></thead>
     <tbody>
-      <tr><td>Lines of Code</td><td><strong>10,964</strong></td></tr>
+      <tr><td>Lines of Code</td><td><strong>11,007</strong></td></tr>
       <tr><td>Supported Maps</td><td>All 6 BO2 Zombie Maps</td></tr>
       <tr><td>Easter Egg Coverage</td><td>All 6 Maps</td></tr>
       <tr><td>Default Config</td><td>3 bots, Shotguns rank</td></tr>
@@ -723,7 +723,23 @@ set bo2_zm_bots_callouts 0</code></pre></div>
 <!-- ═══ HUD ═══ -->
 <section class="card reveal" id="hud-system">
   <h2>HUD System</h2>
-  <p>Bot names display with unique colors (Blue, Gold, Green). Welcome banners, notification bars, and event feeds provide live status. All elements fade and destroy cleanly on game end via dual watchers.</p>
+  <p>Bot names display with unique colors (Blue, Gold, Green). Welcome banners, notification bars, milestone splashes, and event feeds provide live status. All elements fade and destroy cleanly on game end via dual watchers.</p>
+  <h3>Anti-Overlap Safeguards</h3>
+  <ul>
+    <li><strong>Welcome Banner Lock</strong> &mdash; Milestone splashes and squad alerts wait until the welcome banner finishes before displaying.</li>
+    <li><strong>Milestone Queuing</strong> &mdash; If a milestone is already on screen, the next one waits 4.5 seconds to prevent stacking.</li>
+    <li><strong>Feed Overflow Protection</strong> &mdash; Event feed limits to 8 active entries, then pauses 1 second before resetting to prevent text pileup.</li>
+    <li><strong>Bot Name Spacing</strong> &mdash; 30px vertical gap between each bot name (fontScale 1.4) prevents any overlap.</li>
+  </ul>
+  <h3>Element Zones</h3>
+  <div class="tw"><table><thead><tr><th>Element</th><th>Position</th><th>Duration</th></tr></thead><tbody>
+    <tr><td>Bot Names</td><td>Bottom-right (y -135, -105, -75)</td><td>Persistent</td></tr>
+    <tr><td>Welcome Banner</td><td>Center (y -80 to +34)</td><td>10 seconds</td></tr>
+    <tr><td>Milestone Splash</td><td>Upper-center (y -130, -98)</td><td>3.5 seconds</td></tr>
+    <tr><td>Squad Alert</td><td>Center-low (y +70)</td><td>9 seconds</td></tr>
+    <tr><td>Notification</td><td>Bottom-center (y 195)</td><td>3 seconds</td></tr>
+    <tr><td>Event Feed</td><td>Top-right (y 80+, 22px spacing)</td><td>4 seconds per entry</td></tr>
+  </tbody></table></div>
 </section>
 
 <!-- ═══ MAP LOGIC ═══ -->
@@ -793,13 +809,13 @@ set bo2_zm_bots_callouts 0</code></pre></div>
   <h3>Loop Safety</h3>
   <ul>
     <li>74 <code>endon</code> guards for death/disconnect/game_ended</li>
-    <li>652 <code>IsDefined</code> checks validate bot state</li>
+    <li>628 <code>IsDefined</code> checks validate bot state</li>
     <li>200-tick training abort counter</li>
   </ul>
   <h3>Resource Management</h3>
   <ul>
     <li>Locks on Box, PaP, generators, doors with auto-cleanup on disconnect/laststand</li>
-    <li>42-label goal sweep on every respawn</li>
+    <li>61-label goal sweep on every stuck reset and respawn</li>
     <li>Rank-scaled stuck detection: Shotguns 2.5s, Bones 4.5s</li>
     <li>Ghost player kick loop every 10 seconds</li>
   </ul>
@@ -887,7 +903,7 @@ set bo2_zm_bots_callouts 0</code></pre></div>
 <div class="footer">
   <div class="footer-title">Custom Bots v5.0.0 &mdash; 2026 Edition</div>
   <div class="footer-line">
-    <span class="footer-sub">10,964 lines</span><span class="sep"></span>
+    <span class="footer-sub">11,007 lines</span><span class="sep"></span>
     <span class="footer-sub">44 sections</span><span class="sep"></span>
     <span class="footer-sub">6 maps</span><span class="sep"></span>
     <span class="footer-sub">6 Easter Eggs</span>
