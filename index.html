@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Custom Bots v5.0.0 — BO2 Zombies AI</title>
-<meta name="description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 10,923 lines of zombie-killing intelligence. 5-tier rank system, 6 maps, 6 Easter Eggs. One file. Drop it in. Play."/>
+<meta name="description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 11,066 lines of zombie-killing intelligence. 5-tier rank system, 6 maps, 6 Easter Eggs. One file. Drop it in. Play."/>
 <meta name="theme-color" content="#060a12"/>
 <meta property="og:title" content="Custom Bots v5.0.0 — BO2 Zombies AI"/>
 <meta property="og:description" content="Fully autonomous AI bots for Black Ops 2 Zombies on Plutonium T6. 5-tier rank system, 6 maps, 6 Easter Eggs. One file install."/>
@@ -244,7 +244,7 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
 .tag.gold{color:var(--gold);border-color:rgba(255,204,71,0.25);background:rgba(255,204,71,0.06)}
 .tag.red{color:var(--red);border-color:rgba(255,107,122,0.25);background:rgba(255,107,122,0.06)}
 
-.footer{margin-top:24px;text-align:center;padding:48px 28px;border-radius:24px;background:var(--surface);border:1px solid var(--border);position:relative;overflow:hidden}
+.footer{margin-top:24px;text-align:center;padding:48px 28px;border-radius:24px;background:var(--surface);border:1px solid var(--border);position:relative;overflow:hidden;grid-column:1/-1}
 .footer::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(108,180,255,0.06),transparent 60%);pointer-events:none}
 .footer-title{font-size:1.3rem;font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,var(--text),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;position:relative;z-index:1}
 .footer-sub{font-size:.9rem;color:var(--text3);position:relative;z-index:1}
@@ -350,7 +350,7 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
       </div>
     </div>
     <div class="stats-grid">
-      <div class="stat"><div class="stat-label">Lines of Code</div><div class="stat-val"><span class="counter" data-target="10923">0</span></div></div>
+      <div class="stat"><div class="stat-label">Lines of Code</div><div class="stat-val"><span class="counter" data-target="11066">0</span></div></div>
       <div class="stat"><div class="stat-label">Supported Maps</div><div class="stat-val">All 6</div></div>
       <div class="stat"><div class="stat-label">Easter Eggs</div><div class="stat-val"><span class="counter" data-target="6">0</span> / 6</div></div>
       <div class="stat"><div class="stat-label">Default Setup</div><div class="stat-val">3 Bots</div></div>
@@ -493,16 +493,11 @@ pre.cb code{background:none;border:0;padding:0;display:block;white-space:pre;col
   <div class="tw"><table>
     <thead><tr><th>Metric</th><th>Value</th></tr></thead>
     <tbody>
-      <tr><td>Lines of Code</td><td><strong>10,923</strong></td></tr>
-      <tr><td>Code Sections</td><td><strong>44</strong> (Unicode box-drawing borders)</td></tr>
-      <tr><td>Supported Maps</td><td>All 6 BO2 Zombie Maps</td></tr>
-      <tr><td>Easter Egg Coverage</td><td>All 6 Maps (full step assistance)</td></tr>
-      <tr><td>Default Config</td><td>3 bots, Shotguns rank (highest tier)</td></tr>
+      <tr><td>Lines of Code</td><td><strong>11,066</strong></td></tr>
+      <tr><td>Supported Maps</td><td>All 6</td></tr>
+      <tr><td>Easter Eggs</td><td>All 6</td></tr>
+      <tr><td>Default Config</td><td>3 bots, Shotguns rank</td></tr>
       <tr><td>Rank Tiers</td><td>5 (Bones &rarr; Shotguns)</td></tr>
-      <tr><td>DVars</td><td>12 configurable settings</td></tr>
-      <tr><td>Safety Guards</td><td>76 endon + 618 IsDefined checks</td></tr>
-      <tr><td>Bot Personalities</td><td>3 types (Aggressive, Supportive, Cautious)</td></tr>
-      <tr><td>Weapon Preferences</td><td>Per-map scored weapon lists</td></tr>
     </tbody>
   </table></div>
 
@@ -928,19 +923,21 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
 
   <h3>Firing Discipline</h3>
   <ul>
-    <li><strong>Range-Gated Firing</strong> &mdash; Bots only fire when targets are within effective range for their weapon class. No cross-map SMG spraying.</li>
-    <li><strong>Ammo Conservation</strong> &mdash; When ammo is low, burst lengths shorten and some shots are probabilistically suppressed based on the bot's ammo_conserve personality stat.</li>
+    <li><strong>Range-Gated Firing</strong> &mdash; Maximum engagement range is 450 units (reduced from 600). Drops to 300 at 50% ammo, 200 at 25%. Bots won't waste ammo on distant targets that aren't threats.</li>
+    <li><strong>Ammo Conservation</strong> &mdash; Conservation activates at 60% ammo (not 40%). Range suppression kicks in at 350+ units even at full ammo (25% shot skip). Burst sizes capped to 2-3 shots at range. Pause between bursts doubled when low on ammo.</li>
     <li><strong>No Scatter at Close Range</strong> &mdash; Within 150 units, aim scatter is completely removed. Direct aim at the zombie. Scatter only applies at distance where it simulates natural aiming variance.</li>
     <li><strong>No Fallback Shooting</strong> &mdash; If the final aim point fails line-of-sight verification, the bot stops shooting entirely. No "shooting at the wall hoping to hit something."</li>
   </ul>
 
   <h3>Smart Grenades</h3>
-  <p>Grenades use a separate decision system with multiple safety checks:</p>
+  <p>The T6 engine's built-in bot grenade system is completely disabled (<code>bot_AllowGrenades=0</code> for all ranks). All grenade decisions go through the script's intelligent system:</p>
   <ul>
     <li><strong>Self-damage prevention</strong> &mdash; No grenade throws within 300 units of self. Bots won't kill themselves.</li>
-    <li><strong>Rank-scaled cooldown</strong> &mdash; Bones: 20 second cooldown. Shotguns: 12 seconds. Prevents grenade spam.</li>
-    <li><strong>Ammo gating</strong> &mdash; Bots track grenade count and don't throw their last one unless it's an emergency.</li>
-    <li><strong>Cluster targeting</strong> &mdash; Grenades are aimed at the center of zombie clusters (3+ zombies) for maximum effectiveness.</li>
+    <li><strong>Conservative cooldowns</strong> &mdash; Shotguns: 20s. Skull &amp; Knife: 25s. Skull: 35s. Bones/Crossed Bones: grenades disabled entirely.</li>
+    <li><strong>Gun ammo gating</strong> &mdash; Will not throw if primary weapon ammo is below 50%. Grenades are not a substitute for gun ammo.</li>
+    <li><strong>High crowd threshold</strong> &mdash; Requires 6+ nearby zombies (Shotguns) to 10+ (Bones) before considering a throw. No throwing at scattered targets.</li>
+    <li><strong>Round gating</strong> &mdash; No grenades before round 5. Early rounds use knife/gun economy exclusively.</li>
+    <li><strong>Cluster targeting</strong> &mdash; Grenades aimed at zombie cluster centroids within 300-600 unit range for maximum effectiveness.</li>
   </ul>
 </section>
 
@@ -1196,7 +1193,7 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
 
 <section class="card reveal" id="proactive-seeking">
   <h2>Proactive Part Seeking</h2>
-  <p>Bots don't wait to stumble across parts. They <strong>actively route</strong> to known part spawn areas across the entire map using hardcoded patrol waypoints. The seeking system runs during early game to ensure parts are collected before they're needed.</p>
+  <p>Bots don't wait to stumble across parts. They <strong>actively scan</strong> for buildable pieces using dynamic entity queries (<code>getentarray</code>) across 15+ targetname patterns, finding every part the game engine has spawned. The seeking system runs during early game to ensure parts are collected before they're needed.</p>
   <p>On Origins, the proactive seeking system is particularly sophisticated. Bots navigate to all 6 generator locations using a 6-method search system (<code>bot_find_generators()</code>). They seek shovels with an 8-method search that includes trigger_use fallback detection. They patrol dig site locations and staff part spawns (excluding ice staff).</p>
   <p>After collecting enough parts for a buildable, bots automatically navigate to the build table and craft the item. Shovel reservation ensures at least 1 shovel is always left for the human player.</p>
 </section>
@@ -1533,6 +1530,9 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
   <h3>Window Defense</h3>
   <p>During early rounds, bots claim windows using a 1200-unit search range and defend them against boarding zombies. A dynamic round cap prevents bots from overstaying at windows when the round gets too chaotic. Window defense is skipped entirely by elite bots (rank 3+) after round 3.</p>
 
+  <h3>Dynamic Entity Discovery</h3>
+  <p>Nothing is hardcoded to specific map coordinates. Bots use <code>getentarray()</code> to dynamically find every point of interest at runtime &mdash; perk machines, doors, debris, wallbuys, Mystery Box locations, Pack-a-Punch, generators, buildable parts, traps, and Easter Egg entities. The system queries <strong>90+ entity patterns</strong> across multiple targetname fallbacks to ensure compatibility with all map variants and custom configurations. Training patrol routes are the only exception &mdash; those are hand-designed navigation circuits that define safe running paths.</p>
+
   <h3>Stuck Detection &amp; Recovery</h3>
   <p>Rank-scaled stuck detection monitors bot movement. If a bot's position hasn't changed significantly within the timeout window, a full recovery sequence initiates: all goals are cleared (61 labels swept), the bot teleports to a safe position, and the decision engine restarts from scratch.</p>
   <div class="tw"><table><thead><tr><th>Rank</th><th>Stuck Timeout</th><th>Recovery</th></tr></thead><tbody>
@@ -1551,8 +1551,8 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
   <h3>Loop Safety</h3>
   <ul>
     <li><strong>76 <code>endon</code> guards</strong> &mdash; Every threaded function includes endon guards for death, disconnect, and game_ended events. If the game state changes, all bot threads terminate cleanly instead of erroring out.</li>
-    <li><strong>618 <code>IsDefined</code> checks</strong> &mdash; Before accessing any entity, variable, or reference, the code verifies it still exists. Entities can be destroyed by the game engine at any time &mdash; every access is guarded.</li>
-    <li><strong>67 <code>isAlive</code> checks</strong> &mdash; Dead bots don't try to act. Every action entry point verifies the bot is alive before proceeding.</li>
+    <li><strong>637 <code>IsDefined</code> checks</strong> &mdash; Before accessing any entity, variable, or reference, the code verifies it still exists. Entities can be destroyed by the game engine at any time &mdash; every access is guarded.</li>
+    <li><strong>68 <code>isAlive</code> checks</strong> &mdash; Dead bots don't try to act. Every action entry point verifies the bot is alive before proceeding.</li>
     <li><strong>200-tick training abort</strong> &mdash; Training circuits have a maximum iteration counter. If a circuit runs for 200 ticks without completing, it aborts to prevent infinite loops.</li>
   </ul>
 
@@ -1579,7 +1579,7 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
 
   <h3>Known T6 GSC Pitfalls</h3>
   <div class="tw"><table><thead><tr><th>Issue</th><th>Cause</th><th>Custom Bots Solution</th></tr></thead><tbody>
-    <tr><td>Server crash on entity access</td><td>Entity destroyed between check and use</td><td>618 IsDefined guards on every entity access</td></tr>
+    <tr><td>Server crash on entity access</td><td>Entity destroyed between check and use</td><td>637 IsDefined guards on every entity access</td></tr>
     <tr><td>Orphaned threads</td><td>Bot dies/disconnects during threaded function</td><td>76 endon guards terminate threads cleanly</td></tr>
     <tr><td>Infinite loops</td><td>Goal never reached, path never completes</td><td>200-tick abort counters on all loops</td></tr>
     <tr><td>Resource deadlock</td><td>Bot dies holding a resource lock</td><td>Automatic lock cleanup on death/laststand</td></tr>
@@ -1729,7 +1729,7 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
     </div>
     <div class="acc-item">
       <button class="acc-trigger">Will bots crash my game?</button>
-      <div class="acc-body"><div class="acc-inner">Custom Bots has 76 endon guards, 618 IsDefined checks, and 67 isAlive validations specifically to prevent crashes. Every entity access is guarded, every thread has cleanup handlers, and every loop has abort counters. The code is designed for 100+ round sessions without issues.</div></div>
+      <div class="acc-body"><div class="acc-inner">Custom Bots has 76 endon guards, 637 IsDefined checks, and 68 isAlive validations specifically to prevent crashes. Every entity access is guarded, every thread has cleanup handlers, and every loop has abort counters. The code is designed for 100+ round sessions without issues.</div></div>
     </div>
     <div class="acc-item">
       <button class="acc-trigger">Can I modify the bot behavior?</button>
@@ -1799,7 +1799,7 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
 <section class="card reveal" id="credits">
   <h2>Credits</h2>
   <p><strong>Created by Astroolean</strong></p>
-  <p>10,923 lines of autonomous zombie-killing intelligence, built from the ground up for the Plutonium T6 community.</p>
+  <p>11,066 lines of autonomous zombie-killing intelligence, built from the ground up for the Plutonium T6 community.</p>
   <p>Inspired by <a href="https://github.com/osmnbtrclk/bo2_zm_bots" target="_blank" rel="noopener">osmnbtrclk/bo2_zm_bots</a>. Completely independent rewrite with different architecture, different AI systems, and different features. Credit where due for the original concept and inspiration.</p>
   <p>Version 5.0.0 &mdash; 2026 Edition</p>
 </section>
@@ -1807,10 +1807,12 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
 </div>
 </main>
 
+</div>
+
 <div class="footer">
   <div class="footer-title">Custom Bots v5.0.0 &mdash; 2026 Edition</div>
   <div class="footer-line">
-    <span class="footer-sub">10,923 lines</span><span class="sep"></span>
+    <span class="footer-sub">11,066 lines</span><span class="sep"></span>
     <span class="footer-sub">44 sections</span><span class="sep"></span>
     <span class="footer-sub">6 maps</span><span class="sep"></span>
     <span class="footer-sub">6 Easter Eggs</span><span class="sep"></span>
@@ -1819,7 +1821,6 @@ set bo2_zm_bots_clan "AI"       // Change clan tag</code></pre></div>
   <div class="footer-tagline">One file. Drop it in. Play.</div>
 </div>
 
-</div>
 </div>
 
 <div class="cmd-overlay" id="cmdOverlay" role="dialog" aria-label="Search documentation" aria-modal="true">
