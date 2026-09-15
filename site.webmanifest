@@ -1,0 +1,9 @@
+{
+  "name": "FatAshBOT",
+  "short_name": "FatAshBOT",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#040b14",
+  "theme_color": "#061120",
+  "icons": []
+}

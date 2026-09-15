@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="FatAshBOT logo">
+  <defs><linearGradient id="g" x1="8" y1="5" x2="57" y2="60" gradientUnits="userSpaceOnUse"><stop stop-color="#2e6fff"/><stop offset=".52" stop-color="#49dfff"/><stop offset="1" stop-color="#756dff"/></linearGradient><linearGradient id="b" x1="0" x2="1"><stop stop-color="#0a1e38"/><stop offset="1" stop-color="#071323"/></linearGradient></defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#b)" stroke="#4a9cff" stroke-opacity=".42"/>
+  <path d="M18 17h28v8H27v7h16v8H27v11h-9V17Z" fill="url(#g)"/>
+  <circle cx="48" cy="18" r="3" fill="#62e7ff"/><circle cx="48" cy="18" r="7" fill="#62e7ff" opacity=".11"/>
+</svg>
