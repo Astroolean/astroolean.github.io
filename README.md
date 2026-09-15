@@ -1,6 +1,6 @@
 # FatAshBOT
 
-**FatAshBOT** is a full desktop toolkit I built for X/Twitter because I wanted everything in one place instead of having to jump between a bunch of different tools, websites, scripts, dashboards, and random utilities just to manage one account.
+**FatAshBOT** is a full desktop toolkit I built for X/Twitter because I said fuck it...
 
 The entire application is written in Python and built around the official X API. It is designed to function as a complete desktop control center for monitoring accounts, finding posts, managing targets, writing and reviewing replies, composing posts, scheduling content, checking analytics, managing live activity, testing API access, and handling the rest of the workflow from one interface.
 
