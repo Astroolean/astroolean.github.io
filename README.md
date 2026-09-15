@@ -1,117 +1,236 @@
-# Astroolean's Digital Canvas - A Three.js Portfolio Experience
+# FatAshBOT
 
-![Demo GIF/Screenshot](https://i.imgur.com/your-screenshot-or-gif.gif)
-*(Replace this with a link to a GIF or screenshot of your live project for a quick visual demo!)*
+**FatAshBOT** is a full desktop toolkit I built for X/Twitter because I wanted everything in one place instead of having to jump between a bunch of different tools, websites, scripts, dashboards, and random utilities just to manage one account.
 
----
+The entire application is written in Python and built around the official X API. It is designed to function as a complete desktop control center for monitoring accounts, finding posts, managing targets, writing and reviewing replies, composing posts, scheduling content, checking analytics, managing live activity, testing API access, and handling the rest of the workflow from one interface.
 
-## 🚀 Overview
+I wanted FatAshBOT to feel like an actual finished application instead of another Python script with a few buttons thrown on top of it. The GUI is fully custom and includes its own dark and light theme system, animated visuals, detailed page guides, a proper login system, loading screen, licensing system, diagnostics, local database, saved settings, history, review queues, and twelve separate sections so everything stays organized instead of being crammed into one giant window.
 
-Welcome to **Astroolean's Digital Canvas**, a unique and interactive 3D web experience built with **Three.js**, **Tailwind CSS**, and **GSAP**. This project serves as a dynamic personal portfolio or landing page, featuring a mesmerizing abstract central sphere, a vast particle system, and an orbiting asteroid field. The overlay UI, powered by Tailwind CSS, provides a clean and modern space to showcase your profile, a brief summary, and your latest projects.
+## What FatAshBOT Is Built For
 
-I built this project to demonstrate how easily a captivating web presence can be created, even with the help of AI! It's designed to be straightforward to customize, allowing you to quickly put your own spin on it without deep knowledge of Three.js.
+FatAshBOT is designed to bring the majority of an X/Twitter workflow into one desktop application.
 
----
+It includes systems for:
 
-## ✨ Features
+- Account monitoring
+- Target management
+- Post discovery
+- Search and saved searches
+- Reply drafting
+- Reply review and approval
+- Standalone post creation
+- Quote posts
+- Threads
+- Polls
+- Scheduled posts
+- Draft management
+- Analytics
+- Live activity monitoring
+- API diagnostics
+- Local AI reply generation
+- Stream management
+- Data exports
+- Local history
+- Safety controls
+- Rate-limit awareness
+- Manual engagement tools
+- Advanced configuration
+- License management
 
-* **Interactive 3D Scene:**
-    * **Abstract Main Sphere:** A glowing, ethereal "digital canvas" with a unique shader material, featuring dynamic color blending and a "breathing" displacement effect.
-    * **Dynamic Particle System:** A subtle, shimmering field of particles creating a "star dust" or "energy" aura.
-    * **Asteroid Field:** Procedurally generated asteroids with varied shapes, sizes, and independent rotations, subtly drifting and wrapping around the scene for an endless feel.
-    * **Responsive Camera & Lights:** Camera controls (OrbitControls) with auto-rotation, and interactive point lights that respond to mouse movement, illuminating the scene dynamically.
-* **Modern UI Overlay:**
-    * **Tailwind CSS:** Fully styled with utility-first CSS for a sleek, responsive design.
-    * **Google Fonts (Inter):** Ensures a modern and readable typography.
-    * **Loading Screen:** A smooth, custom loading animation for a polished user experience.
-    * **Animated Content:** Subtle `fadeIn` and `popIn` animations for the profile image, text, and project cards, thanks to **GSAP**.
-* **Easy Customization:** Designed with clearly marked "EDITABLE" sections in the code for quick personalization of:
-    * Profile picture/GIF
-    * Summary text
-    * Project details (links, titles, descriptions)
-    * Main sphere's geometry and colors
-    * Various 3D scene parameters (e.g., particle count, asteroid density)
+The goal is simple: keep everything organized, understandable, and controlled from one application.
 
----
+## Desktop First
 
-## 🛠️ Technologies Used
+FatAshBOT is built as a real desktop application.
 
-* **Three.js (r128):** The powerful 3D JavaScript library for rendering the interactive scene.
-* **OrbitControls:** A Three.js example utility for intuitive camera interaction (rotate, pan, zoom).
-* **Tailwind CSS (CDN):** For rapid UI development and styling the HTML overlay.
-* **GSAP (GreenSock Animation Platform):** For high-performance, smooth JavaScript animations on the HTML content.
-* **HTML5:** The core structure of the web page.
-* **CSS3:** For custom styles and animations not covered by Tailwind.
+It is not a browser extension, not a website wrapper, and not a collection of loose scripts.
 
----
+The interface is split into twelve main sections:
 
-## 🚀 Getting Started
+1. **Overview**
+2. **Connection**
+3. **Targets**
+4. **Discovery**
+5. **Engagement**
+6. **Compose**
+7. **Automation**
+8. **Review**
+9. **Analytics**
+10. **Tools**
+11. **Advanced**
+12. **Live Activity**
 
-This project is incredibly easy to get up and running!
+Each section has its own purpose and its own detailed in-app explanation so the user can understand what every part of the program actually does.
 
-1.  **Clone the repository (or copy the `index.html` file):**
+## Official X API Integration
 
-    ```bash
-    git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-    ```
+FatAshBOT is built around the official X API.
 
-    (Replace `your-username/your-repo-name` with your actual GitHub repository URL if you fork it).
+The project is intentionally designed to avoid browser scraping, Selenium automation, fake browser clicks, and other methods that try to work around the platform itself.
 
-2.  **Open `index.html` in your web browser:**
+Anything that interacts with X still depends on the permissions, scopes, developer access, API limits, and automation rules provided by X.
 
-    Simply double-click the `index.html` file, or open it with your preferred web server (e.g., Live Server extension in VS Code).
+The application is designed to work with proper user-context authorization for features that require access to an X account.
 
-    That's it! The Three.js scene and the UI will load automatically.
+## Local-First Design
 
----
+A large part of FatAshBOT runs locally on the machine using it.
 
-## ⚙️ Customization
+The application stores its own working data in SQLite, including things such as:
 
-The `index.html` file is heavily commented with **"EDITABLE"** tags to guide you through personalization.
+- Posts
+- Reply candidates
+- Sent replies
+- Drafts
+- Scheduled content
+- Saved searches
+- Application events
+- Analytics history
+- Review states
+- Local configuration
 
-### HTML Content (`<div id="overlay-content">`)
+This keeps the application's internal workflow organized without requiring a separate cloud database for normal use.
 
-* **Profile Picture/GIF:**
-    Find the `<img>` tag with `alt="Astroolean's Avatar"` and change the `src` attribute to your desired image or GIF URL.
-* **Summary Text:**
-    Modify the text within the `<p>` tag inside the `text-center mb-6` div to write your own personal summary.
-* **Projects Section:**
-    Each project is represented by an `<a>` tag with the `project-item` class.
-    * Update the `href` attribute to link to your project.
-    * Change the `<h3>` content for the project title.
-    * Modify the `<p>` content for the project description.
-    * You can add or remove `<a class="project-item">...</a>` blocks to fit your number of projects.
+## Review Before Posting
 
-### Three.js Scene (`<script>` tag)
+FatAshBOT is designed around keeping the user in control.
 
-Look for comments like `// EDITABLE: mainSphere Geometry` or `// EDITABLE: mainSphere Colors` within the `<script>` section.
+The application can prepare content, monitor accounts, generate reply candidates, schedule posts, and automate parts of the workflow, but the review system is there so content can be checked before it is sent.
 
-* **Main Sphere (`mainSphere`):**
-    * **Geometry:** Experiment with different `THREE.Geometry` types (e.g., `THREE.SphereGeometry`, `THREE.BoxGeometry`, `THREE.TorusGeometry`, `THREE.DodecahedronGeometry`) by changing `new THREE.TorusKnotGeometry(...)`. Adjust the parameters accordingly.
-    * **Colors:** Modify `color1`, `color2`, and `glowColor` hex values in the `sphereMaterial`'s `uniforms` to match your aesthetic.
-* **Particles (`particles`):**
-    * **`particleCount`:** Increase or decrease this value to change the density of the particle field.
-    * **Colors & Sizes:** Adjust the `HSL` values and `Math.random()` multipliers within the particle generation loop for different visual effects.
-* **Asteroids (`asteroids` array):**
-    * **`numAsteroids`:** Control the number of asteroids in the field.
-    * **`asteroidGeometries`:** Add or remove different `THREE.Geometry` types to vary asteroid shapes.
-    * **Colors:** Modify the `asteroidMaterial.color.setHSL(...)` line to change asteroid hues.
-    * **Rotation and Drift Speeds:** Adjust `asteroid.userData.rotationSpeed` and `asteroid.userData.driftSpeed` values for faster/slower movement.
-* **Lights:**
-    * Experiment with `AmbientLight`, `PointLight`, and `DirectionalLight` parameters (color, intensity, distance, position) to change the overall lighting mood.
+The review queue supports:
 
----
+- Editing generated replies
+- Regenerating replies
+- Approving content
+- Rejecting content
+- Copying content
+- Opening source posts
+- Publishing approved content
 
-## 🙏 Credits
+The goal is not just automation for the sake of automation. The goal is making repetitive work easier while still keeping control in the hands of the person using the application.
 
-* **Three.js:** For the amazing 3D rendering capabilities.
-* **Tailwind CSS:** For streamlined UI development.
-* **GSAP:** For powerful and easy-to-use animations.
-* **Google Fonts:** For the "Inter" typeface.
-* **Discord CDN:** Used for hosting the profile GIF in the example.
+## Local AI Support
 
----
+FatAshBOT can optionally use local AI through **Ollama**.
 
-If you have any questions or just want to connect, feel free to reach out!
+This allows reply generation to run locally instead of requiring a separate cloud AI service.
 
----
+The reply system supports multiple styles, configurable instructions, model selection, temperature settings, and safe fallback behavior.
+
+The application also records information such as:
+
+- AI provider
+- Generation latency
+- Generation errors
+- Candidate status
+- Review status
+
+## Licensing System
+
+FatAshBOT includes a completely separate Owner License Manager.
+
+The licensing system supports:
+
+- Daily licenses
+- Weekly licenses
+- Monthly licenses
+- Yearly licenses
+- Short readable license codes
+- Signed activation certificates
+- Username and password authentication
+- Start and expiration times
+- Owner-side license history
+- Eastern Time display
+- Customer-ready login bundles
+
+The normal FatAshBOT application only contains the public verification key.
+
+The private signing key stays inside the separate Owner License Manager.
+
+This allows the customer application to verify licenses without containing the private key required to create them.
+
+## Security and Safety
+
+FatAshBOT includes multiple layers of protection and policy controls.
+
+Examples include:
+
+- Allowlist controls
+- Blocked keyword filtering
+- Required keyword filtering
+- Reply limits
+- Daily limits
+- Per-author delays
+- Duplicate reply detection
+- Link restrictions
+- Hashtag and cashtag limits
+- Review requirements
+- AI posting restrictions
+- Stream rule ownership
+- Local diagnostics
+- Database integrity checks
+- Safe settings exports
+
+The application is designed to fail safely and provide useful information instead of silently doing something unexpected.
+
+## Reliability
+
+A lot of work has gone into making the application behave like a proper desktop program instead of a fragile script.
+
+FatAshBOT includes:
+
+- Startup logging
+- Dependency checks
+- Background runtime initialization
+- Login and loading screens
+- Progress reporting
+- Database migrations
+- SQLite integrity checks
+- Stream reconnect handling
+- Queue limits
+- Error reporting
+- API diagnostics
+- Settings validation
+- Export tools
+- Backup tools
+- Regression tests
+
+The startup system is also separated from the main interface so backend components can load while the user is signing in.
+
+## Built to Be Expanded
+
+This project has grown far beyond the original idea of simply watching accounts and replying to posts.
+
+At this point, FatAshBOT is my attempt at building a complete X/Twitter desktop toolkit from scratch.
+
+The codebase is intentionally split into separate modules for things like:
+
+- GUI
+- Startup
+- X API
+- AI
+- Database
+- Scheduling
+- Streaming
+- Policy
+- Licensing
+- Configuration
+- Testing
+
+I organized it this way on purpose so I can continue working on it without turning the entire application into one impossible-to-maintain Python file.
+
+## Current Version
+
+**Version 1.1.0**
+
+FatAshBOT is still actively being improved and expanded.
+
+The goal is to keep pushing it toward being a complete, polished, professional desktop toolkit for X/Twitter while keeping the code understandable enough that I can continue building on it myself.
+
+## Disclaimer
+
+FatAshBOT is an independent project.
+
+It is not affiliated with, endorsed by, sponsored by, or officially connected to X Corp.
+
+Features that interact with X depend on the permissions, scopes, API access, rate limits, and current platform rules available to the account using the application.
