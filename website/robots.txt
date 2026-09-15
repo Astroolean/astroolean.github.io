@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://astroolean.github.io/website/sitemap.xml
