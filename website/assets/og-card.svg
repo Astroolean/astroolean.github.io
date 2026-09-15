@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#040a13"/><stop offset=".6" stop-color="#07192c"/><stop offset="1" stop-color="#07111f"/></linearGradient><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#79c9ff"/><stop offset=".5" stop-color="#43e3ff"/><stop offset="1" stop-color="#7a7bff"/></linearGradient><radialGradient id="a"><stop stop-color="#2a70ff" stop-opacity=".25"/><stop offset="1" stop-color="#2a70ff" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="630" fill="url(#bg)"/><circle cx="1020" cy="80" r="420" fill="url(#a)"/><circle cx="170" cy="560" r="350" fill="url(#a)" opacity=".5"/>
+<rect x="72" y="70" width="78" height="78" rx="20" fill="#081d33" stroke="#4d9bff" stroke-opacity=".5"/><path d="M91 90h40v12h-27v10h23v12h-23v16H91V90Z" fill="url(#g)"/>
+<text x="72" y="255" fill="#f5f9ff" font-family="Arial,Helvetica,sans-serif" font-size="82" font-weight="700">FatAshBOT</text>
+<text x="72" y="330" fill="url(#g)" font-family="Arial,Helvetica,sans-serif" font-size="46" font-weight="700">Your X workflow, without the chaos.</text>
+<text x="72" y="405" fill="#8ea6c0" font-family="Arial,Helvetica,sans-serif" font-size="28">Local-first desktop toolkit for official X API workflows,</text>
+<text x="72" y="445" fill="#8ea6c0" font-family="Arial,Helvetica,sans-serif" font-size="28">review-first automation, analytics, and publishing.</text>
+<text x="72" y="555" fill="#4baee8" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="700">ASTROOLEAN.GITHUB.IO</text>
+</svg>
